@@ -59,44 +59,7 @@ public class MainWindow extends JFrame {
         }
 
         public void actionStart() {
-            DeviceManager deviceManager = DeviceManager.getInstance();
 
-            List<BluetoothAdapter> adapters = deviceManager.getAdapters();
-            for (BluetoothAdapter ada : adapters) {
-                System.out.println(ada.getDeviceName());
-            }
-            if (adapters.size() == 0) {
-                System.err.println("There is no bluetooth adapter.");
-                return;
-            }
-
-            try {
-                deviceManager.registerPropertyHandler(new PropertiesChangedHandler());
-            } catch (DBusException e) {
-                System.err.println("Cannot set properties changed handler.");
-                return;
-            }
-
-            BluetoothAdapter adapter = adapters.get(0);
-            adapter.startDiscovery();
-            adapter.stopDiscovery();
-
-            List<BluetoothDevice> devices = deviceManager.getDevices();
-            for (BluetoothDevice dev : devices) {
-                System.out.printf("name:'%s', MAC:%s\n", dev.getName(), dev.getAddress());
-            }
-            if (devices.size() == 0) {
-                System.err.println("There is no bluetooth devices.");
-                return;
-            }
-            for (BluetoothDevice dev : devices) {
-                if (!dev.getAddress().equalsIgnoreCase("84:F7:03:27:F8:16")) {
-                    continue;
-                }
-
-                Thread th = new Thread(new DeviceThread(dev));
-                th.start();
-            }
         }
     }
 }
