@@ -1,9 +1,5 @@
 package net.katsuster.ble;
 
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothAdapter;
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import javax.swing.*;
