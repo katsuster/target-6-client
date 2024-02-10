@@ -20,7 +20,7 @@ public class MainWindow extends JFrame {
         ActionButton actButton = new ActionButton(this);
 
         //Panels
-        JPanel panelScan = new PanelBTScan(fontSize);
+        JPanel panelScan = new BTScanPanel(fontSize);
 
         //Buttons
         JButton buttonClose = new JButton("close");

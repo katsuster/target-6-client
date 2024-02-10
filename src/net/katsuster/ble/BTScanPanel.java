@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.nio.CharBuffer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.*;
@@ -17,7 +16,7 @@ import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 import org.freedesktop.dbus.exceptions.DBusException;
 
-public class PanelBTScan extends JPanel {
+public class BTScanPanel extends JPanel {
     public static final String DEFAULT_UUID_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
     public static final String DEFAULT_UUID_RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
     public static final String DEFAULT_UUID_TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
@@ -64,7 +63,7 @@ public class PanelBTScan extends JPanel {
     private JTextField statusScanCharactersitic;
     private JTextField statusTest;
 
-    public PanelBTScan(int fontSize) {
+    public BTScanPanel(int fontSize) {
         Dimension preferredListSize = new Dimension(200, (int)(fontSize * 1.3 * 8));
         Dimension preferredTextSize = new Dimension(160, (int)(fontSize * 1.3));
 
@@ -460,10 +459,10 @@ public class PanelBTScan extends JPanel {
     }
 
     public class AdapterSelection implements ListSelectionListener {
-        PanelBTScan panelBTScan;
+        BTScanPanel panelBTScan;
         JList<BTAdapterItem> list;
 
-        public AdapterSelection(PanelBTScan p, JList<BTAdapterItem> l) {
+        public AdapterSelection(BTScanPanel p, JList<BTAdapterItem> l) {
             panelBTScan = p;
             list = l;
         }
@@ -485,10 +484,10 @@ public class PanelBTScan extends JPanel {
     }
 
     public class DeviceSelection implements ListSelectionListener {
-        PanelBTScan panelBTScan;
+        BTScanPanel panelBTScan;
         JList<BTDeviceItem> list;
 
-        public DeviceSelection(PanelBTScan p, JList<BTDeviceItem> l) {
+        public DeviceSelection(BTScanPanel p, JList<BTDeviceItem> l) {
             panelBTScan = p;
             list = l;
         }
@@ -510,10 +509,10 @@ public class PanelBTScan extends JPanel {
     }
 
     public class ServiceSelection implements ListSelectionListener {
-        PanelBTScan panelBTScan;
+        BTScanPanel panelBTScan;
         JList<GattServiceItem> list;
 
-        public ServiceSelection(PanelBTScan p, JList<GattServiceItem> l) {
+        public ServiceSelection(BTScanPanel p, JList<GattServiceItem> l) {
             panelBTScan = p;
             list = l;
         }
@@ -535,10 +534,10 @@ public class PanelBTScan extends JPanel {
     }
 
     public class CharacteristicSelection implements ListSelectionListener {
-        PanelBTScan panelBTScan;
+        BTScanPanel panelBTScan;
         JList<GattCharacteristicItem> list;
 
-        public CharacteristicSelection(PanelBTScan p, JList<GattCharacteristicItem> l) {
+        public CharacteristicSelection(BTScanPanel p, JList<GattCharacteristicItem> l) {
             panelBTScan = p;
             list = l;
         }
@@ -558,9 +557,9 @@ public class PanelBTScan extends JPanel {
     }
 
     public class ActionButton implements ActionListener {
-        PanelBTScan panelBTScan;
+        BTScanPanel panelBTScan;
 
-        public ActionButton(PanelBTScan p) {
+        public ActionButton(BTScanPanel p) {
             panelBTScan = p;
         }
 
@@ -794,9 +793,9 @@ public class PanelBTScan extends JPanel {
         }
 
         public void actionUseDefaultGatt() {
-            panelBTScan.setTextBTGattServiceUuid(PanelBTScan.DEFAULT_UUID_SERVICE);
-            panelBTScan.setTextBTGattTxUuid(PanelBTScan.DEFAULT_UUID_TX);
-            panelBTScan.setTextBTGattRxUuid(PanelBTScan.DEFAULT_UUID_RX);
+            panelBTScan.setTextBTGattServiceUuid(BTScanPanel.DEFAULT_UUID_SERVICE);
+            panelBTScan.setTextBTGattTxUuid(BTScanPanel.DEFAULT_UUID_TX);
+            panelBTScan.setTextBTGattRxUuid(BTScanPanel.DEFAULT_UUID_RX);
         }
 
         public void actionRunTest() {
