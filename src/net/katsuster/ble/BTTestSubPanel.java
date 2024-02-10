@@ -121,7 +121,7 @@ public class BTTestSubPanel extends JPanel {
         }
 
         public void actionRunTest() {
-            BTDeviceStream stream;
+            BTStream stream;
             String macada = panel.getTextBTAdapterAddress();
             String macdev = panel.getTextBTDeviceAddress();
             String srv = panel.getTextBTGattServiceUuid();
@@ -136,7 +136,7 @@ public class BTTestSubPanel extends JPanel {
             log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > open\n");
 
             try {
-                stream = new BTDeviceStream(macada, macdev, srv, tx, rx, 3);
+                stream = new BTStream(macada, macdev, srv, tx, rx, 3);
             } catch (IllegalArgumentException e) {
                 panel.setStatusTest(e.getMessage());
                 return;

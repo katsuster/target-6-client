@@ -15,9 +15,7 @@ import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 
-import javax.swing.*;
-
-public class BTDeviceStream {
+public class BTStream {
     private String BTAdapterMac;
     private String BTDeviceMac;
     private String UuidService;
@@ -31,7 +29,7 @@ public class BTDeviceStream {
     private BTInputStream streamIn;
     private BTOutputStream streamOut;
 
-    public BTDeviceStream(String macada, String macdev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+    public BTStream(String macada, String macdev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
         BTAdapterMac = macada;
         BTDeviceMac = macdev;
         UuidService = srv;
