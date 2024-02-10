@@ -3,6 +3,8 @@ package net.katsuster.ble;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.nio.CharBuffer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.*;
@@ -13,6 +15,7 @@ import com.github.hypfvieh.bluetooth.wrapper.BluetoothAdapter;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
+import org.freedesktop.dbus.exceptions.DBusException;
 
 public class PanelBTScan extends JPanel {
     public static final String DEFAULT_UUID_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -29,6 +32,7 @@ public class PanelBTScan extends JPanel {
     public static final String ACT_USE_TX = "Use Tx";
     public static final String ACT_USE_RX = "Use Rx";
     public static final String ACT_SET_DEFAULT = "Default";
+    public static final String ACT_RUN_TEST = "Run";
 
     private DefaultListModel<BTAdapterItem> modelBTAdapter = new DefaultListModel<>();
     private DefaultListModel<BTDeviceItem> modelBTDevice = new DefaultListModel<>();
@@ -43,6 +47,7 @@ public class PanelBTScan extends JPanel {
     private JTextField textBTGattServiceUuid;
     private JTextField textBTGattTxUuid;
     private JTextField textBTGattRxUuid;
+    private JTextArea textLog;
     private JButton buttonUseAdapter;
     private JButton buttonProbe;
     private JButton buttonScan;
@@ -57,12 +62,13 @@ public class PanelBTScan extends JPanel {
     private JTextField statusScanDevice;
     private JTextField statusScanService;
     private JTextField statusScanCharactersitic;
+    private JTextField statusTest;
 
     public PanelBTScan(int fontSize) {
         Dimension preferredListSize = new Dimension(200, (int)(fontSize * 1.3 * 8));
         Dimension preferredTextSize = new Dimension(160, (int)(fontSize * 1.3));
 
-        //Labels
+        //Status
         statusScanDevice = new JTextField();
         statusScanDevice.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         statusScanDevice.setEditable(false);
@@ -74,6 +80,10 @@ public class PanelBTScan extends JPanel {
         statusScanCharactersitic = new JTextField();
         statusScanCharactersitic.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         statusScanCharactersitic.setEditable(false);
+
+        statusTest = new JTextField();
+        statusTest.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        statusTest.setEditable(false);
 
         //Buttons
         ActionButton actButton = new ActionButton(this);
@@ -140,6 +150,13 @@ public class PanelBTScan extends JPanel {
         panelBtnSettings.setLayout(new FlowLayout(FlowLayout.RIGHT));
         panelBtnSettings.add(buttonDefaultGATT);
 
+        JButton buttonRun = new JButton(ACT_RUN_TEST);
+        buttonRun.addActionListener(actButton);
+
+        JPanel panelBtnRun = new JPanel();
+        panelBtnRun.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        panelBtnRun.add(buttonRun);
+
         //Settings
         textBTAdapterAddress = new JTextField();
         textBTAdapterAddress.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -168,6 +185,12 @@ public class PanelBTScan extends JPanel {
         panelTestSetting.addComponentWithLabel("Service GATT: ", textBTGattServiceUuid);
         panelTestSetting.addComponentWithLabel("Tx GATT: ", textBTGattTxUuid);
         panelTestSetting.addComponentWithLabel("Rx GATT: ", textBTGattRxUuid);
+
+        //Log
+        textLog = new JTextArea();
+        textLog.setEditable(false);
+        JScrollPane scrTextLog = new JScrollPane(textLog);
+        scrTextLog.setPreferredSize(preferredListSize);
 
         //Lists
         JList<BTAdapterItem> listBTAdapter = new JList<>(modelBTAdapter);
@@ -256,12 +279,23 @@ public class PanelBTScan extends JPanel {
         pTST.setContentBorder(BorderFactory.createTitledBorder("Test Settings"));
         pTST.setContent(pTSTContent);
 
+        JPanel pRUNContent = new JPanel();
+        pRUNContent.setLayout(new BoxLayout(pRUNContent, BoxLayout.PAGE_AXIS));
+        pRUNContent.add(scrTextLog);
+        pRUNContent.add(panelBtnRun);
+        pRUNContent.add(statusTest);
+        LayoutPanel pRUN = new LayoutPanel();
+        pRUN.setPadding(5);
+        pRUN.setContentBorder(BorderFactory.createTitledBorder("Test"));
+        pRUN.setContent(pRUNContent);
+
         setLayout(new GridLayout(2, 3));
         add(pBTA);
         add(pBTD);
         add(pSRV);
         add(pCHR);
         add(pTST);
+        add(pRUN);
     }
 
     public DefaultListModel<BTAdapterItem> getModelBTAdapter() {
@@ -278,6 +312,10 @@ public class PanelBTScan extends JPanel {
 
     private DefaultListModel<GattCharacteristicItem> getModelGattCharacteristic() {
         return modelGattCharacteristic;
+    }
+
+    private JTextArea getTextLog() {
+        return textLog;
     }
 
     private BluetoothAdapter getBluetoothAdapter() {
@@ -414,6 +452,11 @@ public class PanelBTScan extends JPanel {
     private void setStatusScanCharactersiticText(String txt) {
         statusScanCharactersitic.setText(txt);
         statusScanCharactersitic.setCaretPosition(0);
+    }
+
+    private void setStatusTest(String txt) {
+        statusTest.setText(txt);
+        statusTest.setCaretPosition(0);
     }
 
     public class AdapterSelection implements ListSelectionListener {
@@ -555,6 +598,9 @@ public class PanelBTScan extends JPanel {
             if (cmd.equalsIgnoreCase(ACT_SET_DEFAULT)) {
                 actionUseDefaultGatt();
             }
+            if (cmd.equalsIgnoreCase(ACT_RUN_TEST)) {
+                actionRunTest();
+            }
         }
 
         public void actionProbeAdapter() {
@@ -590,6 +636,7 @@ public class PanelBTScan extends JPanel {
 
             panelBTScan.setStatusScanDeviceText("Searching device...");
             DeviceManager deviceManager = DeviceManager.getInstance();
+            System.out.println("discovery...");
             adapter.startDiscovery();
             try {
                 Thread.sleep((long) panelBTScan.getScanTimeout() * 1000);
@@ -597,6 +644,7 @@ public class PanelBTScan extends JPanel {
                 //ignore
             }
             adapter.stopDiscovery();
+            System.out.println("discovery done...");
             List<BluetoothDevice> devices = deviceManager.getDevices(true);
             if (devices.isEmpty()) {
                 System.err.println("Error: There is no bluetooth device.");
@@ -634,21 +682,21 @@ public class PanelBTScan extends JPanel {
             retry = 0;
             while (!finish.get()) {
                 System.out.println("connect...");
-                if (retry >= panelBTScan.getServiceTimeout()) {
-                    System.err.println("Error: Cannot connect to bluetooth device.");
-                    panelBTScan.setStatusScanServiceText("Cannot connect to BT device.");
+                if (retry >= panelBTScan.getServiceTimeout() * 5) {
                     t.interrupt();
                     break;
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     //ignore
                 }
                 retry += 1;
             }
             if (!finish.get()) {
+                System.err.println("Error: Cannot connect to bluetooth device.");
+                panelBTScan.setStatusScanServiceText("Cannot connect to BT device.");
                 return;
             }
 
@@ -656,13 +704,13 @@ public class PanelBTScan extends JPanel {
             List<BluetoothGattService> gattServices = device.getGattServices();
             retry = 0;
             while (gattServices.isEmpty()) {
-                System.out.println("retry");
-                if (retry >= panelBTScan.getServiceTimeout()) {
+                System.out.println("search GATT...");
+                if (retry >= panelBTScan.getServiceTimeout() * 5) {
                     break;
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     //ignore
                 }
@@ -749,6 +797,72 @@ public class PanelBTScan extends JPanel {
             panelBTScan.setTextBTGattServiceUuid(PanelBTScan.DEFAULT_UUID_SERVICE);
             panelBTScan.setTextBTGattTxUuid(PanelBTScan.DEFAULT_UUID_TX);
             panelBTScan.setTextBTGattRxUuid(PanelBTScan.DEFAULT_UUID_RX);
+        }
+
+        public void actionRunTest() {
+            BTDeviceStream stream;
+            String macada = panelBTScan.getTextBTAdapterAddress();
+            String macdev = panelBTScan.getTextBTDeviceAddress();
+            String srv = panelBTScan.getTextBTGattServiceUuid();
+            String tx = panelBTScan.getTextBTGattTxUuid();
+            String rx = panelBTScan.getTextBTGattRxUuid();
+
+            panelBTScan.setStatusTest("");
+
+            long nsStart = System.nanoTime();
+            StringBuffer log = new StringBuffer();
+
+            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > open\n");
+
+            try {
+                stream = new BTDeviceStream(macada, macdev, srv, tx, rx, 3);
+            } catch (IllegalArgumentException e) {
+                panelBTScan.setStatusTest(e.getMessage());
+                return;
+            } catch (DBusException e) {
+                panelBTScan.setStatusTest(e.getMessage());
+                return;
+            }
+
+            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > open done\n");
+
+            InputStream in = new BufferedInputStream(stream.getInputStream());
+            BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+            OutputStream out = stream.getOutputStream();
+            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(out));
+
+            try {
+
+                for (int i = 0; i < 5; i++) {
+                    wr.write("blink\n");
+                    wr.flush();
+                    log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > blink\n");
+                    String sss = rd.readLine();
+                    log.append(getTimeStampString(System.nanoTime() - nsStart) + ": " + sss + "\n");
+                }
+            } catch (IOException e) {
+                panelBTScan.setStatusTest(e.getMessage());
+            }
+
+            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > close\n");
+
+            try {
+                in.close();
+            } catch (IOException e) {
+                panelBTScan.setStatusTest(e.getMessage());
+            }
+
+            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > close done\n");
+
+            panelBTScan.getTextLog().setText(log.toString());
+        }
+
+        public String getTimeStampString(long ns) {
+            long ms = ns / 1000000;
+            long sOnly = ms / 1000;
+            long msOnly = ms % 1000;
+
+            return String.format("%d.%03d", sOnly, msOnly);
         }
     }
 }
