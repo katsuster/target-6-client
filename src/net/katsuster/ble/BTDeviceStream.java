@@ -1,13 +1,13 @@
 package net.katsuster.ble;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.List;
 import java.util.Map;
-import org.bluez.exceptions.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothAdapter;
 import org.freedesktop.dbus.exceptions.DBusException;
 import org.freedesktop.dbus.handlers.AbstractPropertiesChangedHandler;
-import org.freedesktop.dbus.interfaces.DBus;
 import org.freedesktop.dbus.interfaces.Properties;
 import org.freedesktop.dbus.types.Variant;
 import com.github.hypfvieh.bluetooth.DeviceManager;
@@ -15,43 +15,176 @@ import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 
+import javax.swing.*;
+
 public class BTDeviceStream {
-    private BluetoothDevice BTDevice;
+    private String BTAdapterMac;
+    private String BTDeviceMac;
     private String UuidService;
     private String UuidTx;
     private String UuidRx;
+    private BluetoothAdapter BTAdapter;
+    private BluetoothDevice BTDevice;
     private BluetoothGattService GattService;
     private BluetoothGattCharacteristic GattTx;
     private BluetoothGattCharacteristic GattRx;
     private BTInputStream streamIn;
     private BTOutputStream streamOut;
 
-    public BTDeviceStream(BluetoothDevice dev, String srv, String tx, String rx) throws IllegalArgumentException, DBusException {
-        BTDevice = dev;
+    public BTDeviceStream(String macada, String macdev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+        BTAdapterMac = macada;
+        BTDeviceMac = macdev;
         UuidService = srv;
         UuidTx = tx;
         UuidRx = rx;
 
-        GattService = BTDevice.getGattServiceByUuid(UuidService);
-        if (GattService == null) {
-            System.err.println("Error: Bluttooth device does not have GATT service " + UuidService + ".");
-            throw new IllegalArgumentException("Error: GATT service " + UuidService + " is not found.");
-        }
+        BTAdapter = findAdapter(BTAdapterMac);
+        BTDevice = findDevice(BTAdapter, BTDeviceMac, timeout);
+        GattService = findService(BTDevice, UuidService, timeout);
 
         GattTx = GattService.getGattCharacteristicByUuid(UuidTx);
-        if (GattService == null) {
-            System.err.println("Error: Bluttooth device does not have GATT characteristic (Tx) " + UuidTx + ".");
-            throw new IllegalArgumentException("Error: GATT characteristic (Tx) " + UuidTx + " is not found.");
+        if (GattTx == null) {
+            BTDevice.disconnect();
+            System.err.println("Error: Bluetooth device does not have GATT characteristic (Tx) '" + UuidTx + "'.");
+            throw new IllegalArgumentException("Error: GATT characteristic (Tx) '" + UuidTx + "' is not found.");
         }
 
         GattRx = GattService.getGattCharacteristicByUuid(UuidRx);
         if (GattRx == null) {
-            System.err.println("Error: Bluttooth device does not have GATT characteristic (Rx) " + UuidRx + ".");
-            throw new IllegalArgumentException("Error: GATT characteristic (Rx) " + UuidRx + " is not found.");
+            BTDevice.disconnect();
+            System.err.println("Error: Bluetooth device does not have GATT characteristic (Rx) '" + UuidRx + "'.");
+            throw new IllegalArgumentException("Error: GATT characteristic (Rx) '" + UuidRx + "' is not found.");
         }
 
-        streamIn = new BTInputStream(GattRx);
-        streamOut = new BTOutputStream(GattTx);
+        try {
+            streamIn = new BTInputStream(GattRx);
+            streamOut = new BTOutputStream(GattTx);
+        } catch (IOException e) {
+            BTDevice.disconnect();
+            System.err.println("Error: Cannot init Bluetooth IO stream.");
+            throw new IllegalArgumentException("Error: Cannot init Bluetooth IO stream.");
+        }
+    }
+
+    private BluetoothAdapter findAdapter(String mac) {
+        DeviceManager deviceManager = DeviceManager.getInstance();
+        BluetoothAdapter adapter = null;
+
+        List<BluetoothAdapter> listAdas = deviceManager.getAdapters();
+        if (listAdas.isEmpty()) {
+            System.err.println("Error: No Bluttooth adapter.");
+            throw new IllegalArgumentException("Error: No BT adapter.");
+        }
+        for (BluetoothAdapter ada : listAdas) {
+            if (ada.getAddress().equalsIgnoreCase(mac)) {
+                adapter = ada;
+                break;
+            }
+        }
+        if (adapter == null) {
+            System.err.println("Error: Bluetooth adapter MAC:'" + mac + "' is not found.");
+            throw new IllegalArgumentException("Error: BT adapter '" + mac + "' is not found.");
+        }
+
+        return adapter;
+    }
+
+    private BluetoothDevice findDevice(BluetoothAdapter adapter, String mac, int timeout) {
+        DeviceManager deviceManager = DeviceManager.getInstance();
+        BluetoothDevice device = null;
+
+        adapter.startDiscovery();
+        try {
+            Thread.sleep(timeout * 1000);
+        } catch (InterruptedException e) {
+            //ignore
+        }
+        adapter.stopDiscovery();
+
+        List<BluetoothDevice> devices = deviceManager.getDevices(true);
+        if (devices.isEmpty()) {
+            System.err.println("Error: No Bluetooth device.");
+            throw new IllegalArgumentException("Error: No BT device.");
+        }
+        for (BluetoothDevice dev : devices) {
+            if (dev.getAddress().equalsIgnoreCase(mac)) {
+                device = dev;
+            }
+        }
+        if (device == null) {
+            System.err.println("Error: Bluetooth device MAC:'" + mac + "' is not found.");
+            throw new IllegalArgumentException("Error: BT device '" + mac + "' is not found.");
+        }
+
+        return device;
+    }
+
+    private BluetoothGattService findService(BluetoothDevice device, String uuid, int timeout) {
+        BluetoothGattService service = null;
+        AtomicBoolean finish = new AtomicBoolean(false);
+        int retry;
+
+        Thread t = new Thread(() -> {
+            device.connect();
+            finish.set(true);
+        });
+        t.start();
+
+        retry = 0;
+        while (!finish.get()) {
+            if (retry >= timeout * 10) {
+                t.interrupt();
+                break;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                //ignore
+            }
+            retry += 1;
+        }
+        if (!finish.get()) {
+            device.disconnect();
+            System.err.println("Error: Cannot connect to Bluetooth device.");
+            throw new IllegalArgumentException("Error: Cannot connect to BT device.");
+        }
+
+        device.refreshGattServices();
+        List<BluetoothGattService> gattServices = device.getGattServices();
+        retry = 0;
+        while (gattServices.isEmpty()) {
+            if (retry >= timeout * 10) {
+                break;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                //ignore
+            }
+            retry += 1;
+
+            device.refreshGattServices();
+            gattServices = device.getGattServices();
+        }
+        if (gattServices.isEmpty()) {
+            device.disconnect();
+            System.err.println("Error: No Bluetooth GATT service.");
+            throw new IllegalArgumentException("Error: No BT GATT service.");
+        }
+        for (BluetoothGattService srv : gattServices) {
+            if (srv.getUuid().equalsIgnoreCase(uuid)) {
+                service = srv;
+            }
+        }
+        if (service == null) {
+            device.disconnect();
+            System.err.println("Error: Bluetooth GATT service UUID:'" + uuid + "' is not found.");
+            throw new IllegalArgumentException("Error: BT GATT service '" + uuid + "' is not found.");
+        }
+
+        return service;
     }
 
     public InputStream getInputStream() {
@@ -62,37 +195,27 @@ public class BTDeviceStream {
         return streamOut;
     }
 
-    public class PropertiesChangedHandler extends AbstractPropertiesChangedHandler {
-        private BTInputStream streamIn;
-
-        public PropertiesChangedHandler(BTInputStream s) {
-            streamIn = s;
-        }
-
-        @Override
-        public void handle(Properties.PropertiesChanged props) {
-            Map<String, Variant<?>> mapProp = props.getPropertiesChanged();
-
-            for (Map.Entry<String, Variant<?>> e : mapProp.entrySet()) {
-                if (GattRx.getDbusPath().equalsIgnoreCase(props.getPath())) {
-
-                }
-            }
-        }
-    }
-
     public class BTInputStream extends InputStream {
         private BluetoothGattCharacteristic GattRx;
         private PropertiesChangedHandler handler;
+        private PipedInputStream pipeIn;
+        private PipedOutputStream pipeOut;
 
-        public BTInputStream(BluetoothGattCharacteristic rx) throws DBusException {
+        public BTInputStream(BluetoothGattCharacteristic rx) throws IOException, DBusException {
             GattRx = rx;
 
+            pipeIn = new PipedInputStream();
+            pipeOut = new PipedOutputStream(pipeIn);
+
             DeviceManager deviceManager = DeviceManager.getInstance();
-            handler = new PropertiesChangedHandler(this);
+            handler = new PropertiesChangedHandler(this, GattRx);
             deviceManager.registerPropertyHandler(handler);
 
             GattRx.startNotify();
+        }
+
+        public PipedOutputStream getPipeOut() {
+            return pipeOut;
         }
 
         @Override
@@ -101,6 +224,7 @@ public class BTDeviceStream {
 
             try {
                 GattRx.stopNotify();
+                GattRx.getService().getDevice().disconnect();
 
                 DeviceManager deviceManager = DeviceManager.getInstance();
                 deviceManager.unRegisterPropertyHandler(handler);
@@ -111,7 +235,49 @@ public class BTDeviceStream {
 
         @Override
         public int read() throws IOException {
-            return 0;
+            return pipeIn.read();
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return pipeIn.read(b, off, len);
+        }
+
+        public class PropertiesChangedHandler extends AbstractPropertiesChangedHandler {
+            private BTInputStream streamIn;
+            private BluetoothGattCharacteristic GattRx;
+
+            public PropertiesChangedHandler(BTInputStream s, BluetoothGattCharacteristic g) {
+                streamIn = s;
+                GattRx = g;
+            }
+
+            @Override
+            public void handle(Properties.PropertiesChanged props) {
+                Map<String, Variant<?>> mapProp = props.getPropertiesChanged();
+                byte[] dat = new byte[0];
+                boolean found = false;
+
+                if (GattRx.getDbusPath().equalsIgnoreCase(props.getPath())) {
+                    for (Map.Entry<String, Variant<?>> e : mapProp.entrySet()) {
+                        if (e.getValue().getValue() instanceof byte[]) {
+                            dat = (byte[])e.getValue().getValue();
+                            found = true;
+                        }
+                    }
+                }
+                if (!found) {
+                    return;
+                }
+
+                try {
+                    System.out.println(new String(dat));
+                    streamIn.getPipeOut().write(dat);
+                    streamIn.getPipeOut().flush();
+                } catch (IOException e) {
+
+                }
+            }
         }
     }
 
@@ -123,9 +289,11 @@ public class BTDeviceStream {
         }
 
         @Override
-        public void write(byte[] b) throws IOException {
+        public void write(byte[] b, int off, int len) throws IOException {
             try {
-                GattTx.writeValue(b, null);
+                byte[] bpart = new byte[len];
+                System.arraycopy(b, off, bpart, 0, len);
+                GattTx.writeValue(bpart, null);
             } catch (DBusException e) {
                 throw new RuntimeException(e);
             }
