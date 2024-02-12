@@ -121,61 +121,85 @@ public class BTTestSubPanel extends JPanel {
         }
 
         public void actionRunTest() {
-            BTStream stream;
             String macada = panel.getTextBTAdapterAddress();
             String macdev = panel.getTextBTDeviceAddress();
             String srv = panel.getTextBTGattServiceUuid();
             String tx = panel.getTextBTGattTxUuid();
             String rx = panel.getTextBTGattRxUuid();
 
-            panel.setStatusTest("");
+            panel.setStatusTest("Test Start...");
+            panel.getTextLog().setText("");
 
-            long nsStart = System.nanoTime();
-            StringBuffer log = new StringBuffer();
+            Thread testThread = new Thread(() -> {
+                BTStream stream;
+                long nsStart = System.nanoTime();
 
-            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > open\n");
+                SwingUtilities.invokeLater(() -> {
+                    addLogWithTime(nsStart, ": > open\n");
+                });
 
-            try {
-                stream = new BTStream(macada, macdev, srv, tx, rx, 3);
-            } catch (IllegalArgumentException e) {
-                panel.setStatusTest(e.getMessage());
-                return;
-            } catch (DBusException e) {
-                panel.setStatusTest(e.getMessage());
-                return;
-            }
-
-            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > open done\n");
-
-            InputStream in = new BufferedInputStream(stream.getInputStream());
-            BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            OutputStream out = stream.getOutputStream();
-            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(out));
-
-            try {
-
-                for (int i = 0; i < 5; i++) {
-                    wr.write("blink\n");
-                    wr.flush();
-                    log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > blink\n");
-                    String sss = rd.readLine();
-                    log.append(getTimeStampString(System.nanoTime() - nsStart) + ": " + sss + "\n");
+                try {
+                    stream = new BTStream(macada, macdev, srv, tx, rx, 3);
+                } catch (IllegalArgumentException | DBusException e) {
+                    SwingUtilities.invokeLater(() -> {
+                        panel.setStatusTest(e.getMessage());
+                    });
+                    return;
                 }
-            } catch (IOException e) {
-                panel.setStatusTest(e.getMessage());
-            }
 
-            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > close\n");
+                SwingUtilities.invokeLater(() -> {
+                    addLogWithTime(nsStart, ": > open done\n");
+                });
 
-            try {
-                in.close();
-            } catch (IOException e) {
-                panel.setStatusTest(e.getMessage());
-            }
+                InputStream in = new BufferedInputStream(stream.getInputStream());
+                BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+                OutputStream out = stream.getOutputStream();
+                BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(out));
 
-            log.append(getTimeStampString(System.nanoTime() - nsStart) + ": > close done\n");
+                try {
+                    for (int i = 0; i < 5; i++) {
+                        wr.write("blink\n");
+                        wr.flush();
+                        SwingUtilities.invokeLater(() -> {
+                            addLogWithTime(nsStart, ": > blink\n");
+                        });
+                        String sss = rd.readLine();
+                        SwingUtilities.invokeLater(() -> {
+                            addLogWithTime(nsStart, ": " + sss + "\n");
+                        });
+                    }
+                } catch (IOException e) {
+                    SwingUtilities.invokeLater(() -> {
+                        panel.setStatusTest(e.getMessage());
+                    });
+                }
 
-            panel.getTextLog().setText(log.toString());
+                SwingUtilities.invokeLater(() -> {
+                    addLogWithTime(nsStart, ": > close\n");
+                });
+
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    SwingUtilities.invokeLater(() -> {
+                        panel.setStatusTest(e.getMessage());
+                    });
+                }
+
+                SwingUtilities.invokeLater(() -> {
+                    addLogWithTime(nsStart, ": > close done\n");
+                });
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.setStatusTest("Done.");
+                });
+            });
+            testThread.start();
+        }
+
+        public void addLogWithTime(long nsStart, String msg) {
+            String log = panel.getTextLog().getText();
+            panel.getTextLog().setText(log + getTimeStampString(System.nanoTime() - nsStart) + msg);
         }
 
         public String getTimeStampString(long ns) {
