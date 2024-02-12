@@ -26,8 +26,6 @@ public class BTScanPanel extends JPanel {
     BTTestSubPanel subPanelTest;
 
     public BTScanPanel() {
-        Dimension preferredListSize = new Dimension(200, (int)(fontSize * 1.3 * 8));
-
         subPanelAdapter = new BTAdapterSubPanel(this);
         subPanelDevice = new BTDeviceSubPanel(this);
         subPanelService = new BTServiceSubPanel(this);

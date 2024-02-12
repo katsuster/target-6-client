@@ -20,7 +20,7 @@ public class BTCharacteristicSubPanel extends JPanel {
     public BTCharacteristicSubPanel(BTScanPanel p) {
         parent = p;
 
-        Dimension preferredListSize = new Dimension(200, (int)(parent.getFontSize() * 1.3 * 8));
+        Dimension preferredListSize = new Dimension(250, (int)(parent.getFontSize() * 1.3 * 8));
 
         //Buttons
         ActionButton actButton = new ActionButton(this);

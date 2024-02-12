@@ -25,7 +25,7 @@ public class BTDeviceSubPanel extends JPanel {
     public BTDeviceSubPanel(BTScanPanel p) {
         parent = p;
 
-        Dimension preferredListSize = new Dimension(200, (int)(parent.getFontSize() * 1.3 * 8));
+        Dimension preferredListSize = new Dimension(250, (int)(parent.getFontSize() * 1.3 * 8));
 
         //Status
         statusDevice = new JTextField();

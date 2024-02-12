@@ -28,8 +28,7 @@ public class BTSettingSubPanel extends JPanel {
     public BTSettingSubPanel(BTScanPanel p) {
         parent = p;
 
-        Dimension preferredListSize = new Dimension(200, (int)(parent.getFontSize() * 1.3 * 8));
-        Dimension preferredTextSize = new Dimension(160, (int)(parent.getFontSize() * 1.3));
+        Dimension preferredTextSize = new Dimension(150, (int)(parent.getFontSize() * 1.3));
 
         //Buttons
         ActionButton actButton = new ActionButton(this);
