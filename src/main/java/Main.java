@@ -2,14 +2,13 @@ package main.java;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.awt.*;
+import javax.swing.*;
 import com.github.hypfvieh.bluetooth.DeviceManager;
-import net.katsuster.ble.BTScanWindow;
 import org.freedesktop.dbus.exceptions.DBusException;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import java.awt.*;
-import java.net.URL;
+import net.katsuster.ble.BTScanWindow;
+import net.katsuster.ble.MainWindow;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,17 +17,15 @@ public class Main {
 
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("-h")) {
-                System.out.println("Usage:\n" +
-                        "  application [-h|-s]\n\n" +
-                        "Options:\n" +
-                        "  -h: Show this help.\n" +
-                        "  -s: Open setting window.\n");
+                printUsage();
                 return;
             } else if (args[0].equalsIgnoreCase("-s")) {
                 setting = true;
             } else {
                 normal = true;
             }
+        } else {
+            normal = true;
         }
 
         try {
@@ -62,12 +59,20 @@ public class Main {
                 w.setVisible(true);
             }
             if (normal) {
-                //MainWindow w = new MainWindow();
-                //w.setVisible(true);
+                MainWindow w = new MainWindow();
+                w.setVisible(true);
             }
         } catch (HeadlessException ex) {
             System.err.println("Error: Cannot show window.");
         }
+    }
+
+    public static void printUsage() {
+        System.out.println("Usage:\n" +
+                "  application [-h|-s]\n\n" +
+                "Options:\n" +
+                "  -h: Show this help.\n" +
+                "  -s: Open setting window.\n");
     }
 
     public static void setUIDefaultFont(Font f) {
