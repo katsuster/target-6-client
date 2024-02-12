@@ -8,7 +8,7 @@ public class BTSetting {
     public static String SETTING_DEVICE       = "BTDeviceAddress";
     public static String SETTING_GATT_SERVICE = "GattServiceUuid";
     public static String SETTING_GATT_TX      = "GattTxUuid";
-    public static String SETTING_GATT_RX      = "GattTxUuid";
+    public static String SETTING_GATT_RX      = "GattRxUuid";
 
     public BTSetting() {
         //Do nothing
