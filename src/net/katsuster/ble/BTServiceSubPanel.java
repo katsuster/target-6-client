@@ -59,7 +59,7 @@ public class BTServiceSubPanel extends JPanel {
         pSRVContent.add(panelBtnCharacteristic);
         pSRVContent.add(statusService);
         LayoutPanel pSRV = new LayoutPanel();
-        pSRV.setPadding(5);
+        pSRV.setPadding(2, 5, 2, 5);
         pSRV.setContentBorder(BorderFactory.createTitledBorder("GATT Service"));
         pSRV.setContent(pSRVContent);
 

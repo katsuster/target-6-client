@@ -75,7 +75,7 @@ public class BTAdapterSubPanel extends JPanel {
         pBTAContent.add(panelBtnProbeAndScan);
         pBTAContent.add(statusAdapter);
         LayoutPanel pBTA = new LayoutPanel();
-        pBTA.setPadding(5);
+        pBTA.setPadding(2, 5, 2, 5);
         pBTA.setContentBorder(BorderFactory.createTitledBorder("Adapter"));
         pBTA.setContent(pBTAContent);
 

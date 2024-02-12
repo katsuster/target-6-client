@@ -69,7 +69,7 @@ public class BTDeviceSubPanel extends JPanel {
         pBTDContent.add(panelBtnService);
         pBTDContent.add(statusDevice);
         LayoutPanel pBTD = new LayoutPanel();
-        pBTD.setPadding(5);
+        pBTD.setPadding(2, 5, 2, 5);
         pBTD.setContentBorder(BorderFactory.createTitledBorder("Device"));
         pBTD.setContent(pBTDContent);
 

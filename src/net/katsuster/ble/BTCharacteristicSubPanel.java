@@ -49,7 +49,7 @@ public class BTCharacteristicSubPanel extends JPanel {
         pCHRContent.add(scrListGattCharacteristic);
         pCHRContent.add(panelBtnTxRx);
         LayoutPanel pCHR = new LayoutPanel();
-        pCHR.setPadding(5);
+        pCHR.setPadding(2, 5, 2, 5);
         pCHR.setContentBorder(BorderFactory.createTitledBorder("GATT Characteristic"));
         pCHR.setContent(pCHRContent);
 

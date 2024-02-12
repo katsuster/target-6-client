@@ -48,7 +48,7 @@ public class BTTestSubPanel extends JPanel {
         pRUNContent.add(panelBtnRun);
         pRUNContent.add(statusTest);
         LayoutPanel pRUN = new LayoutPanel();
-        pRUN.setPadding(5);
+        pRUN.setPadding(2, 5, 2, 5);
         pRUN.setContentBorder(BorderFactory.createTitledBorder("Test"));
         pRUN.setContent(pRUNContent);
 
