@@ -29,9 +29,27 @@ public class BTStream {
     private BTInputStream streamIn;
     private BTOutputStream streamOut;
 
-    public BTStream(String macada, String macdev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
-        BTAdapterMac = macada;
-        BTDeviceMac = macdev;
+    public BTStream(int id, int timeout) throws IllegalArgumentException, DBusException {
+        initStream(id, timeout);
+    }
+
+    public BTStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+        initStream(ada, dev, srv, tx, rx, timeout);
+    }
+
+    private void initStream(int id, int timeout) throws IllegalArgumentException, DBusException {
+        String ada = BTSetting.getSetting(id, BTSetting.SETTING_ADAPTER);
+        String dev = BTSetting.getSetting(id, BTSetting.SETTING_DEVICE);
+        String srv = BTSetting.getSetting(id, BTSetting.SETTING_GATT_SERVICE);
+        String tx = BTSetting.getSetting(id, BTSetting.SETTING_GATT_TX);
+        String rx = BTSetting.getSetting(id, BTSetting.SETTING_GATT_RX);
+
+        initStream(ada, dev, srv, tx, rx, timeout);
+    }
+
+    private void initStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+        BTAdapterMac = ada;
+        BTDeviceMac = dev;
         UuidService = srv;
         UuidTx = tx;
         UuidRx = rx;
