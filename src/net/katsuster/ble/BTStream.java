@@ -287,11 +287,12 @@ public class BTStream {
                 }
 
                 try {
-                    System.out.println(new String(dat));
+                    //System.out.println("recv: '" + new String(dat) + "'");
                     streamIn.getPipeOut().write(dat);
                     streamIn.getPipeOut().flush();
                 } catch (IOException e) {
-
+                    System.err.println(e.getMessage());
+                    e.printStackTrace(System.err);
                 }
             }
         }
@@ -310,6 +311,7 @@ public class BTStream {
                 byte[] bpart = new byte[len];
                 System.arraycopy(b, off, bpart, 0, len);
                 GattTx.writeValue(bpart, null);
+                //System.out.println("send: '" + new String(bpart) + "'");
             } catch (DBusException e) {
                 throw new RuntimeException(e);
             }
@@ -323,6 +325,7 @@ public class BTStream {
 
             try {
                 GattTx.writeValue(v, null);
+                //System.out.println("send: '" + new String(v) + "'");
             } catch (DBusException e) {
                 throw new RuntimeException(e);
             }
