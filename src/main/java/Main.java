@@ -1,16 +1,16 @@
 package main.java;
 
 import java.awt.event.WindowEvent;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.awt.*;
 import javax.swing.*;
+
 import com.github.hypfvieh.bluetooth.DeviceManager;
 import org.freedesktop.dbus.exceptions.DBusException;
-
-import net.katsuster.ble.BTScanWindow;
-import net.katsuster.ble.LogWindow;
-import net.katsuster.ble.MainWindow;
+import net.katsuster.ui.BTScanWindow;
+import net.katsuster.ui.LogWindow;
+import net.katsuster.ui.MainWindow;
 import net.katsuster.scenario.OpeningScenario;
 import net.katsuster.scenario.ScenarioSwitcher;
 

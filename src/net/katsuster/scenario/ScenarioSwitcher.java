@@ -1,11 +1,12 @@
 package net.katsuster.scenario;
 
-import net.katsuster.ble.LogWindow;
-import net.katsuster.ble.MainWindow;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import javax.swing.*;
+
+import net.katsuster.ble.BTInOut;
+import net.katsuster.ui.LogWindow;
+import net.katsuster.ui.MainWindow;
 
 public class ScenarioSwitcher implements Runnable {
     private MainWindow mainWnd;

@@ -1,13 +1,12 @@
 package net.katsuster.scenario;
 
-import net.katsuster.ble.BTStream;
-import net.katsuster.ble.LogWindow;
-import net.katsuster.ble.MainWindow;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
-import java.util.Arrays;
+
+import net.katsuster.ble.BTDeviceEvent;
+import net.katsuster.ble.BTDeviceListener;
+import net.katsuster.ble.BTInOut;
 
 public class ClosingScenario extends AbstractScenario {
     private ScenarioSwitcher switcher;
