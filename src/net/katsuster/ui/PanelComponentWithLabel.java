@@ -1,4 +1,4 @@
-package net.katsuster.ble;
+package net.katsuster.ui;
 
 import javax.swing.*;
 import java.awt.*;

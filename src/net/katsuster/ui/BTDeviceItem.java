@@ -1,4 +1,4 @@
-package net.katsuster.ble;
+package net.katsuster.ui;
 
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 

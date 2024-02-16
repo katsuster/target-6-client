@@ -1,5 +1,6 @@
-package net.katsuster.ble;
+package net.katsuster.ui;
 
+import net.katsuster.ble.BTStream;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import javax.swing.*;
