@@ -1,5 +1,6 @@
 package main.java;
 
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.awt.*;
@@ -8,7 +9,10 @@ import com.github.hypfvieh.bluetooth.DeviceManager;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import net.katsuster.ble.BTScanWindow;
+import net.katsuster.ble.LogWindow;
 import net.katsuster.ble.MainWindow;
+import net.katsuster.scenario.OpeningScenario;
+import net.katsuster.scenario.ScenarioSwitcher;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,15 +34,19 @@ public class Main {
 
         try {
             InputStream is = Main.class.getResourceAsStream("/openfont/ZenMaruGothic-Medium.ttf");
+            if (is == null) {
+                System.err.println("Error: Cannot found Font resource.");
+                return;
+            }
             uiFontBase = Font.createFont(Font.TRUETYPE_FONT, is);
             is.close();
-        } catch (IOException e) {
+        } catch (IOException ex) {
             System.err.println("Error: Cannot load Font.");
-            e.printStackTrace();
+            System.err.println("  msg:" + ex.getMessage());
             return;
-        } catch (FontFormatException e) {
+        } catch (FontFormatException ex) {
             System.err.println("Error: Font data is invalid or broken.");
-            e.printStackTrace();
+            System.err.println("  msg:" + ex.getMessage());
             return;
         }
 
@@ -47,9 +55,9 @@ public class Main {
 
         try {
             DeviceManager.createInstance(false);
-        } catch (DBusException e) {
+        } catch (DBusException ex) {
             System.err.println("Error: Cannot create Bluetooth device manager instance.");
-            e.printStackTrace();
+            System.err.println("  msg:" + ex.getMessage());
             return;
         }
 
@@ -59,16 +67,32 @@ public class Main {
                 w.setVisible(true);
             }
             if (normal) {
-                MainWindow w = new MainWindow();
-                w.setVisible(true);
+                MainWindow mw = new MainWindow();
+                mw.setVisible(true);
+                LogWindow lw = new LogWindow();
+                lw.setVisible(true);
+
+                ScenarioSwitcher sw = new ScenarioSwitcher(mw, lw);
+                sw.setNextScenario(new OpeningScenario(sw));
+
+                Thread scenarioThread = new Thread(sw);
+                scenarioThread.start();
+                scenarioThread.join();
+                mw.dispatchEvent(new WindowEvent(mw, WindowEvent.WINDOW_CLOSING));
             }
         } catch (HeadlessException ex) {
             System.err.println("Error: Cannot show window.");
+            System.err.println("  msg:" + ex.getMessage());
+            return;
+        } catch (InterruptedException ex) {
+            System.err.println("Error: Scenario is aborted.");
+            System.err.println("  msg:" + ex.getMessage());
+            return;
         }
     }
 
     public static void printUsage() {
-        System.out.println("Usage:\n" +
+        System.out.print("Usage:\n" +
                 "  application [-h|-s]\n\n" +
                 "Options:\n" +
                 "  -h: Show this help.\n" +
