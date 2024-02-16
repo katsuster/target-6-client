@@ -1,4 +1,4 @@
-package net.katsuster.scenario;
+package net.katsuster.ble;
 
 import java.util.EventListener;
 

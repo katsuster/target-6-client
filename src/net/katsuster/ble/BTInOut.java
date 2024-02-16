@@ -1,10 +1,11 @@
-package net.katsuster.scenario;
+package net.katsuster.ble;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.katsuster.ble.BTStream;
+
+import net.katsuster.scenario.ScenarioSwitcher;
 
 public class BTInOut {
     public static final int NUM_DEVICES = 3;

@@ -1,12 +1,10 @@
-package net.katsuster.scenario;
+package net.katsuster.ble;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.katsuster.ble.BTStream;
 
 public class BTDeviceReceiver implements Runnable {
     private BTStream bt;

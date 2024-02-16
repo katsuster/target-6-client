@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothAdapter;
 import org.freedesktop.dbus.exceptions.DBusException;
 import org.freedesktop.dbus.handlers.AbstractPropertiesChangedHandler;
 import org.freedesktop.dbus.interfaces.Properties;
 import org.freedesktop.dbus.types.Variant;
 import com.github.hypfvieh.bluetooth.DeviceManager;
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothAdapter;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;

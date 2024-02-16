@@ -2,6 +2,8 @@ package net.katsuster.ble;
 
 import java.util.prefs.Preferences;
 
+import net.katsuster.ui.MainWindow;
+
 public class BTSetting {
     public static String SETTING_PREFIX       = "Target";
     public static String SETTING_ADAPTER      = "BTAdapterAddress";
