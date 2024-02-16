@@ -1,7 +1,7 @@
 package net.katsuster.ui;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class PanelComponentWithLabel extends JPanel {
     public PanelComponentWithLabel() {

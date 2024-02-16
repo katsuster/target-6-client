@@ -1,13 +1,13 @@
 package net.katsuster.ui;
 
-import net.katsuster.ble.BTSetting;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import net.katsuster.ble.BTSetting;
 
 public class BTSettingSubPanel extends JPanel {
     public static final String DEFAULT_UUID_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";

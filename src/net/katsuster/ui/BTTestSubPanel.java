@@ -1,13 +1,13 @@
 package net.katsuster.ui;
 
-import net.katsuster.ble.BTStream;
-import org.freedesktop.dbus.exceptions.DBusException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+
+import org.freedesktop.dbus.exceptions.DBusException;
+import net.katsuster.ble.BTStream;
 
 public class BTTestSubPanel extends JPanel {
     public static final String ACT_RUN_TEST = "Run";

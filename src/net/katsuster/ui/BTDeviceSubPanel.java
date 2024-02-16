@@ -1,8 +1,5 @@
 package net.katsuster.ui;
 
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -11,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 
 public class BTDeviceSubPanel extends JPanel {
     public static final String ACT_USE_DEVICE = "Use Device";

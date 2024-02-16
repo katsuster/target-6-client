@@ -1,13 +1,13 @@
 package net.katsuster.ui;
 
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 
 public class BTCharacteristicSubPanel extends JPanel {
     public static final String ACT_USE_TX = "Use Tx";

@@ -1,15 +1,15 @@
 package net.katsuster.ui;
 
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
-import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
+import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 
 public class BTServiceSubPanel extends JPanel {
     public static final String ACT_USE_SERVICE = "Use Service";
