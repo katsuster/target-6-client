@@ -1,45 +1,61 @@
 package net.katsuster.scenario;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
+import net.katsuster.draw.TextLine;
+import net.katsuster.ui.MainWindow;
 
 public class ClosingScenario extends AbstractScenario {
-    private BTInOut btIO;
     private BufferedWriter[] btWr;
     private BTDeviceHandler handler;
-    private Font font;
+    private Font fontMedium;
+    private TextLine tlMsg;
 
     public ClosingScenario(ScenarioSwitcher sw) {
-        setSwitcher(sw);
+        super(sw);
     }
 
     @Override
     public void activate() {
-        btIO = getSwitcher().getBTInOut();
+        MainWindow mainWnd = getSwitcher().getMainWindow();
+        BTInOut btIO = getSwitcher().getBTInOut();
+
+        getSwitcher().addLogLater("Entering " + getName() + "\n");
+        getSwitcher().setTargetFPS(60);
+
         btWr = btIO.getBTWriters();
         handler = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handler);
 
         Font f = getSwitcher().getSetting().getFont();
-        font = f.deriveFont(Font.PLAIN, 36);
+        fontMedium = f.deriveFont(Font.PLAIN, 32);
+
+        tlMsg = new TextLine();
+        tlMsg.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlMsg.setForeground(Color.BLACK);
+        tlMsg.setFont(fontMedium);
+        tlMsg.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
+
+        addDrawable(tlMsg);
     }
 
     @Override
     public void deactivate() {
+        BTInOut btIO = getSwitcher().getBTInOut();
+
         btIO.removeBTDeviceListener(handler);
     }
 
     @Override
     public void drawFrame(Graphics2D g2) {
-        g2.setFont(font);
-        g2.drawString("Closing...", 10, 50);
+        getSwitcher().terminate();
 
-        switcher.terminate();
+        drawAllDrawable(g2);
     }
 
     protected class BTDeviceHandler implements BTDeviceListener {

@@ -3,71 +3,104 @@ package net.katsuster.scenario;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
-import java.io.IOException;
-import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
+import net.katsuster.draw.TextLine;
+import net.katsuster.ui.MainWindow;
 
 public class OpeningScenario extends AbstractScenario {
-    private BTInOut btIO;
     private BufferedWriter[] btWr;
-    private BTDeviceHandler handler;
-    private Font font;
-    private long nanoStart;
-
-    private boolean flag = false;
+    private BTDeviceHandler handlerBT;
+    private MouseHandler handlerMouse;
+    private Font fontLarge;
+    private Font fontMedium;
+    private Font fontSmall;
+    private long tStart;
+    private boolean flagStart;
+    private TextLine tlVersion;
 
     public OpeningScenario(ScenarioSwitcher sw) {
-        setSwitcher(sw);
+        super(sw);
     }
 
     @Override
     public void activate() {
-        btIO = getSwitcher().getBTInOut();
+        MainWindow mainWnd = getSwitcher().getMainWindow();
+        BTInOut btIO = getSwitcher().getBTInOut();
+
+        getSwitcher().addLogLater("Entering " + getName() + "\n");
+        getSwitcher().setTargetFPS(3);
+
         btWr = btIO.getBTWriters();
-        handler = new BTDeviceHandler(this);
-        btIO.addBTDeviceListener(handler);
+        handlerBT = new BTDeviceHandler(this);
+        btIO.addBTDeviceListener(handlerBT);
+        handlerMouse = new MouseHandler(this);
+        mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        font = f.deriveFont(Font.PLAIN, 36);
+        fontLarge = f.deriveFont(Font.PLAIN, 120);
+        fontMedium = f.deriveFont(Font.PLAIN, 32);
+        fontSmall = f.deriveFont(Font.PLAIN, 14);
 
-        nanoStart = System.nanoTime();
+        tStart = System.nanoTime();
+        flagStart = false;
+
+        TextLine tlTitle = new TextLine();
+        tlTitle.setText("Titleタイトル");
+        tlTitle.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlTitle.setFont(fontLarge);
+        tlTitle.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight() / 2);
+
+        TextLine tlNext = new TextLine();
+        tlNext.setText("Push Button to Start...");
+        tlNext.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlNext.setFont(fontMedium);
+        tlNext.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
+                mainWnd.getWidth(), mainWnd.getHeight() / 2);
+
+        tlVersion = new TextLine();
+        tlVersion.setAlign(TextLine.TEXT_HALIGN.RIGHT, TextLine.TEXT_VALIGN.BOTTOM);
+        tlVersion.setForeground(Color.DARK_GRAY);
+        tlVersion.setFont(fontSmall);
+        tlVersion.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
+        tlVersion.getContentBox().setMargin(0, 0, 15, 5);
+
+        clearDrawable();
+        addDrawable(tlTitle);
+        addDrawable(tlNext);
+        addDrawable(tlVersion);
     }
 
     @Override
     public void deactivate() {
-        btIO.removeBTDeviceListener(handler);
+        MainWindow mainWnd = getSwitcher().getMainWindow();
+        BTInOut btIO = getSwitcher().getBTInOut();
+
+        btIO.removeBTDeviceListener(handlerBT);
+        mainWnd.removeMouseListener(handlerMouse);
     }
 
     @Override
     public void drawFrame(Graphics2D g2) {
-        try {
-            if (!flag) {
-                btWr[0].write("start\n");
-                btWr[0].flush();
-                flag = true;
-            }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        tlVersion.setText(df.format(new Date()) + " Application v0.1 Copyright(c) Name 2023-2024.");
 
-            long nano = System.nanoTime() - nanoStart;
-            long sec = nano / 1000000000;
-            long mil = (nano / 1000000) % 1000;
-            String curTime = String.format("%3d.%03d", sec, mil);
-
-            g2.setFont(font);
-            g2.drawString(curTime, 10, 50);
-
-            if (nano > 15000000000L) {
-                getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
-            }
-        } catch (IOException ex) {
-            //do nothing
+        if (flagStart) {
+            getSwitcher().setNextScenario(new CountUpScenario(getSwitcher()));
         }
+
+        drawAllDrawable(g2);
     }
 
-    public void setFlag(boolean f) {
-        flag = f;
+    public void setFlagStart(boolean f) {
+        flagStart = f;
+        tStart = System.nanoTime();
     }
 
     protected class BTDeviceHandler implements BTDeviceListener {
@@ -82,8 +115,23 @@ public class OpeningScenario extends AbstractScenario {
                 return;
             }
 
-            System.out.println("opening: " + e.getMessage());
-            scenario.setFlag(false);
+            System.out.println(getName() + ": " + e.getMessage());
+            //scenario.setFlag(false);
+        }
+    }
+
+    protected class MouseHandler extends MouseAdapter {
+        OpeningScenario scenario;
+
+        public MouseHandler(OpeningScenario s) {
+            scenario = s;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            //System.out.println(getName() + ": click!");
+            scenario.getSwitcher().addLogLater(getName() + ": click!\n");
+            scenario.setFlagStart(true);
         }
     }
 }
