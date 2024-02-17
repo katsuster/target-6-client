@@ -204,7 +204,7 @@ public class BTAdapterSubPanel extends JPanel {
             adapter.startDiscovery();
             try {
                 Thread.sleep((long) panel.getAdapterTimeout() * 1000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ex) {
                 //ignore
             }
             adapter.stopDiscovery();

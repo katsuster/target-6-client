@@ -141,9 +141,11 @@ public class BTTestSubPanel extends JPanel {
 
                 try {
                     stream = new BTStream(macada, macdev, srv, tx, rx, 3);
-                } catch (IllegalArgumentException | DBusException e) {
+                } catch (IllegalArgumentException | DBusException ex) {
+                    System.err.println("Error: failed to create bluetooth stream.");
+                    System.err.println("  msg:" + ex.getMessage());
                     SwingUtilities.invokeLater(() -> {
-                        panel.setStatusTest(e.getMessage());
+                        panel.setStatusTest(ex.getMessage());
                     });
                     return;
                 }
@@ -169,9 +171,11 @@ public class BTTestSubPanel extends JPanel {
                             addLogWithTime(nsStart, ": " + sss + "\n");
                         });
                     }
-                } catch (IOException e) {
+                } catch (IOException ex) {
+                    System.err.println("Error: failed to read or write error to bluetooth device.");
+                    System.err.println("  msg:" + ex.getMessage());
                     SwingUtilities.invokeLater(() -> {
-                        panel.setStatusTest(e.getMessage());
+                        panel.setStatusTest(ex.getMessage());
                     });
                 }
 
@@ -181,9 +185,11 @@ public class BTTestSubPanel extends JPanel {
 
                 try {
                     in.close();
-                } catch (IOException e) {
+                } catch (IOException ex) {
+                    System.err.println("Error: failed to close bluetooth stream.");
+                    System.err.println("  msg:" + ex.getMessage());
                     SwingUtilities.invokeLater(() -> {
-                        panel.setStatusTest(e.getMessage());
+                        panel.setStatusTest(ex.getMessage());
                     });
                 }
 

@@ -189,7 +189,7 @@ public class BTDeviceSubPanel extends JPanel {
 
                 try {
                     Thread.sleep(200);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ex) {
                     //ignore
                 }
                 retry += 1;
@@ -211,7 +211,7 @@ public class BTDeviceSubPanel extends JPanel {
 
                 try {
                     Thread.sleep(200);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ex) {
                     //ignore
                 }
                 retry += 1;
