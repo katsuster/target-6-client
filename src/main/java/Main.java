@@ -16,15 +16,18 @@ import net.katsuster.scenario.ScenarioSetting;
 import net.katsuster.scenario.ScenarioSwitcher;
 
 public class Main {
+    public static String OPT_HELP = "-h";
+    public static String OPT_SETTING_BT = "--sb";
+
     public static void main(String[] args) {
         Font uiFontBase, uiFont;
         boolean runSettingBT = false, runNormal = false;
 
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("-h")) {
+            if (args[0].equalsIgnoreCase(OPT_HELP)) {
                 printUsage();
                 return;
-            } else if (args[0].equalsIgnoreCase("-s")) {
+            } else if (args[0].equalsIgnoreCase(OPT_SETTING_BT)) {
                 runSettingBT = true;
             } else {
                 runNormal = true;
@@ -98,11 +101,13 @@ public class Main {
     }
 
     public static void printUsage() {
-        System.out.print("Usage:\n" +
-                "  application [-h|-s]\n\n" +
+        System.out.print(String.format("Usage:\n" +
+                "  application [%s|%s]\n\n" +
                 "Options:\n" +
-                "  -h: Show this help.\n" +
-                "  -s: Open Bluetooth device setting.\n");
+                "  %4s: Show this help.\n" +
+                "  %4s: Open Bluetooth device setting.\n",
+                OPT_HELP, OPT_SETTING_BT,
+                OPT_HELP, OPT_SETTING_BT));
     }
 
     public static void setUIDefaultFont(Font f) {
