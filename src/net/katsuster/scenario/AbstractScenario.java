@@ -3,7 +3,17 @@ package net.katsuster.scenario;
 import java.awt.*;
 
 public class AbstractScenario implements Scenario {
+    private ScenarioSwitcher switcher;
     private boolean activated = false;
+
+    @Override
+    public ScenarioSwitcher getSwitcher() {
+        return switcher;
+    }
+
+    protected void setSwitcher(ScenarioSwitcher s) {
+        switcher = s;
+    }
 
     @Override
     public boolean getActivated() {

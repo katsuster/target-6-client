@@ -1,6 +1,7 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import javax.swing.*;
@@ -10,27 +11,26 @@ import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 
 public class OpeningScenario extends AbstractScenario {
-    private ScenarioSwitcher switcher;
     private BTInOut btIO;
     private BufferedWriter[] btWr;
     private BTDeviceHandler handler;
     private Font font;
-
-    private boolean flag = false;
     private long nanoStart;
 
+    private boolean flag = false;
+
     public OpeningScenario(ScenarioSwitcher sw) {
-        switcher = sw;
-        handler = new BTDeviceHandler(this);
+        setSwitcher(sw);
     }
 
     @Override
     public void activate() {
-        btIO = switcher.getBTInOut();
+        btIO = getSwitcher().getBTInOut();
         btWr = btIO.getBTWriters();
+        handler = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handler);
 
-        Font f = UIManager.getFont("Panel.font");
+        Font f = getSwitcher().getSetting().getFont();
         font = f.deriveFont(Font.PLAIN, 36);
 
         nanoStart = System.nanoTime();
@@ -59,7 +59,7 @@ public class OpeningScenario extends AbstractScenario {
             g2.drawString(curTime, 10, 50);
 
             if (nano > 15000000000L) {
-                switcher.setNextScenario(new ClosingScenario(switcher));
+                getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
             }
         } catch (IOException ex) {
             //do nothing

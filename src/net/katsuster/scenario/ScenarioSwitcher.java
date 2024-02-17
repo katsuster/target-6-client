@@ -9,6 +9,7 @@ import net.katsuster.ui.LogWindow;
 import net.katsuster.ui.MainWindow;
 
 public class ScenarioSwitcher implements Runnable {
+    private ScenarioSetting setting;
     private MainWindow mainWnd;
     private LogWindow logWnd;
     private boolean term;
@@ -18,7 +19,8 @@ public class ScenarioSwitcher implements Runnable {
     private Scenario curScenario;
     private Scenario nextScenario;
 
-    public ScenarioSwitcher(MainWindow mw, LogWindow lw) {
+    public ScenarioSwitcher(ScenarioSetting s, MainWindow mw, LogWindow lw) {
+        setting = s;
         mainWnd = mw;
         logWnd = lw;
         logBuffer = new StringBuffer();
@@ -92,6 +94,14 @@ public class ScenarioSwitcher implements Runnable {
 
             strategy.show();
         } while (strategy.contentsLost());
+    }
+
+    public ScenarioSetting getSetting() {
+        return setting;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWnd;
     }
 
     public boolean isReadyBTIO() {

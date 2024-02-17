@@ -9,24 +9,23 @@ import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 
 public class ClosingScenario extends AbstractScenario {
-    private ScenarioSwitcher switcher;
     private BTInOut btIO;
     private BufferedWriter[] btWr;
     private BTDeviceHandler handler;
     private Font font;
 
     public ClosingScenario(ScenarioSwitcher sw) {
-        switcher = sw;
-        handler = new BTDeviceHandler(this);
+        setSwitcher(sw);
     }
 
     @Override
     public void activate() {
-        btIO = switcher.getBTInOut();
+        btIO = getSwitcher().getBTInOut();
         btWr = btIO.getBTWriters();
+        handler = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handler);
 
-        Font f = UIManager.getFont("Panel.font");
+        Font f = getSwitcher().getSetting().getFont();
         font = f.deriveFont(Font.PLAIN, 36);
     }
 

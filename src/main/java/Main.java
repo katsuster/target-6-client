@@ -12,6 +12,7 @@ import net.katsuster.ui.BTScanWindow;
 import net.katsuster.ui.LogWindow;
 import net.katsuster.ui.MainWindow;
 import net.katsuster.scenario.OpeningScenario;
+import net.katsuster.scenario.ScenarioSetting;
 import net.katsuster.scenario.ScenarioSwitcher;
 
 public class Main {
@@ -73,7 +74,10 @@ public class Main {
                 LogWindow lw = new LogWindow();
                 lw.setVisible(true);
 
-                ScenarioSwitcher sw = new ScenarioSwitcher(mw, lw);
+                ScenarioSetting settingScenario = new ScenarioSetting();
+                settingScenario.setFont(uiFont);
+
+                ScenarioSwitcher sw = new ScenarioSwitcher(settingScenario, mw, lw);
                 sw.setNextScenario(new OpeningScenario(sw));
 
                 Thread scenarioThread = new Thread(sw);
