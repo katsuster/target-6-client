@@ -75,17 +75,23 @@ public class ScenarioSwitcher implements Runnable {
 
     protected void drawFrame() {
         BufferStrategy strategy = mainWnd.getBufferStrategy();
-        Graphics2D g2 = (Graphics2D)strategy.getDrawGraphics();
 
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-        g2.setBackground(Color.WHITE);
-        g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
+        do {
+            do {
+                Graphics2D g2 = (Graphics2D)strategy.getDrawGraphics();
 
-        curScenario.drawFrame(g2);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+                g2.setBackground(Color.WHITE);
+                g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
 
-        g2.dispose();
-        strategy.show();
+                curScenario.drawFrame(g2);
+
+                g2.dispose();
+            } while (strategy.contentsRestored());
+
+            strategy.show();
+        } while (strategy.contentsLost());
     }
 
     public boolean isReadyBTIO() {
