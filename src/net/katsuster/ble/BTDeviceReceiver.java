@@ -47,6 +47,10 @@ public class BTDeviceReceiver implements Runnable {
         listener.add(l);
     }
 
+    public BTDeviceListener[] getBTDeviceListers() {
+        return (BTDeviceListener[])listener.toArray();
+    }
+
     public void removeBTDeviceListener(BTDeviceListener l) {
         listener.remove(l);
     }
