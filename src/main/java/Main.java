@@ -18,19 +18,19 @@ import net.katsuster.scenario.ScenarioSwitcher;
 public class Main {
     public static void main(String[] args) {
         Font uiFontBase, uiFont;
-        boolean setting = false, normal = false;
+        boolean runSettingBT = false, runNormal = false;
 
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("-h")) {
                 printUsage();
                 return;
             } else if (args[0].equalsIgnoreCase("-s")) {
-                setting = true;
+                runSettingBT = true;
             } else {
-                normal = true;
+                runNormal = true;
             }
         } else {
-            normal = true;
+            runNormal = true;
         }
 
         try {
@@ -64,13 +64,14 @@ public class Main {
         }
 
         try {
-            if (setting) {
+            if (runSettingBT) {
                 BTScanWindow w = new BTScanWindow();
                 w.setVisible(true);
             }
-            if (normal) {
+            if (runNormal) {
                 MainWindow mw = new MainWindow();
                 mw.setVisible(true);
+                mw.createBufferStrategy(2);
                 LogWindow lw = new LogWindow();
                 lw.setVisible(true);
 
@@ -101,7 +102,7 @@ public class Main {
                 "  application [-h|-s]\n\n" +
                 "Options:\n" +
                 "  -h: Show this help.\n" +
-                "  -s: Open setting window.\n");
+                "  -s: Open Bluetooth device setting.\n");
     }
 
     public static void setUIDefaultFont(Font f) {

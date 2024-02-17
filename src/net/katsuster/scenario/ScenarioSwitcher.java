@@ -10,6 +10,7 @@ import net.katsuster.ui.MainWindow;
 
 public class ScenarioSwitcher implements Runnable {
     private ScenarioSetting setting;
+    private BufferStrategy strategy;
     private MainWindow mainWnd;
     private LogWindow logWnd;
     private boolean term;
@@ -33,14 +34,20 @@ public class ScenarioSwitcher implements Runnable {
         initBTIO();
 
         while (!term) {
+            long tFrame = System.nanoTime();
+
             if (curScenario != null) {
                 drawFrame();
-            } else {
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException ex) {
-                    //ignore
+            }
+
+            try {
+                long tPast = System.nanoTime() - tFrame;
+
+                if (tPast < 16000000) {
+                    Thread.sleep((16000000 - tPast) / 1000000);
                 }
+            } catch (InterruptedException ex) {
+                //ignore
             }
 
             if (nextScenario != curScenario) {
@@ -70,14 +77,12 @@ public class ScenarioSwitcher implements Runnable {
     }
 
     protected void initGraphics() {
+        strategy = mainWnd.getBufferStrategy();
         setStartTime(System.nanoTime());
         clearLogLater();
-        mainWnd.createBufferStrategy(2);
     }
 
     protected void drawFrame() {
-        BufferStrategy strategy = mainWnd.getBufferStrategy();
-
         do {
             do {
                 Graphics2D g2 = (Graphics2D)strategy.getDrawGraphics();
