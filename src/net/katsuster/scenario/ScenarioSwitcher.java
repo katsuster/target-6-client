@@ -9,6 +9,9 @@ import net.katsuster.ui.LogWindow;
 import net.katsuster.ui.MainWindow;
 
 public class ScenarioSwitcher implements Runnable {
+    public static final long NS_1SEC = 1000000000L;
+    public static final long NS_1MSEC = 1000000L;
+
     private ScenarioSetting setting;
     private BufferStrategy strategy;
     private MainWindow mainWnd;
@@ -19,6 +22,8 @@ public class ScenarioSwitcher implements Runnable {
     private BTInOut btIO;
     private Scenario curScenario;
     private Scenario nextScenario;
+    private Font fontSmall;
+    private int targetFPS = 60;
 
     public ScenarioSwitcher(ScenarioSetting s, MainWindow mw, LogWindow lw) {
         setting = s;
@@ -36,30 +41,9 @@ public class ScenarioSwitcher implements Runnable {
         while (!term) {
             long tFrame = System.nanoTime();
 
-            if (curScenario != null) {
-                drawFrame();
-            }
-
-            try {
-                long tPast = System.nanoTime() - tFrame;
-
-                if (tPast < 16000000) {
-                    Thread.sleep((16000000 - tPast) / 1000000);
-                }
-            } catch (InterruptedException ex) {
-                //ignore
-            }
-
-            if (nextScenario != curScenario) {
-                if (curScenario != null) {
-                    curScenario.deactivate();
-                    curScenario.setActivated(false);
-                }
-
-                nextScenario.setActivated(true);
-                nextScenario.activate();
-                curScenario = nextScenario;
-            }
+            drawFrame();
+            adjustFPS(tFrame);
+            switchScenario();
 
             /* Check health of Bluetooth devices */
             if (!isReadyBTIO()) {
@@ -76,50 +60,13 @@ public class ScenarioSwitcher implements Runnable {
         termBTIO();
     }
 
-    protected void initGraphics() {
-        strategy = mainWnd.getBufferStrategy();
-        setStartTime(System.nanoTime());
-        clearLogLater();
-    }
-
-    protected void drawFrame() {
-        do {
-            do {
-                Graphics2D g2 = (Graphics2D)strategy.getDrawGraphics();
-
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-                g2.setBackground(Color.WHITE);
-                g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
-
-                curScenario.drawFrame(g2);
-
-                g2.dispose();
-            } while (strategy.contentsRestored());
-
-            strategy.show();
-        } while (strategy.contentsLost());
-    }
-
-    public ScenarioSetting getSetting() {
-        return setting;
-    }
-
-    public MainWindow getMainWindow() {
-        return mainWnd;
-    }
-
-    public boolean isReadyBTIO() {
-        return btIO.getNumberOfConnectedDevices() == btIO.NUM_DEVICES;
-    }
-
-    public void initBTIO() {
+    protected void initBTIO() {
         boolean done = false;
 
         for (int i = 0; i < 5; i++) {
             addLogLater("Try to connect " + i + ".\n");
             btIO.connectBTDevices();
-            if (btIO.getNumberOfConnectedDevices() == btIO.NUM_DEVICES) {
+            if (btIO.getNumberOfConnectedDevices() == BTInOut.NUM_DEVICES) {
                 done = true;
                 break;
             }
@@ -131,7 +78,7 @@ public class ScenarioSwitcher implements Runnable {
         addLogLater("Connected.\n");
     }
 
-    public void termBTIO() {
+    protected void termBTIO() {
         boolean done = false;
 
         for (int i = 0; i < 5; i++) {
@@ -146,6 +93,75 @@ public class ScenarioSwitcher implements Runnable {
             return;
         }
         addLogLater("Disconnected.\n");
+    }
+
+    protected void initGraphics() {
+        Font f = getSetting().getFont();
+        fontSmall = f.deriveFont(Font.PLAIN, 14);
+        strategy = mainWnd.getBufferStrategy();
+        setStartTime(System.nanoTime());
+        clearLogLater();
+    }
+
+    protected void drawFrame() {
+        if (curScenario == null) {
+            return;
+        }
+
+        do {
+            do {
+                Graphics2D g2 = (Graphics2D)strategy.getDrawGraphics();
+
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                g2.setBackground(Color.WHITE);
+                g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
+
+                curScenario.drawFrame(g2);
+
+                g2.dispose();
+            } while (strategy.contentsRestored());
+
+            strategy.show();
+        } while (strategy.contentsLost());
+    }
+
+    protected void adjustFPS(long nsFrameStart) {
+        long tPast = System.nanoTime() - nsFrameStart;
+        long tTarget = NS_1SEC / getTargetFPS();
+
+        if (tPast - tTarget < 0) {
+            try {
+                Thread.sleep((tTarget - tPast) / NS_1MSEC);
+            } catch (InterruptedException ex) {
+                //ignore
+            }
+        }
+    }
+
+    protected void switchScenario() {
+        if (nextScenario != curScenario) {
+            if (curScenario != null) {
+                curScenario.deactivate();
+                curScenario.setActivated(false);
+            }
+
+            nextScenario.setActivated(true);
+            nextScenario.activate();
+            curScenario = nextScenario;
+        }
+    }
+
+    public ScenarioSetting getSetting() {
+        return setting;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWnd;
+    }
+
+    public boolean isReadyBTIO() {
+        return btIO.getNumberOfConnectedDevices() == btIO.NUM_DEVICES;
     }
 
     public BTInOut getBTInOut() {
@@ -170,6 +186,14 @@ public class ScenarioSwitcher implements Runnable {
 
     public void setStartTime(long ns) {
         nsStart = ns;
+    }
+
+    public int getTargetFPS() {
+        return targetFPS;
+    }
+
+    public void setTargetFPS(int n) {
+        targetFPS = n;
     }
 
     public String getTimeStampString(long ns) {
