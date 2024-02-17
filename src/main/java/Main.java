@@ -33,7 +33,8 @@ public class Main {
         }
 
         try {
-            InputStream is = Main.class.getResourceAsStream("/openfont/ZenMaruGothic-Medium.ttf");
+            //InputStream is = Main.class.getResourceAsStream("/openfont/ZenMaruGothic-Medium.ttf");
+            InputStream is = Main.class.getResourceAsStream("/openfont/KosugiMaru-Regular.ttf");
             if (is == null) {
                 System.err.println("Error: Cannot found Font resource.");
                 return;
