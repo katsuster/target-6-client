@@ -3,6 +3,7 @@ package net.katsuster.scenario;
 import java.awt.*;
 
 public interface Scenario {
+    String getName();
     ScenarioSwitcher getSwitcher();
     boolean getActivated();
     void setActivated(boolean a);

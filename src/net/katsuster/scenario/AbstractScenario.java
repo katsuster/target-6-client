@@ -7,6 +7,11 @@ public class AbstractScenario implements Scenario {
     private boolean activated = false;
 
     @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    @Override
     public ScenarioSwitcher getSwitcher() {
         return switcher;
     }
