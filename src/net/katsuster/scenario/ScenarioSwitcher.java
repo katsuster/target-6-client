@@ -16,7 +16,8 @@ public class ScenarioSwitcher implements Runnable {
     private BufferStrategy strategy;
     private MainWindow mainWnd;
     private LogWindow logWnd;
-    private boolean term;
+    private boolean term = false;
+    private boolean btRecover = false;
     private StringBuffer logBuffer;
     private long nsStart;
     private BTInOut btIO;
@@ -36,7 +37,6 @@ public class ScenarioSwitcher implements Runnable {
     @Override
     public void run() {
         initGraphics();
-        initBTIO();
 
         while (!term) {
             long tFrame = System.nanoTime();
@@ -46,7 +46,7 @@ public class ScenarioSwitcher implements Runnable {
             switchScenario();
 
             /* Check health of Bluetooth devices */
-            if (!isReadyBTIO()) {
+            if (getBTRecover() && !isReadyBTIO()) {
                 System.err.println("Warn: bluetooth device health is not good, try to recover...");
                 termBTIO();
                 initBTIO();
@@ -166,6 +166,14 @@ public class ScenarioSwitcher implements Runnable {
 
     public BTInOut getBTInOut() {
         return btIO;
+    }
+
+    public boolean getBTRecover() {
+        return btRecover;
+    }
+
+    public void setBTRecover(boolean b) {
+        btRecover = b;
     }
 
     public void terminate() {
