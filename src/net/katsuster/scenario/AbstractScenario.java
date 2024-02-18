@@ -79,4 +79,17 @@ public class AbstractScenario implements Scenario {
             d.draw(g2);
         }
     }
+
+    public void printErrorInner(String header, String str) {
+        getSwitcher().addLogLater(header + ": " + getName() + ": " + str + "\n");
+        System.err.println(header + ": " + getName() + ": " + str);
+    }
+
+    public void printError(String str) {
+        printErrorInner("Error", str);
+    }
+
+    public void printWarn(String str) {
+        printErrorInner("Warn ", str);
+    }
 }
