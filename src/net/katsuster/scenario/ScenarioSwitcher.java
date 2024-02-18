@@ -56,8 +56,6 @@ public class ScenarioSwitcher implements Runnable {
                 }
             }
         }
-
-        termBTIO();
     }
 
     protected void initBTIO() {
