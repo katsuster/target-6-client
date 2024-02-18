@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.freedesktop.dbus.exceptions.DBusException;
+
 import net.katsuster.scenario.ScenarioSwitcher;
 
 public class BTInOut {
@@ -17,7 +19,7 @@ public class BTInOut {
     private BTDeviceReceiver[] receiver = new BTDeviceReceiver[NUM_DEVICES];
     private Thread[] receiverThread = new Thread[NUM_DEVICES];
     private BufferedWriter[] streamWr = new BufferedWriter[NUM_DEVICES];
-    private BTStatus[] streamBTStatus = new BTStatus[NUM_DEVICES];
+    private BTStatus[] deviceStatus = new BTStatus[NUM_DEVICES];
     private List<BTDeviceListener> listener;
 
     public enum BTStatus {
@@ -27,8 +29,30 @@ public class BTInOut {
 
     public BTInOut(ScenarioSwitcher sw) {
         switcher = sw;
-        Arrays.fill(streamBTStatus, BTStatus.DISCONNECTED);
+        Arrays.fill(deviceStatus, BTStatus.DISCONNECTED);
         listener = new ArrayList<>();
+    }
+
+    public void connectBTDevice(int id) throws DBusException {
+        if (id < 0 || NUM_DEVICES <= id) {
+            throw new IllegalArgumentException("Illegal device ID:" + id + ".");
+        }
+
+        if (deviceStatus[id] != BTStatus.DISCONNECTED) {
+            return;
+        }
+
+        switcher.addLogLater("Connect to Device " + id + "\n");
+        streamBT[id] = new BTStream(id, 3);
+        streamIn[id] = streamBT[id].getInputStream();
+        streamOut[id] = streamBT[id].getOutputStream();
+        receiver[id] = new BTDeviceReceiver(streamBT[id]);
+        receiver[id].addBTDeviceListener(new ReceiverHandler(this));
+        receiverThread[id] = new Thread(receiver[id]);
+        streamWr[id] = new BufferedWriter(new OutputStreamWriter(streamOut[id]));
+        deviceStatus[id] = BTStatus.CONNECTED;
+
+        receiverThread[id].start();
     }
 
     public void connectBTDevices() {
@@ -36,24 +60,38 @@ public class BTInOut {
 
         try {
             for (id = 0; id < streamBT.length; id++) {
-                if (streamBTStatus[id] != BTStatus.DISCONNECTED) {
-                    continue;
-                }
-
-                switcher.addLogLater("Connect to Device " + id + "\n");
-                streamBT[id] = new BTStream(id, 3);
-                streamIn[id] = streamBT[id].getInputStream();
-                streamOut[id] = streamBT[id].getOutputStream();
-                receiver[id] = new BTDeviceReceiver(streamBT[id]);
-                receiver[id].addBTDeviceListener(new ReceiverHandler(this));
-                receiverThread[id] = new Thread(receiver[id]);
-                streamWr[id] = new BufferedWriter(new OutputStreamWriter(streamOut[id]));
-                streamBTStatus[id] = BTStatus.CONNECTED;
-
-                receiverThread[id].start();
+                connectBTDevice(id);
             }
         } catch (Exception ex) {
             switcher.addLogLater("Failed to connect device " + id + "\n");
+            System.err.println("  msg:" + ex.getMessage());
+        }
+    }
+
+    public void disconnectBTDevice(int id) throws DBusException {
+        if (id < 0 || NUM_DEVICES <= id) {
+            throw new IllegalArgumentException("Illegal device ID:" + id + ".");
+        }
+
+        if (deviceStatus[id] == BTStatus.DISCONNECTED) {
+            return;
+        }
+
+        try {
+            switcher.addLogLater("Disconnect to Device " + id + "\n");
+            receiver[id].terminate();
+            receiverThread[id].interrupt();
+            receiverThread[id].join();
+            deviceStatus[id] = BTStatus.DISCONNECTED;
+
+            streamBT[id] = null;
+            streamIn[id] = null;
+            streamOut[id] = null;
+            receiver[id] = null;
+            receiverThread[id] = null;
+            streamWr[id] = null;
+        } catch (InterruptedException ex) {
+            switcher.addLogLater("Failed to join receiver thread for device " + id + "\n");
             System.err.println("  msg:" + ex.getMessage());
         }
     }
@@ -63,22 +101,7 @@ public class BTInOut {
 
         try {
             for (id = 0; id < streamBT.length; id++) {
-                if (streamBTStatus[id] == BTStatus.DISCONNECTED) {
-                    continue;
-                }
-
-                switcher.addLogLater("Disconnect to Device " + id + "\n");
-                receiver[id].terminate();
-                receiverThread[id].interrupt();
-                receiverThread[id].join();
-                streamBTStatus[id] = BTStatus.DISCONNECTED;
-
-                streamBT[id] = null;
-                streamIn[id] = null;
-                streamOut[id] = null;
-                receiver[id] = null;
-                receiverThread[id] = null;
-                streamWr[id] = null;
+                disconnectBTDevice(id);
             }
         } catch (Exception ex) {
             switcher.addLogLater("Failed to disconnect device " + id + "\n");
@@ -89,7 +112,7 @@ public class BTInOut {
     public int getNumberOfConnectedDevices() {
         int cnt = 0;
 
-        for (BTStatus i : streamBTStatus) {
+        for (BTStatus i : deviceStatus) {
             if (i != BTStatus.DISCONNECTED) {
                 cnt++;
             }
@@ -110,11 +133,11 @@ public class BTInOut {
         }
     }
 
-    public BufferedWriter[] getBTWriters() {
+    public BufferedWriter[] getWriters() {
         return streamWr;
     }
 
-    public BufferedWriter getBTWriter(int id) {
+    public BufferedWriter getWriter(int id) {
         if (id < 0 || NUM_DEVICES <= id) {
             throw new IndexOutOfBoundsException("BTIO Writer: Device ID is out of bounds.");
         }
@@ -122,16 +145,16 @@ public class BTInOut {
         return streamWr[id];
     }
 
-    public BTDeviceReceiver[] getBTReceivers() {
-        return receiver;
+    public BTStatus[] getDeviceStatus() {
+        return deviceStatus;
     }
 
-    public BTDeviceReceiver getBTReceiver(int id) {
+    public BTStatus getDeviceStatus(int id) {
         if (id < 0 || NUM_DEVICES <= id) {
-            throw new IndexOutOfBoundsException("BTIO Receiver: Device ID is out of bounds.");
+            throw new IndexOutOfBoundsException("BTIO Status: Device ID is out of bounds.");
         }
 
-        return receiver[id];
+        return deviceStatus[id];
     }
 
     public void addBTDeviceListener(BTDeviceListener l) {

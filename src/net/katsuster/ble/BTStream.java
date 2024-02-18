@@ -29,11 +29,11 @@ public class BTStream {
     private BTInputStream streamIn;
     private BTOutputStream streamOut;
 
-    public BTStream(int id, int timeout) throws IllegalArgumentException, DBusException {
+    public BTStream(int id, int timeout) throws DBusException {
         initStream(id, timeout);
     }
 
-    public BTStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+    public BTStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException {
         initStream(ada, dev, srv, tx, rx, timeout);
     }
 
@@ -47,7 +47,7 @@ public class BTStream {
         initStream(ada, dev, srv, tx, rx, timeout);
     }
 
-    private void initStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws IllegalArgumentException, DBusException {
+    private void initStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException {
         BTAdapterMac = ada;
         BTDeviceMac = dev;
         UuidService = srv;
