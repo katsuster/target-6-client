@@ -23,7 +23,6 @@ public class ScenarioSwitcher implements Runnable {
     private BTInOut btIO;
     private Scenario curScenario;
     private Scenario nextScenario;
-    private Font fontSmall;
     private int targetFPS = 60;
 
     public ScenarioSwitcher(ScenarioSetting s, MainWindow mw, LogWindow lw) {
@@ -94,8 +93,6 @@ public class ScenarioSwitcher implements Runnable {
     }
 
     protected void initGraphics() {
-        Font f = getSetting().getFont();
-        fontSmall = f.deriveFont(Font.PLAIN, 14);
         strategy = mainWnd.getBufferStrategy();
         setStartTime(System.nanoTime());
         clearLogLater();

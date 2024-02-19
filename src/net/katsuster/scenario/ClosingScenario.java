@@ -7,6 +7,7 @@ import java.util.Arrays;
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
+import net.katsuster.draw.Drawable;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
@@ -40,7 +41,7 @@ public class ClosingScenario extends AbstractScenario {
 
         tlMsg = new TextLine();
         tlMsg.setText("Closing...");
-        tlMsg.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlMsg.setForeground(Color.BLACK);
         tlMsg.setFont(fontMedium);
         tlMsg.getContentBox().setBounds(0, 0,
@@ -51,7 +52,7 @@ public class ClosingScenario extends AbstractScenario {
             int scrh = 80;
 
             tlDevState[i] = new TextLine();
-            tlDevState[i].setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.TOP);
+            tlDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tlDevState[i].setFont(fontSmall);
             tlDevState[i].getContentBox().setBounds(scrw * i, mainWnd.getHeight() - scrh, scrw, scrh);
             tlDevState[i].getContentBox().setMargin(10, 10, 10, 10);

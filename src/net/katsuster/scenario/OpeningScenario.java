@@ -2,6 +2,8 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -13,6 +15,8 @@ import java.util.StringTokenizer;
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
+import net.katsuster.draw.Drawable;
+import net.katsuster.draw.ShapeBox;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
@@ -56,41 +60,55 @@ public class OpeningScenario extends AbstractScenario {
 
         TextLine tlTitle = new TextLine();
         tlTitle.setText("Titleタイトル");
-        tlTitle.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlTitle.setFont(fontLarge);
         tlTitle.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
 
         tlMsg = new TextLine();
         tlMsg.setText("Please Wait...");
-        tlMsg.setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.CENTER);
+        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlMsg.setFont(fontMedium);
         tlMsg.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
 
         tlVersion = new TextLine();
-        tlVersion.setAlign(TextLine.TEXT_HALIGN.RIGHT, TextLine.TEXT_VALIGN.BOTTOM);
+        tlVersion.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.BOTTOM);
         tlVersion.setForeground(Color.DARK_GRAY);
         tlVersion.setFont(fontSmall);
         tlVersion.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
         tlVersion.getContentBox().setMargin(0, 0, 15, 5);
 
+        ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
             int scrw = mainWnd.getWidth() / tlDevState.length;
             int scrh = 80;
 
             tlDevState[i] = new TextLine();
-            tlDevState[i].setAlign(TextLine.TEXT_HALIGN.CENTER, TextLine.TEXT_VALIGN.TOP);
+            tlDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tlDevState[i].setFont(fontSmall);
             tlDevState[i].getContentBox().setBounds(scrw * i, mainWnd.getHeight() - scrh, scrw, scrh);
             tlDevState[i].getContentBox().setMargin(10, 10, 10, 10);
+            tlDevState[i].getContentBox().setPadding(5, 5, 5, 5);
+
+            shDevState[i] = new ShapeBox();
+            shDevState[i].setShape(new RoundRectangle2D.Double(1, 10, scrw, 30, 30, 30));
+            shDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
+            shDevState[i].setForeground(new Color(192, 192, 255));
+            shDevState[i].setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
+            shDevState[i].setStroke(new BasicStroke(2));
+            shDevState[i].getContentBox().setBounds(tlDevState[i].getContentBox().getBounds());
+            shDevState[i].getContentBox().setMargin(20, 10, 20, 10);
         }
 
         clearDrawable();
         addDrawable(tlTitle);
         addDrawable(tlMsg);
         addDrawable(tlVersion);
+        for (ShapeBox sh : shDevState) {
+            addDrawable(sh);
+        }
         for (TextLine tl : tlDevState) {
             addDrawable(tl);
         }
