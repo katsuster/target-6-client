@@ -92,4 +92,8 @@ public class AbstractScenario implements Scenario {
     public void printWarn(String str) {
         printErrorInner("Warn ", str);
     }
+
+    public void printInfo(String str) {
+        printErrorInner("Info ", str);
+    }
 }
