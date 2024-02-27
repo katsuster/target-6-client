@@ -7,10 +7,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
@@ -34,6 +31,7 @@ public class OpeningScenario extends AbstractScenario {
     private TextLine tlMsg;
     private TextLine tlVersion;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
+    private Timer timerParent;
 
     public OpeningScenario(ScenarioSwitcher sw) {
         super(sw);
@@ -113,6 +111,9 @@ public class OpeningScenario extends AbstractScenario {
             addDrawable(tl);
         }
 
+        timerParent = new Timer();
+        timerParent.schedule(new TaskClock(this), 0, 500);
+
         Thread thBTInit = new Thread(new BTInit(this));
         thBTInit.start();
     }
@@ -128,9 +129,6 @@ public class OpeningScenario extends AbstractScenario {
 
     @Override
     public void drawFrame(Graphics2D g2) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        tlVersion.setText(df.format(new Date()) + " Application v0.1 Copyright(c) Name 2023-2024.");
-
         for (int i = 0; i < devState.length; i++) {
             switch (devState[i]) {
             case FAILED:
@@ -170,10 +168,8 @@ public class OpeningScenario extends AbstractScenario {
         }
         flagReady = finish;
 
-        if (flagReady) {
-            tlMsg.setText("Push Button to Start...");
-        }
         if (flagReady && flagStart) {
+            timerParent.cancel();
             getSwitcher().setNextScenario(new CountUpScenario(getSwitcher()));
         }
 
@@ -203,6 +199,47 @@ public class OpeningScenario extends AbstractScenario {
     public void setFlagStart(boolean f) {
         synchronized (this) {
             flagStart = f;
+        }
+    }
+
+    private class TaskClock extends TimerTask {
+        private int cnt = 0;
+
+        public TaskClock(OpeningScenario s) {
+            //do nothing
+        }
+
+        @Override
+        public void run() {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            tlVersion.setText(df.format(new Date()) + " Application v0.1 Copyright(c) Name 2023-2024.");
+
+            if (!flagReady) {
+                switch (cnt % 6) {
+                case 0:
+                case 1:
+                    tlMsg.setText("Please Wait.  ");
+                    break;
+                case 2:
+                case 3:
+                    tlMsg.setText("Please Wait.. ");
+                    break;
+                case 4:
+                case 5:
+                    tlMsg.setText("Please Wait...");
+                    break;
+                }
+            } else {
+                tlMsg.setText("Push Button to Start");
+
+                if (cnt % 4 < 3) {
+                    tlMsg.setVisible(true);
+                } else {
+                    tlMsg.setVisible(false);
+                }
+            }
+
+            cnt++;
         }
     }
 
@@ -277,7 +314,7 @@ public class OpeningScenario extends AbstractScenario {
     }
 
     protected class BTDeviceHandler implements BTDeviceListener {
-        OpeningScenario scenario;
+        private OpeningScenario scenario;
 
         public BTDeviceHandler(OpeningScenario s) {
             scenario = s;
@@ -337,7 +374,7 @@ public class OpeningScenario extends AbstractScenario {
     }
 
     protected class MouseHandler extends MouseAdapter {
-        OpeningScenario scenario;
+        private OpeningScenario scenario;
 
         public MouseHandler(OpeningScenario s) {
             scenario = s;
