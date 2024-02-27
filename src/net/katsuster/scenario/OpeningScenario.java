@@ -2,7 +2,6 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -170,7 +169,7 @@ public class OpeningScenario extends AbstractScenario {
 
         if (flagReady && flagStart) {
             timerParent.cancel();
-            getSwitcher().setNextScenario(new CountUpScenario(getSwitcher()));
+            getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
         }
 
         drawAllDrawable(g2);

@@ -17,7 +17,7 @@ import net.katsuster.draw.Drawable;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
-public class CountUpScenario extends AbstractScenario {
+public class SingleScenario extends AbstractScenario {
     public static final String CMD_HIT = "hit";
 
     public static final String PREFIX_DEVICE_ID = "d";
@@ -44,7 +44,7 @@ public class CountUpScenario extends AbstractScenario {
     private TextLine tlResult;
     private List<TextLine> results = new ArrayList<>();
 
-    public CountUpScenario(ScenarioSwitcher sw) {
+    public SingleScenario(ScenarioSwitcher sw) {
         super(sw);
         for (int i = 0; i < getNumOfSensors(); i++) {
             sensors.add(new Sensor());
@@ -204,7 +204,7 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerFinish(Graphics2D g2) throws IOException {
-        getSwitcher().setNextScenario(new CountUpScenario(getSwitcher()));
+        getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
     }
 
     public ScenarioState getState() {
@@ -294,9 +294,9 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected class BTDeviceHandler implements BTDeviceListener {
-        private CountUpScenario scenario;
+        private SingleScenario scenario;
 
-        public BTDeviceHandler(CountUpScenario s) {
+        public BTDeviceHandler(SingleScenario s) {
             scenario = s;
         }
 
@@ -361,10 +361,10 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected class MouseHandler extends MouseAdapter {
-        private CountUpScenario scenario;
+        private SingleScenario scenario;
         private int cnt = 0;
 
-        public MouseHandler(CountUpScenario s) {
+        public MouseHandler(SingleScenario s) {
             scenario = s;
         }
 
