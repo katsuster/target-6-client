@@ -1,6 +1,8 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +85,32 @@ public class AbstractScenario implements Scenario {
     public void printErrorInner(String header, String str) {
         getSwitcher().addLogLater(header + ": " + getName() + ": " + str + "\n");
         System.err.println(header + ": " + getName() + ": " + str);
+    }
+
+    public boolean writeLine(int id, String s) {
+        BufferedWriter[] btWr = getSwitcher().getBTInOut().getWriters();
+        boolean success = false;
+        int retry = 0;
+
+        while (!success) {
+            try {
+                    btWr[id].write(s);
+                    btWr[id].flush();
+                    success = true;
+            } catch (IOException ex) {
+                printError("I/O error in write.");
+            } catch (RuntimeException ex) {
+                printError("Runtime error in write.");
+            }
+
+            if (retry > 5) {
+                printError("Too many error in write, maybe disconnected.");
+                return false;
+            }
+            retry++;
+        }
+
+        return true;
     }
 
     public void printError(String str) {
