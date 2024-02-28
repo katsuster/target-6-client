@@ -34,6 +34,7 @@ public class OpeningScenario extends AbstractScenario {
     private TextLine tlVersion;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
     private Timer timerParent;
+    private Thread thBTInit;
 
     public OpeningScenario(ScenarioSwitcher sw) {
         super(sw);
@@ -67,6 +68,7 @@ public class OpeningScenario extends AbstractScenario {
         TextLine tlTitle = new TextLine();
         tlTitle.setText("Titleタイトル");
         tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+        tlTitle.setForeground(Color.DARK_GRAY);
         tlTitle.setFont(fontLarge);
         tlTitle.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
@@ -74,6 +76,7 @@ public class OpeningScenario extends AbstractScenario {
         tlMsg = new TextLine();
         tlMsg.setText("Please Wait...");
         tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+        tlMsg.setForeground(Color.DARK_GRAY);
         tlMsg.setFont(fontMedium);
         tlMsg.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
@@ -103,6 +106,7 @@ public class OpeningScenario extends AbstractScenario {
             shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALL / 2,
                     scrw, FONT_SIZE_SMALL * 2, 30, 30));
             shDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
+            shDevState[i].setBackground(Color.WHITE);
             shDevState[i].setForeground(new Color(192, 192, 255));
             shDevState[i].setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
             shDevState[i].setStroke(new BasicStroke(2));
@@ -126,7 +130,7 @@ public class OpeningScenario extends AbstractScenario {
         timerParent = new Timer();
         timerParent.schedule(new TaskClock(this), 0, 500);
 
-        Thread thBTInit = new Thread(new BTInit(this));
+        thBTInit = new Thread(new BTInit(this));
         thBTInit.start();
     }
 
@@ -227,17 +231,14 @@ public class OpeningScenario extends AbstractScenario {
             tlVersion.setText(df.format(new Date()) + " Application v0.1 Copyright(c) Name 2023-2024.");
 
             if (!flagReady) {
-                switch (cnt % 6) {
+                switch (cnt % 3) {
                 case 0:
-                case 1:
                     tlMsg.setText("Please Wait.  ");
                     break;
-                case 2:
-                case 3:
+                case 1:
                     tlMsg.setText("Please Wait.. ");
                     break;
-                case 4:
-                case 5:
+                case 2:
                     tlMsg.setText("Please Wait...");
                     break;
                 }
