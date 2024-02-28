@@ -101,6 +101,9 @@ public class ShapeBox extends AbstractDrawable {
 
         g2.setTransform(af);
 
+        g2.setColor(getBackground());
+        g2.fill(shape);
+
         g2.setColor(getForeground());
         g2.setStroke(getStroke());
         g2.draw(shape);
