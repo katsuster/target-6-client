@@ -35,6 +35,7 @@ public class SingleScenario extends AbstractScenario {
         RUN,
         RESULT,
         FINISH,
+        CLOSE,
     }
 
     private BTDeviceHandler handlerBT;
@@ -62,7 +63,6 @@ public class SingleScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
-        getSwitcher().addLogLater("Entering " + getName() + "\n");
         getSwitcher().setTargetFPS(60);
 
         handlerBT = new BTDeviceHandler(this);
@@ -148,10 +148,13 @@ public class SingleScenario extends AbstractScenario {
         case FINISH:
             drawFrameInnerFinish(g2);
             break;
+        case CLOSE:
+            drawFrameInnerClose(g2);
+            break;
         }
     }
 
-    protected void drawFrameInnerInit(Graphics2D g2) throws IOException {
+    protected void drawFrameInnerInit(Graphics2D g2) {
         boolean success = writeLine(2, CMD_SINGLE + "\n");
         if (!success) {
             getSwitcher().termBTIO();
@@ -161,7 +164,7 @@ public class SingleScenario extends AbstractScenario {
         setState(ScenarioState.WAIT);
     }
 
-    protected void drawFrameInnerWait(Graphics2D g2) throws IOException {
+    protected void drawFrameInnerWait(Graphics2D g2) {
         long nano = System.nanoTime() - tStart;
         long sec = 3 - (nano / ScenarioSwitcher.NS_1SEC);
         String curTime = String.format("%3d", sec);
@@ -173,7 +176,7 @@ public class SingleScenario extends AbstractScenario {
         }
     }
 
-    protected void drawFrameInnerRun(Graphics2D g2) throws IOException {
+    protected void drawFrameInnerRun(Graphics2D g2) {
         long nano = System.nanoTime() - tStart;
         long sec = nano / ScenarioSwitcher.NS_1SEC;
         long mil = (nano / ScenarioSwitcher.NS_1MSEC) % 1000;
@@ -222,11 +225,15 @@ public class SingleScenario extends AbstractScenario {
         }
     }
 
-    protected void drawFrameInnerResult(Graphics2D g2) throws IOException {
+    protected void drawFrameInnerResult(Graphics2D g2) {
     }
 
-    protected void drawFrameInnerFinish(Graphics2D g2) throws IOException {
+    protected void drawFrameInnerFinish(Graphics2D g2) {
         getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
+    }
+
+    protected void drawFrameInnerClose(Graphics2D g2) {
+        getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
     }
 
     public ScenarioState getState() {
@@ -239,19 +246,27 @@ public class SingleScenario extends AbstractScenario {
         }
     }
 
-    public void tryToCancelRun() {
+    public void tryToCancelScenario() {
         tlWarning.setText("Press a button 3 times to cancel");
         tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setVisible(true);
     }
 
-    public void cancelRun() {
+    public void cancelScenario() {
         tlResult.setText("Canceled");
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
 
         getSwitcher().setTargetFPS(3);
         setState(ScenarioState.RESULT);
+    }
+
+    public void nextScenario() {
+        setState(ScenarioState.FINISH);
+    }
+
+    public void closeScenario() {
+        setState(ScenarioState.CLOSE);
     }
 
     //TODO
@@ -400,21 +415,40 @@ public class SingleScenario extends AbstractScenario {
         @Override
         public void mouseClicked(MouseEvent e) {
             synchronized (scenario) {
-                switch (scenario.getState()) {
-                case RUN:
-                    cnt++;
-
-                    if (cnt > 0) {
-                        scenario.tryToCancelRun();
-                    }
-                    if (cnt >= 3) {
-                        scenario.cancelRun();
-                    }
+                switch (e.getButton()) {
+                case MouseEvent.BUTTON1:
+                    mouseLeftClicked(e);
                     break;
-                case RESULT:
-                    scenario.setState(ScenarioState.FINISH);
+                case MouseEvent.BUTTON3:
+                    mouseRightClicked(e);
                     break;
                 }
+            }
+        }
+
+        protected void mouseLeftClicked(MouseEvent e) {
+            switch (scenario.getState()) {
+            case RUN:
+                cnt++;
+
+                if (cnt > 0) {
+                    scenario.tryToCancelScenario();
+                }
+                if (cnt >= 3) {
+                    scenario.cancelScenario();
+                }
+                break;
+            case RESULT:
+                scenario.nextScenario();
+                break;
+            }
+        }
+
+        protected void mouseRightClicked(MouseEvent e) {
+            switch (scenario.getState()) {
+            case RESULT:
+                scenario.closeScenario();
+                break;
             }
         }
     }
