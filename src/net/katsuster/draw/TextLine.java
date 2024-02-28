@@ -4,37 +4,20 @@ import java.awt.*;
 
 public class TextLine extends AbstractDrawable {
     private String text = "";
-    private FontMetrics fm;
 
     public TextLine() {
         //do nothing
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-        Color cBefore = g2.getColor();
-        Font fBefore = g2.getFont();
-        fm = g2.getFontMetrics(getFont());
-        drawInner(g2);
-        g2.setColor(cBefore);
-        g2.setFont(fBefore);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String t) {
-        text = t;
-    }
-
     protected void drawInner(Graphics2D g2) {
         Rectangle bdContent = getContentBox().getContents();
-        int x = 0, y = 0;
+        FontMetrics fm = g2.getFontMetrics(getFont());
         int wStr = fm.stringWidth(getText());
         int ascentStr = fm.getMaxAscent();
         int descentStr = fm.getMaxDescent();
         int hStr = ascentStr + descentStr;
+        int x = 0, y = 0;
 
         switch (getHAlign()) {
         case LEFT:
@@ -60,13 +43,19 @@ public class TextLine extends AbstractDrawable {
             break;
         }
 
+        g2.setColor(getBackground());
+        g2.fillRect(bdContent.x, bdContent.y, bdContent.width, bdContent.height);
+
         g2.setColor(getForeground());
         g2.setFont(getFont());
         g2.drawString(getText(), x, y + ascentStr);
-
-        g2.setColor(getBackground());
-        //g2.fillRect(x, y, wStr, hStr);
-        g2.fillRect(bdContent.x, bdContent.y, bdContent.width, bdContent.height);
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String t) {
+    text = t;
+}
 }
