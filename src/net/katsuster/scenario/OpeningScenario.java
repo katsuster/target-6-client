@@ -141,6 +141,14 @@ public class OpeningScenario extends AbstractScenario {
 
         btIO.removeBTDeviceListener(handlerBT);
         mainWnd.removeMouseListener(handlerMouse);
+
+        timerParent.cancel();
+        try {
+            thBTInit.interrupt();
+            thBTInit.join();
+        } catch (InterruptedException ex) {
+            //ignore
+        }
     }
 
     @Override
