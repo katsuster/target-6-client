@@ -3,8 +3,6 @@ package net.katsuster.scenario;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -12,11 +10,16 @@ import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
+import net.katsuster.draw.GridBG;
 import net.katsuster.draw.ShapeBox;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class OpeningScenario extends AbstractScenario {
+    public static final int FONT_SIZE_LARGE = 120;
+    public static final int FONT_SIZE_MEDIUM = 32;
+    public static final int FONT_SIZE_SMALL = 16;
+
     public static final String CMD_INIT = "init";
 
     private BTDeviceHandler handlerBT;
@@ -51,9 +54,15 @@ public class OpeningScenario extends AbstractScenario {
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, 120);
-        fontMedium = f.deriveFont(Font.PLAIN, 32);
-        fontSmall = f.deriveFont(Font.PLAIN, 14);
+        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+
+        GridBG bg = new GridBG();
+        bg.setForeground(new Color(240, 240, 240));
+        bg.setGridSize(48, 48);
+        bg.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
 
         TextLine tlTitle = new TextLine();
         tlTitle.setText("Titleタイトル");
@@ -75,7 +84,7 @@ public class OpeningScenario extends AbstractScenario {
         tlVersion.setFont(fontSmall);
         tlVersion.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlVersion.getContentBox().setMargin(0, 0, 15, 5);
+        tlVersion.getContentBox().setMargin(0, 0, FONT_SIZE_SMALL, 5);
 
         ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
@@ -86,20 +95,24 @@ public class OpeningScenario extends AbstractScenario {
             tlDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tlDevState[i].setFont(fontSmall);
             tlDevState[i].getContentBox().setBounds(scrw * i, mainWnd.getHeight() - scrh, scrw, scrh);
-            tlDevState[i].getContentBox().setMargin(10, 10, 10, 10);
+            tlDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2,
+                    FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2);
             tlDevState[i].getContentBox().setPadding(5, 5, 5, 5);
 
             shDevState[i] = new ShapeBox();
-            shDevState[i].setShape(new RoundRectangle2D.Double(1, 10, scrw, 30, 30, 30));
+            shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALL / 2,
+                    scrw, FONT_SIZE_SMALL * 2, 30, 30));
             shDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             shDevState[i].setForeground(new Color(192, 192, 255));
             shDevState[i].setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
             shDevState[i].setStroke(new BasicStroke(2));
             shDevState[i].getContentBox().setBounds(tlDevState[i].getContentBox().getBounds());
-            shDevState[i].getContentBox().setMargin(20, 10, 20, 10);
+            shDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2,
+                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2);
         }
 
         clearDrawable();
+        addDrawable(bg);
         addDrawable(tlTitle);
         addDrawable(tlMsg);
         addDrawable(tlVersion);
@@ -253,7 +266,6 @@ public class OpeningScenario extends AbstractScenario {
         public void run() {
             ScenarioSwitcher switcher = scenario.getSwitcher();
             BTInOut btIO = switcher.getBTInOut();
-            BufferedWriter[] btWr = btIO.getWriters();
             int retry = 5;
             boolean done = false;
 
@@ -294,19 +306,11 @@ public class OpeningScenario extends AbstractScenario {
                     continue;
                 }
 
-                try {
-                    synchronized (scenario) {
-                        btWr[i].write(CMD_INIT + " " + i);
-                        btWr[i].flush();
-                        scenario.setDevState(i, DevState.INIT_WAIT);
-                    }
-
-                    Thread.sleep(300);
-                } catch (IOException ex) {
-                    scenario.printError(CMD_INIT + "I/O error in write.");
-                } catch (InterruptedException ex) {
-                    //Do nothing
+                boolean success = writeLine(i, CMD_INIT + " " + i);
+                if (!success) {
+                    scenario.getSwitcher().termBTIO();
                 }
+                scenario.setDevState(i, DevState.INIT_WAIT);
             }
             switcher.addLogLater("Initialized.\n");
         }
@@ -381,9 +385,6 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            //System.out.println(getName() + ": click!");
-            scenario.getSwitcher().addLogLater(getName() + ": click!\n");
-
             if (scenario.getFlagReady()) {
                 scenario.setFlagStart(true);
             } else {
