@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.freedesktop.dbus.exceptions.DBusException;
+import org.freedesktop.dbus.exceptions.DBusExecutionException;
 import org.freedesktop.dbus.handlers.AbstractPropertiesChangedHandler;
 import org.freedesktop.dbus.interfaces.Properties;
 import org.freedesktop.dbus.types.Variant;
@@ -318,6 +319,10 @@ public class BTStream {
                 //System.out.println("send: '" + new String(bpart) + "'");
             } catch (DBusException ex) {
                 System.err.println("Error: I/O error in write bytes to bluetooth GATT.");
+                System.err.println("  msg:" + ex.getMessage());
+                throw new RuntimeException(ex);
+            } catch (DBusExecutionException ex) {
+                System.err.println("Error: Runtime error in write bytes to bluetooth GATT.");
                 System.err.println("  msg:" + ex.getMessage());
                 throw new RuntimeException(ex);
             }
