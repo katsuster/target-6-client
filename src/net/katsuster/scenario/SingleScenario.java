@@ -20,8 +20,10 @@ import net.katsuster.ui.MainWindow;
 public class SingleScenario extends AbstractScenario {
     public static final int FONT_SIZE_LARGE = 120;
     public static final int FONT_SIZE_MEDIUM = 80;
-    public static final int FONT_SIZE_SMALL = 22;
+    public static final int FONT_SIZE_SMALL = 24;
+    public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
+    public static final String CMD_SINGLE = "single";
     public static final String CMD_HIT = "hit";
 
     public static final String PREFIX_DEVICE_ID = "d";
@@ -81,15 +83,13 @@ public class SingleScenario extends AbstractScenario {
 
         tlTime = new TextLine();
         tlTime.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-        tlTime.setForeground(Color.BLACK);
+        tlTime.setForeground(Color.DARK_GRAY);
         tlTime.setFont(fontLarge);
         tlTime.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
         tlWarning = new TextLine();
-        tlWarning.setText("Press a button 3 times to cancel");
         tlWarning.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlWarning.setForeground(Color.RED);
         tlWarning.setFont(fontSmall);
         tlWarning.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() - 100);
@@ -97,9 +97,7 @@ public class SingleScenario extends AbstractScenario {
         tlWarning.setVisible(false);
 
         tlResult = new TextLine();
-        tlResult.setText("Result");
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-        tlResult.setForeground(Color.BLACK);
         tlResult.setFont(fontMedium);
         tlResult.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
@@ -154,7 +152,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerInit(Graphics2D g2) throws IOException {
-        boolean success = writeLine(2, "single\n");
+        boolean success = writeLine(2, CMD_SINGLE + "\n");
         if (!success) {
             getSwitcher().termBTIO();
         }
@@ -196,7 +194,7 @@ public class SingleScenario extends AbstractScenario {
                         i + 1,
                         sen.getTimeHit() / 1000, sen.getTimeHit() % 1000,
                         diff / 1000, diff % 1000));
-                tl.setForeground(Color.BLACK);
+                tl.setForeground(Color.DARK_GRAY);
                 tl.setFont(fontSmall);
                 tl.getContentBox().setBounds(
                         0, (int)((i + 3) * FONT_SIZE_SMALL * 1.3),
@@ -213,8 +211,12 @@ public class SingleScenario extends AbstractScenario {
 
             tlTime.setText(String.format("Total %3d.%03d",
                     before / 1000, before % 1000));
+            tlResult.setText("Result");
+            tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
-            tlWarning.setVisible(false);
+            tlWarning.setText("Press a button to next");
+            tlWarning.setForeground(Color.DARK_GRAY);
+            tlWarning.setVisible(true);
             getSwitcher().setTargetFPS(3);
             setState(ScenarioState.RESULT);
         }
@@ -238,12 +240,14 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void tryToCancelRun() {
+        tlWarning.setText("Press a button 3 times to cancel");
+        tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setVisible(true);
     }
 
     public void cancelRun() {
         tlResult.setText("Canceled");
-        tlResult.setForeground(Color.RED);
+        tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
 
         getSwitcher().setTargetFPS(3);
@@ -258,7 +262,7 @@ public class SingleScenario extends AbstractScenario {
         case 1:
             return 0;
         case 2:
-            return 3;
+            return 6;
         default:
             return 0;
         }
@@ -352,13 +356,13 @@ public class SingleScenario extends AbstractScenario {
             int devid = parseID(st.nextToken(), PREFIX_DEVICE_ID);
 
             next = st.nextToken();
-            if (next.equalsIgnoreCase("single")) {
+            if (next.equalsIgnoreCase(CMD_SINGLE)) {
                 next = st.nextToken();
 
                 if (next.equalsIgnoreCase("OK")) {
                     scenario.resetTimeStart();
                 } else {
-                    scenario.printError(CMD_HIT + ": Single command is failed.");
+                    scenario.printError(CMD_SINGLE + ": Command is failed.");
                 }
             } else {
                 int senid = parseID(next, PREFIX_SENSOR_ID);
