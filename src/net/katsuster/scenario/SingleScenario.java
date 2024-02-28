@@ -3,7 +3,6 @@ package net.katsuster.scenario;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,10 +13,15 @@ import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
+import net.katsuster.draw.GridBG;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class SingleScenario extends AbstractScenario {
+    public static final int FONT_SIZE_LARGE = 120;
+    public static final int FONT_SIZE_MEDIUM = 80;
+    public static final int FONT_SIZE_SMALL = 22;
+
     public static final String CMD_HIT = "hit";
 
     public static final String PREFIX_DEVICE_ID = "d";
@@ -31,10 +35,10 @@ public class SingleScenario extends AbstractScenario {
         FINISH,
     }
 
-    private BufferedWriter[] btWr;
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
     private Font fontLarge;
+    private Font fontMedium;
     private Font fontSmall;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
@@ -59,15 +63,21 @@ public class SingleScenario extends AbstractScenario {
         getSwitcher().addLogLater("Entering " + getName() + "\n");
         getSwitcher().setTargetFPS(60);
 
-        btWr = btIO.getWriters();
         handlerBT = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handlerBT);
         handlerMouse = new MouseHandler(this);
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, 120);
-        fontSmall = f.deriveFont(Font.PLAIN, 22);
+        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+
+        GridBG bg = new GridBG();
+        bg.setForeground(new Color(240, 240, 240));
+        bg.setGridSize(48, 48);
+        bg.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
 
         tlTime = new TextLine();
         tlTime.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
@@ -77,7 +87,7 @@ public class SingleScenario extends AbstractScenario {
                 mainWnd.getWidth(), mainWnd.getHeight());
 
         tlWarning = new TextLine();
-        tlWarning.setText("Press Button 3 times to Stop");
+        tlWarning.setText("Press a button 3 times to cancel");
         tlWarning.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
         tlWarning.setForeground(Color.RED);
         tlWarning.setFont(fontSmall);
@@ -90,12 +100,14 @@ public class SingleScenario extends AbstractScenario {
         tlResult.setText("Result");
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
         tlResult.setForeground(Color.BLACK);
-        tlResult.setFont(fontLarge);
+        tlResult.setFont(fontMedium);
         tlResult.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
+        clearDrawable();
+        addDrawable(bg);
         addDrawable(tlTime);
         addDrawable(tlWarning);
         addDrawable(tlResult);
@@ -142,9 +154,12 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerInit(Graphics2D g2) throws IOException {
-        btWr[2].write("single\n");
-        btWr[2].flush();
+        boolean success = writeLine(2, "single\n");
+        if (!success) {
+            getSwitcher().termBTIO();
+        }
 
+        resetTimeStart();
         setState(ScenarioState.WAIT);
     }
 
@@ -183,8 +198,12 @@ public class SingleScenario extends AbstractScenario {
                         diff / 1000, diff % 1000));
                 tl.setForeground(Color.BLACK);
                 tl.setFont(fontSmall);
-                tl.getContentBox().setBounds(0, (i + 3) * 32, 100, 32);
-                tl.getContentBox().setMargin(20, 5, 20, 5);
+                tl.getContentBox().setBounds(
+                        0, (int)((i + 3) * FONT_SIZE_SMALL * 1.3),
+                        100, (int)(FONT_SIZE_SMALL * 1.3));
+                tl.getContentBox().setMargin(
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
 
                 results.add(tl);
                 addDrawable(tl);
@@ -195,12 +214,12 @@ public class SingleScenario extends AbstractScenario {
             tlTime.setText(String.format("Total %3d.%03d",
                     before / 1000, before % 1000));
             tlResult.setVisible(true);
+            tlWarning.setVisible(false);
             setState(ScenarioState.RESULT);
         }
     }
 
     protected void drawFrameInnerResult(Graphics2D g2) throws IOException {
-
     }
 
     protected void drawFrameInnerFinish(Graphics2D g2) throws IOException {
@@ -217,12 +236,16 @@ public class SingleScenario extends AbstractScenario {
         }
     }
 
-    public void showWarning() {
+    public void tryToCancelRun() {
         tlWarning.setVisible(true);
     }
 
-    public void showAbort() {
-        setState(ScenarioState.FINISH);
+    public void cancelRun() {
+        tlResult.setText("Canceled");
+        tlResult.setForeground(Color.RED);
+        tlResult.setVisible(true);
+
+        setState(ScenarioState.RESULT);
     }
 
     //TODO
@@ -370,19 +393,16 @@ public class SingleScenario extends AbstractScenario {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            //System.out.println(getName() + ": click!");
-            scenario.getSwitcher().addLogLater(getName() + ": click!\n");
-
             synchronized (scenario) {
                 switch (scenario.getState()) {
                 case RUN:
                     cnt++;
 
                     if (cnt > 0) {
-                        scenario.showWarning();
+                        scenario.tryToCancelRun();
                     }
                     if (cnt >= 3) {
-                        scenario.setState(ScenarioState.RESULT);
+                        scenario.cancelRun();
                     }
                     break;
                 case RESULT:
