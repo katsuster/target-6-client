@@ -215,6 +215,7 @@ public class SingleScenario extends AbstractScenario {
                     before / 1000, before % 1000));
             tlResult.setVisible(true);
             tlWarning.setVisible(false);
+            getSwitcher().setTargetFPS(3);
             setState(ScenarioState.RESULT);
         }
     }
@@ -245,6 +246,7 @@ public class SingleScenario extends AbstractScenario {
         tlResult.setForeground(Color.RED);
         tlResult.setVisible(true);
 
+        getSwitcher().setTargetFPS(3);
         setState(ScenarioState.RESULT);
     }
 
