@@ -46,7 +46,6 @@ public class OpeningScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
-        getSwitcher().addLogLater("Entering " + getName() + "\n");
         getSwitcher().setTargetFPS(3);
 
         handlerBT = new BTDeviceHandler(this);

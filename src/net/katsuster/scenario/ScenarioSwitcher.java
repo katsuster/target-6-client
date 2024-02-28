@@ -109,7 +109,9 @@ public class ScenarioSwitcher implements Runnable {
                 g2.setBackground(Color.WHITE);
                 g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
 
-                curScenario.drawFrame(g2);
+                synchronized (curScenario) {
+                    curScenario.drawFrame(g2);
+                }
 
                 g2.dispose();
             } while (strategy.contentsRestored());
@@ -136,8 +138,10 @@ public class ScenarioSwitcher implements Runnable {
             if (curScenario != null) {
                 curScenario.deactivate();
                 curScenario.setActivated(false);
+                addLogLater("Leaving " + curScenario.getName() + "\n");
             }
 
+            addLogLater("Entering " + nextScenario.getName() + "\n");
             nextScenario.setActivated(true);
             nextScenario.activate();
             curScenario = nextScenario;
