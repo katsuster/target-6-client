@@ -10,7 +10,7 @@ import org.freedesktop.dbus.exceptions.DBusException;
 import net.katsuster.scenario.ScenarioSwitcher;
 
 public class BTInOut {
-    public static final int NUM_DEVICES = 3;
+    public static final int NUM_DEVICES = 2;
 
     ScenarioSwitcher switcher;
     private BTStream[] streamBT = new BTStream[NUM_DEVICES];

@@ -18,6 +18,8 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class SingleScenario extends AbstractScenario {
+    public static final int DEV_SINGLE = 1;
+
     public static final int FONT_SIZE_LARGE = 120;
     public static final int FONT_SIZE_MEDIUM = 80;
     public static final int FONT_SIZE_SMALL = 24;
@@ -155,7 +157,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerInit(Graphics2D g2) {
-        boolean success = writeLine(2, CMD_SINGLE + "\n");
+        boolean success = writeLine(DEV_SINGLE, CMD_SINGLE + "\n");
         if (!success) {
             getSwitcher().termBTIO();
         }
@@ -253,6 +255,9 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void cancelScenario() {
+        tlWarning.setText("Press a button to next");
+        tlWarning.setForeground(Color.DARK_GRAY);
+
         tlResult.setText("Canceled");
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
@@ -275,9 +280,9 @@ public class SingleScenario extends AbstractScenario {
         case 0:
             return 0;
         case 1:
-            return 0;
-        case 2:
             return 6;
+        case 2:
+            return 0;
         default:
             return 0;
         }
