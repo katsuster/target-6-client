@@ -295,8 +295,7 @@ public class OpeningScenario extends AbstractScenario {
                     }
                 } catch (Exception ex) {
                     scenario.setDevState(id, DevState.FAILED);
-
-                    printError("Failed to connect device " + id + "\n", ex);
+                    printError("Failed to connect device " + id, ex);
                     break;
                 }
 
