@@ -15,6 +15,7 @@ public class BTTestSubPanel extends JPanel {
     BTScanPanel parent;
     private JTextArea textLog;
     private JTextField statusTest;
+    private Thread lastTestThread;
 
     public BTTestSubPanel(BTScanPanel p) {
         parent = p;
@@ -131,7 +132,21 @@ public class BTTestSubPanel extends JPanel {
             panel.setStatusTest("Test Start...");
             panel.getTextLog().setText("");
 
-            Thread testThread = new Thread(() -> {
+            try {
+                if (lastTestThread != null) {
+                    lastTestThread.interrupt();
+                    lastTestThread.join();
+                    lastTestThread = null;
+                }
+            } catch (InterruptedException ex) {
+                System.err.println("Error: failed to cancel last test.");
+                System.err.println("  msg:" + ex.getMessage());
+                SwingUtilities.invokeLater(() -> {
+                    panel.setStatusTest(ex.getMessage());
+                });
+            }
+
+            lastTestThread = new Thread(() -> {
                 BTStream stream;
                 long nsStart = System.nanoTime();
 
@@ -208,7 +223,7 @@ public class BTTestSubPanel extends JPanel {
                     panel.setStatusTest("Done.");
                 });
             });
-            testThread.start();
+            lastTestThread.start();
         }
 
         public void addLogWithTime(long nsStart, String msg) {
