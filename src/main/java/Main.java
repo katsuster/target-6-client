@@ -46,12 +46,10 @@ public class Main {
             uiFontBase = Font.createFont(Font.TRUETYPE_FONT, is);
             is.close();
         } catch (IOException ex) {
-            System.err.println("Error: Cannot load Font.");
-            System.err.println("  msg:" + ex.getMessage());
+            printException("Error: Cannot load Font.", ex);
             return;
         } catch (FontFormatException ex) {
-            System.err.println("Error: Font data is invalid or broken.");
-            System.err.println("  msg:" + ex.getMessage());
+            printException("Error: Font data is invalid or broken.", ex);
             return;
         }
 
@@ -61,8 +59,7 @@ public class Main {
         try {
             DeviceManager.createInstance(false);
         } catch (DBusException ex) {
-            System.err.println("Error: Cannot create Bluetooth device manager instance.");
-            System.err.println("  msg:" + ex.getMessage());
+            printException("Error: Cannot create Bluetooth device manager instance.", ex);
             return;
         }
 
@@ -90,12 +87,10 @@ public class Main {
                 mw.dispatchEvent(new WindowEvent(mw, WindowEvent.WINDOW_CLOSING));
             }
         } catch (HeadlessException ex) {
-            System.err.println("Error: Cannot show window.");
-            System.err.println("  msg:" + ex.getMessage());
+            printException("Error: Cannot show window.", ex);
             return;
         } catch (InterruptedException ex) {
-            System.err.println("Error: Scenario is aborted.");
-            System.err.println("  msg:" + ex.getMessage());
+            printException("Error: Scenario is aborted.", ex);
             return;
         }
     }
@@ -108,6 +103,12 @@ public class Main {
                 "  %4s: Open Bluetooth device setting.\n",
                 OPT_HELP, OPT_SETTING_BT,
                 OPT_HELP, OPT_SETTING_BT));
+    }
+
+    public static void printException(String msg, Exception ex) {
+        System.err.println(msg);
+        System.err.println("  msg:" + ex.getMessage());
+        ex.printStackTrace(System.err);
     }
 
     public static void setUIDefaultFont(Font f) {
