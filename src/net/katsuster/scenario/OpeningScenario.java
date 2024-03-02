@@ -192,7 +192,6 @@ public class OpeningScenario extends AbstractScenario {
         flagReady = finish;
 
         if (flagReady && flagStart) {
-            timerParent.cancel();
             getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
         }
 
@@ -223,6 +222,10 @@ public class OpeningScenario extends AbstractScenario {
         synchronized (this) {
             flagStart = f;
         }
+    }
+
+    public void closeScenario() {
+        getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
     }
 
     private class TaskClock extends TimerTask {
@@ -393,11 +396,28 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            synchronized (scenario) {
+                switch (e.getButton()) {
+                case MouseEvent.BUTTON1:
+                    mouseLeftClicked(e);
+                    break;
+                case MouseEvent.BUTTON3:
+                    mouseRightClicked(e);
+                    break;
+                }
+            }
+        }
+
+        public void mouseLeftClicked(MouseEvent e) {
             if (scenario.getFlagReady()) {
                 scenario.setFlagStart(true);
             } else {
                 scenario.printWarn("Devices are not ready.");
             }
+        }
+
+        public void mouseRightClicked(MouseEvent e) {
+            scenario.closeScenario();
         }
     }
 }
