@@ -29,6 +29,8 @@ public class BTDeviceReceiver implements Runnable {
             }
         } catch (IOException ex) {
             System.err.println("I/O error in read.\n");
+            System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
 
         try {
@@ -36,6 +38,8 @@ public class BTDeviceReceiver implements Runnable {
             bt.getOutputStream().close();
         } catch (IOException ex) {
             System.err.println("I/O error in close.\n");
+            System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 

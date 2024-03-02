@@ -80,6 +80,7 @@ public class BTStream {
             BTDevice.disconnect();
             System.err.println("Error: Cannot init Bluetooth IO stream.");
             System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
             throw new IllegalArgumentException("Error: Cannot init Bluetooth IO stream.");
         }
     }
@@ -238,6 +239,7 @@ public class BTStream {
             } catch (DBusException ex) {
                 System.err.println("Error: failed to close bluetooth stream.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
                 throw new RuntimeException(ex);
             }
         }
@@ -310,10 +312,12 @@ public class BTStream {
             } catch (DBusException ex) {
                 System.err.println("Error: I/O error in write bytes to bluetooth GATT.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
                 throw new RuntimeException(ex);
             } catch (DBusExecutionException ex) {
                 System.err.println("Error: Runtime error in write bytes to bluetooth GATT.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
                 throw new RuntimeException(ex);
             }
         }
@@ -330,6 +334,7 @@ public class BTStream {
             } catch (DBusException ex) {
                 System.err.println("Error: I/O error in write a byte to bluetooth GATT.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
                 throw new RuntimeException(ex);
             }
         }

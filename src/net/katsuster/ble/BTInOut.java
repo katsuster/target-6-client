@@ -65,6 +65,7 @@ public class BTInOut {
         } catch (Exception ex) {
             switcher.addLogLater("Failed to connect device " + id + "\n");
             System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -93,6 +94,7 @@ public class BTInOut {
         } catch (InterruptedException ex) {
             switcher.addLogLater("Failed to join receiver thread for device " + id + "\n");
             System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -106,6 +108,7 @@ public class BTInOut {
         } catch (Exception ex) {
             switcher.addLogLater("Failed to disconnect device " + id + "\n");
             System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 
