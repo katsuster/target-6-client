@@ -148,6 +148,13 @@ public class BTTestSubPanel extends JPanel {
                         panel.setStatusTest(ex.getMessage());
                     });
                     return;
+                } catch (InterruptedException ex) {
+                    System.err.println("Error: interrupted in BTStream.");
+                    System.err.println("  msg:" + ex.getMessage());
+                    SwingUtilities.invokeLater(() -> {
+                        panel.setStatusTest(ex.getMessage());
+                    });
+                    return;
                 }
 
                 SwingUtilities.invokeLater(() -> {
