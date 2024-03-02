@@ -357,15 +357,11 @@ public class SingleScenario extends AbstractScenario {
             try {
                 parse(e);
             } catch (RuntimeException ex) {
-                scenario.printError(CMD_HIT + ": Illegal format in answers.");
-                System.err.println("  msg:" + ex.getMessage());
-                System.err.println("  ans:" + e.getMessage());
-                ex.printStackTrace(System.err);
+                scenario.printError(CMD_HIT + ": Illegal format in answers.", ex);
+                scenario.printError(CMD_HIT + ": ans:" + e.getMessage(), null);
             } catch (ParseException ex) {
-                scenario.printError(CMD_HIT + ": Illegal format format (time) in answers.");
-                System.err.println("  msg:" + ex.getMessage());
-                System.err.println("  ans:" + e.getMessage());
-                ex.printStackTrace(System.err);
+                scenario.printError(CMD_HIT + ": Illegal format format (time) in answers.", ex);
+                scenario.printError(CMD_HIT + ": ans:" + e.getMessage(), null);
             }
         }
 
@@ -384,7 +380,7 @@ public class SingleScenario extends AbstractScenario {
                 if (next.equalsIgnoreCase("OK")) {
                     scenario.resetTimeStart();
                 } else {
-                    scenario.printError(CMD_SINGLE + ": Command is failed.");
+                    scenario.printError(CMD_SINGLE + ": Command is failed.", null);
                 }
             } else {
                 int senid = parseID(next, PREFIX_SENSOR_ID);
@@ -393,7 +389,7 @@ public class SingleScenario extends AbstractScenario {
                 Sensor sen = scenario.getSensor(devid, senid);
 
                 scenario.printInfo(String.format("%s dev:%d sen:%d %3d.%03d",
-                        tlTime.getText(), devid, senid, msPast / 1000, msPast % 1000));
+                        tlTime.getText(), devid, senid, msPast / 1000, msPast % 1000), null);
 
                 sen.setTimeHit(msPast);
                 sen.setState(Sensor.SensorState.HIT);

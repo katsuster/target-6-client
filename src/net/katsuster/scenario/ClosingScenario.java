@@ -185,9 +185,7 @@ public class ClosingScenario extends AbstractScenario {
                 } catch (Exception ex) {
                     scenario.setDevState(id, DevState.FAILED);
 
-                    switcher.addLogLater("Failed to disconnect device " + id + "\n");
-                    System.err.println("  msg:" + ex.getMessage());
-                    ex.printStackTrace(System.err);
+                    printError("Failed to disconnect device " + id + "\n", ex);
                 }
 
                 if (btIO.getNumberOfConnectedDevices() == 0) {

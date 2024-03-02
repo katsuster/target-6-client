@@ -82,11 +82,6 @@ public class AbstractScenario implements Scenario {
         }
     }
 
-    public void printErrorInner(String header, String str) {
-        getSwitcher().addLogLater(header + ": " + getName() + ": " + str + "\n");
-        System.err.println(header + ": " + getName() + ": " + str);
-    }
-
     public boolean writeLine(int id, String s) {
         BufferedWriter[] btWr = getSwitcher().getBTInOut().getWriters();
         boolean success = false;
@@ -98,13 +93,13 @@ public class AbstractScenario implements Scenario {
                     btWr[id].flush();
                     success = true;
             } catch (IOException ex) {
-                printError("I/O error in write.");
+                printError("I/O error in write.", ex);
             } catch (RuntimeException ex) {
-                printError("Runtime error in write.");
+                printError("Runtime error in write.", ex);
             }
 
             if (retry > 5) {
-                printError("Too many error in write, maybe disconnected.");
+                printError("Too many error in write, maybe disconnected.", null);
                 return false;
             }
             retry++;
@@ -113,15 +108,24 @@ public class AbstractScenario implements Scenario {
         return true;
     }
 
-    public void printError(String str) {
-        printErrorInner("Error", str);
+    public void printErrorInner(String header, String str, Exception ex) {
+        getSwitcher().addLogLater(header + ": " + getName() + ": " + str + "\n");
+        System.err.println(header + ": " + getName() + ": " + str);
+        if (ex != null) {
+            System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
+        }
     }
 
-    public void printWarn(String str) {
-        printErrorInner("Warn ", str);
+    public void printError(String str, Exception ex) {
+        printErrorInner("Error", str, ex);
     }
 
-    public void printInfo(String str) {
-        printErrorInner("Info ", str);
+    public void printWarn(String str, Exception ex) {
+        printErrorInner("Warn ", str, ex);
+    }
+
+    public void printInfo(String str, Exception ex) {
+        printErrorInner("Info ", str, ex);
     }
 }

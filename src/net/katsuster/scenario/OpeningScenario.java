@@ -296,9 +296,7 @@ public class OpeningScenario extends AbstractScenario {
                 } catch (Exception ex) {
                     scenario.setDevState(id, DevState.FAILED);
 
-                    switcher.addLogLater("Failed to connect device " + id + "\n");
-                    System.err.println("  msg:" + ex.getMessage());
-                    ex.printStackTrace(System.err);
+                    printError("Failed to connect device " + id + "\n", ex);
                     break;
                 }
 
@@ -348,19 +346,15 @@ public class OpeningScenario extends AbstractScenario {
                 String cmdEcho = st.nextToken();
                 if (!cmdEcho.equalsIgnoreCase(CMD_INIT)) {
                     //answers of another cmd, ignored
-                    scenario.printWarn("Ignore answers of " + cmdEcho + ".");
+                    scenario.printWarn("Ignore answers of " + cmdEcho + ".", null);
                     return;
                 }
 
                 scenario.setDevState(devid, DevState.INIT);
             } catch (NoSuchElementException ex) {
-                scenario.printError(CMD_INIT + ": Illegal number format in answers.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                scenario.printError(CMD_INIT + ": Illegal number format in answers.", ex);
             } catch (NumberFormatException ex) {
-                scenario.printError(CMD_INIT + ": Illegal number format in answers.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                scenario.printError(CMD_INIT + ": Illegal number format in answers.", ex);
             }
 
             checkAllDevices();
@@ -416,7 +410,7 @@ public class OpeningScenario extends AbstractScenario {
             if (scenario.getFlagReady()) {
                 scenario.setFlagStart(true);
             } else {
-                scenario.printWarn("Devices are not ready.");
+                scenario.printWarn("Devices are not ready.", null);
             }
         }
 
