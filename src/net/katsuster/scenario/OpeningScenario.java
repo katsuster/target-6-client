@@ -298,6 +298,7 @@ public class OpeningScenario extends AbstractScenario {
 
                     switcher.addLogLater("Failed to connect device " + id + "\n");
                     System.err.println("  msg:" + ex.getMessage());
+                    ex.printStackTrace(System.err);
                     break;
                 }
 
@@ -355,9 +356,11 @@ public class OpeningScenario extends AbstractScenario {
             } catch (NoSuchElementException ex) {
                 scenario.printError(CMD_INIT + ": Illegal number format in answers.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
             } catch (NumberFormatException ex) {
                 scenario.printError(CMD_INIT + ": Illegal number format in answers.");
                 System.err.println("  msg:" + ex.getMessage());
+                ex.printStackTrace(System.err);
             }
 
             checkAllDevices();

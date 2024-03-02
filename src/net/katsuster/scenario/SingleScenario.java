@@ -360,10 +360,12 @@ public class SingleScenario extends AbstractScenario {
                 scenario.printError(CMD_HIT + ": Illegal format in answers.");
                 System.err.println("  msg:" + ex.getMessage());
                 System.err.println("  ans:" + e.getMessage());
+                ex.printStackTrace(System.err);
             } catch (ParseException ex) {
                 scenario.printError(CMD_HIT + ": Illegal format format (time) in answers.");
                 System.err.println("  msg:" + ex.getMessage());
                 System.err.println("  ans:" + e.getMessage());
+                ex.printStackTrace(System.err);
             }
         }
 

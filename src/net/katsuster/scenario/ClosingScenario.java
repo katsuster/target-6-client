@@ -187,6 +187,7 @@ public class ClosingScenario extends AbstractScenario {
 
                     switcher.addLogLater("Failed to disconnect device " + id + "\n");
                     System.err.println("  msg:" + ex.getMessage());
+                    ex.printStackTrace(System.err);
                 }
 
                 if (btIO.getNumberOfConnectedDevices() == 0) {
