@@ -30,15 +30,15 @@ public class BTStream {
     private BTInputStream streamIn;
     private BTOutputStream streamOut;
 
-    public BTStream(int id, int timeout) throws DBusException {
+    public BTStream(int id, int timeout) throws DBusException, InterruptedException {
         initStream(id, timeout);
     }
 
-    public BTStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException {
+    public BTStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException, InterruptedException {
         initStream(ada, dev, srv, tx, rx, timeout);
     }
 
-    private void initStream(int id, int timeout) throws IllegalArgumentException, DBusException {
+    private void initStream(int id, int timeout) throws DBusException, InterruptedException {
         String ada = BTSetting.getSetting(id, BTSetting.SETTING_ADAPTER);
         String dev = BTSetting.getSetting(id, BTSetting.SETTING_DEVICE);
         String srv = BTSetting.getSetting(id, BTSetting.SETTING_GATT_SERVICE);
@@ -48,7 +48,7 @@ public class BTStream {
         initStream(ada, dev, srv, tx, rx, timeout);
     }
 
-    private void initStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException {
+    private void initStream(String ada, String dev, String srv, String tx, String rx, int timeout) throws DBusException, InterruptedException {
         BTAdapterMac = ada;
         BTDeviceMac = dev;
         UuidService = srv;
@@ -107,16 +107,12 @@ public class BTStream {
         return adapter;
     }
 
-    private BluetoothDevice findDevice(BluetoothAdapter adapter, String mac, int timeout) {
+    private BluetoothDevice findDevice(BluetoothAdapter adapter, String mac, int timeout) throws InterruptedException {
         DeviceManager deviceManager = DeviceManager.getInstance();
         BluetoothDevice device = null;
 
         adapter.startDiscovery();
-        try {
-            Thread.sleep(timeout * 1000);
-        } catch (InterruptedException ex) {
-            //ignore
-        }
+        Thread.sleep(timeout * 1000);
         adapter.stopDiscovery();
 
         List<BluetoothDevice> devices = deviceManager.getDevices(true);
@@ -137,7 +133,7 @@ public class BTStream {
         return device;
     }
 
-    private BluetoothGattService findService(BluetoothDevice device, String uuid, int timeout) {
+    private BluetoothGattService findService(BluetoothDevice device, String uuid, int timeout) throws InterruptedException {
         BluetoothGattService service = null;
         AtomicBoolean finish = new AtomicBoolean(false);
         int retry;
@@ -152,14 +148,11 @@ public class BTStream {
         while (!finish.get()) {
             if (retry >= timeout * 10) {
                 t.interrupt();
+                t.join();
                 break;
             }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //ignore
-            }
+            Thread.sleep(100);
             retry += 1;
         }
         if (!finish.get()) {
@@ -176,11 +169,7 @@ public class BTStream {
                 break;
             }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //ignore
-            }
+            Thread.sleep(100);
             retry += 1;
 
             device.refreshGattServices();

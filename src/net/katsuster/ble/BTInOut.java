@@ -33,7 +33,7 @@ public class BTInOut {
         listener = new ArrayList<>();
     }
 
-    public void connectBTDevice(int id) throws DBusException {
+    public void connectBTDevice(int id) throws DBusException, InterruptedException {
         if (id < 0 || NUM_DEVICES <= id) {
             throw new IllegalArgumentException("Illegal device ID:" + id + ".");
         }
