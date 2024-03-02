@@ -286,6 +286,7 @@ public class BTStream {
                 } catch (IOException ex) {
                     System.err.println("Error: I/O error in write to bluetooth device.");
                     System.err.println("  msg:" + ex.getMessage());
+                    System.err.println("  dat:" + dat);
                     ex.printStackTrace(System.err);
                 }
             }
