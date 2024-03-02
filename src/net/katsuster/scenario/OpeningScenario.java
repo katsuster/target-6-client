@@ -19,6 +19,7 @@ public class OpeningScenario extends AbstractScenario {
     public static final int FONT_SIZE_LARGE = 120;
     public static final int FONT_SIZE_MEDIUM = 32;
     public static final int FONT_SIZE_SMALL = 16;
+    public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
     public static final String CMD_INIT = "init";
 
@@ -33,6 +34,7 @@ public class OpeningScenario extends AbstractScenario {
     private boolean flagRestart = false;
     private boolean flagStart = false;
     private TextLine tlMsg;
+    private TextLine tlClock;
     private TextLine tlVersion;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
     private Timer timerParent;
@@ -82,13 +84,22 @@ public class OpeningScenario extends AbstractScenario {
         tlMsg.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
 
+        tlClock = new TextLine();
+        tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);
+        tlClock.setForeground(Color.DARK_GRAY);
+        tlClock.setFont(fontSmall);
+        tlClock.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
+        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
+
         tlVersion = new TextLine();
+        tlVersion.setText("Application v0.1 Copyright(c) Name 2023-2024.");
         tlVersion.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.BOTTOM);
         tlVersion.setForeground(Color.DARK_GRAY);
         tlVersion.setFont(fontSmall);
         tlVersion.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlVersion.getContentBox().setMargin(0, 0, FONT_SIZE_SMALL, 5);
+        tlVersion.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
 
         ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
@@ -118,8 +129,7 @@ public class OpeningScenario extends AbstractScenario {
 
         clearDrawable();
         addDrawable(bg);
-        addDrawable(tlTitle);
-        addDrawable(tlMsg);
+        addDrawable(tlClock);
         addDrawable(tlVersion);
         for (ShapeBox sh : shDevState) {
             addDrawable(sh);
@@ -127,6 +137,8 @@ public class OpeningScenario extends AbstractScenario {
         for (TextLine tl : tlDevState) {
             addDrawable(tl);
         }
+        addDrawable(tlMsg);
+        addDrawable(tlTitle);
 
         timerParent = new Timer();
         timerParent.schedule(new TaskClock(this), 0, 500);
@@ -159,9 +171,9 @@ public class OpeningScenario extends AbstractScenario {
             case FAILED:
                 timerParent.cancel();
                 tlDevState[i].setText("Dev" + i + " Failed");
-                tlDevState[i].setForeground(Color.RED);
+                tlDevState[i].setForeground(COLOR_DARK_ORANGE);
                 tlMsg.setText("ERROR! Please check settings (press button to restart)");
-                tlMsg.setForeground(Color.RED);
+                tlMsg.setForeground(COLOR_DARK_ORANGE);
                 setFlagFailed(true);
                 break;
             case RESET:
@@ -186,6 +198,9 @@ public class OpeningScenario extends AbstractScenario {
                 break;
             }
         }
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        tlClock.setText(df.format(new Date()));
 
         boolean finish = true;
         for (int i = 0; i < devState.length; i++) {
@@ -260,9 +275,6 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void run() {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            tlVersion.setText(df.format(new Date()) + " Application v0.1 Copyright(c) Name 2023-2024.");
-
             if (!flagReady) {
                 switch (cnt % 3) {
                 case 0:

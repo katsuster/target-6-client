@@ -54,7 +54,7 @@ public class ClosingScenario extends AbstractScenario {
         tlMsg = new TextLine();
         tlMsg.setText("Closing...");
         tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-        tlMsg.setForeground(Color.BLACK);
+        tlMsg.setForeground(Color.DARK_GRAY);
         tlMsg.setFont(fontMedium);
         tlMsg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());

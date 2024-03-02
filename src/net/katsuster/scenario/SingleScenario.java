@@ -23,6 +23,7 @@ public class SingleScenario extends AbstractScenario {
     public static final int FONT_SIZE_LARGE = 120;
     public static final int FONT_SIZE_MEDIUM = 80;
     public static final int FONT_SIZE_SMALL = 24;
+    public static final int FONT_SIZE_SMALLEST = 16;
     public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
     public static final String CMD_SINGLE = "single";
@@ -45,12 +46,14 @@ public class SingleScenario extends AbstractScenario {
     private Font fontLarge;
     private Font fontMedium;
     private Font fontSmall;
+    private Font fontSmallest;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
     private long tStart;
     private TextLine tlTime;
     private TextLine tlWarning;
     private TextLine tlResult;
+    private TextLine tlClock;
     private List<TextLine> results = new ArrayList<>();
 
     public SingleScenario(ScenarioSwitcher sw) {
@@ -76,6 +79,7 @@ public class SingleScenario extends AbstractScenario {
         fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontSmallest = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
         bg.setForeground(new Color(240, 240, 240));
@@ -106,8 +110,18 @@ public class SingleScenario extends AbstractScenario {
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
+        tlClock = new TextLine();
+        tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);
+        tlClock.setForeground(Color.DARK_GRAY);
+        tlClock.setFont(fontSmallest);
+        tlClock.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
+        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
+        tlClock.setVisible(false);
+
         clearDrawable();
         addDrawable(bg);
+        addDrawable(tlClock);
         addDrawable(tlTime);
         addDrawable(tlWarning);
         addDrawable(tlResult);
@@ -216,18 +230,25 @@ public class SingleScenario extends AbstractScenario {
 
             tlTime.setText(String.format("Total %3d.%03d",
                     before / 1000, before % 1000));
+
             tlResult.setText("Result");
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
+
             tlWarning.setText("Press a button to next");
             tlWarning.setForeground(Color.DARK_GRAY);
             tlWarning.setVisible(true);
+
+            tlClock.setVisible(true);
+
             getSwitcher().setTargetFPS(3);
             setState(ScenarioState.RESULT);
         }
     }
 
     protected void drawFrameInnerResult(Graphics2D g2) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        tlClock.setText(df.format(new Date()));
     }
 
     protected void drawFrameInnerFinish(Graphics2D g2) {
@@ -255,12 +276,14 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void cancelScenario() {
-        tlWarning.setText("Press a button to next");
-        tlWarning.setForeground(Color.DARK_GRAY);
-
         tlResult.setText("Canceled");
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
+
+        tlWarning.setText("Press a button to next");
+        tlWarning.setForeground(Color.DARK_GRAY);
+
+        tlClock.setVisible(true);
 
         getSwitcher().setTargetFPS(3);
         setState(ScenarioState.RESULT);
