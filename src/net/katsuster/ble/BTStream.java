@@ -232,10 +232,11 @@ public class BTStream {
 
             try {
                 GattRx.stopNotify();
-                GattRx.getService().getDevice().disconnect();
 
                 DeviceManager deviceManager = DeviceManager.getInstance();
                 deviceManager.unRegisterPropertyHandler(handler);
+
+                GattRx.getService().getDevice().disconnect();
             } catch (DBusException ex) {
                 printException("Error: failed to close bluetooth stream.", ex);
                 throw new RuntimeException(ex);

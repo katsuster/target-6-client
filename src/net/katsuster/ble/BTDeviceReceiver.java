@@ -3,6 +3,7 @@ package net.katsuster.ble;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,10 @@ public class BTDeviceReceiver implements Runnable {
 
                 fireBTDeviceEvent(new BTDeviceEvent(line));
             }
+        } catch (InterruptedIOException ex) {
+            if (!term) {
+                printException("I/O is interrupted in read.", ex);
+            }
         } catch (IOException ex) {
             printException("I/O error in read.", ex);
         }
@@ -42,6 +47,7 @@ public class BTDeviceReceiver implements Runnable {
     }
 
     public void terminate() {
+        clearBTDeviceListener();
         term = true;
     }
 
@@ -55,6 +61,10 @@ public class BTDeviceReceiver implements Runnable {
 
     public void removeBTDeviceListener(BTDeviceListener l) {
         listener.remove(l);
+    }
+
+    public void clearBTDeviceListener() {
+        listener.clear();
     }
 
     protected void fireBTDeviceEvent(BTDeviceEvent e) {
