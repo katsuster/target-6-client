@@ -16,6 +16,8 @@ import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattCharacteristic;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothGattService;
 
+import static main.java.Main.printException;
+
 public class BTStream {
     private String BTAdapterMac;
     private String BTDeviceMac;
@@ -78,9 +80,7 @@ public class BTStream {
             streamOut = new BTOutputStream(GattTx);
         } catch (IOException ex) {
             BTDevice.disconnect();
-            System.err.println("Error: Cannot init Bluetooth IO stream.");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("Error: Cannot init Bluetooth IO stream.", ex);
             throw new IllegalArgumentException("Error: Cannot init Bluetooth IO stream.");
         }
     }
@@ -237,9 +237,7 @@ public class BTStream {
                 DeviceManager deviceManager = DeviceManager.getInstance();
                 deviceManager.unRegisterPropertyHandler(handler);
             } catch (DBusException ex) {
-                System.err.println("Error: failed to close bluetooth stream.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                printException("Error: failed to close bluetooth stream.", ex);
                 throw new RuntimeException(ex);
             }
         }
@@ -286,10 +284,8 @@ public class BTStream {
                     streamIn.getPipeOut().write(dat);
                     streamIn.getPipeOut().flush();
                 } catch (IOException ex) {
-                    System.err.println("Error: I/O error in write to bluetooth device.");
-                    System.err.println("  msg:" + ex.getMessage());
+                    printException("Error: I/O error in write to bluetooth device.", ex);
                     System.err.println("  dat:" + dat);
-                    ex.printStackTrace(System.err);
                 }
             }
         }
@@ -310,14 +306,10 @@ public class BTStream {
                 GattTx.writeValue(bpart, null);
                 //System.out.println("send: '" + new String(bpart) + "'");
             } catch (DBusException ex) {
-                System.err.println("Error: I/O error in write bytes to bluetooth GATT.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                printException("Error: I/O error in write bytes to bluetooth GATT.", ex);
                 throw new RuntimeException(ex);
             } catch (DBusExecutionException ex) {
-                System.err.println("Error: Runtime error in write bytes to bluetooth GATT.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                printException("Error: Runtime error in write bytes to bluetooth GATT.", ex);
                 throw new RuntimeException(ex);
             }
         }
@@ -332,9 +324,7 @@ public class BTStream {
                 GattTx.writeValue(v, null);
                 //System.out.println("send: '" + new String(v) + "'");
             } catch (DBusException ex) {
-                System.err.println("Error: I/O error in write a byte to bluetooth GATT.");
-                System.err.println("  msg:" + ex.getMessage());
-                ex.printStackTrace(System.err);
+                printException("Error: I/O error in write a byte to bluetooth GATT.", ex);
                 throw new RuntimeException(ex);
             }
         }

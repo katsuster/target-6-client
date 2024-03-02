@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static main.java.Main.printException;
+
 public class BTDeviceReceiver implements Runnable {
     private BTStream bt;
     private BufferedReader rd;
@@ -28,18 +30,14 @@ public class BTDeviceReceiver implements Runnable {
                 fireBTDeviceEvent(new BTDeviceEvent(line));
             }
         } catch (IOException ex) {
-            System.err.println("I/O error in read.\n");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("I/O error in read.", ex);
         }
 
         try {
             bt.getInputStream().close();
             bt.getOutputStream().close();
         } catch (IOException ex) {
-            System.err.println("I/O error in close.\n");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("I/O error in close.", ex);
         }
     }
 

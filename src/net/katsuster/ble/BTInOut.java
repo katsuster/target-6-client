@@ -8,6 +8,7 @@ import java.util.List;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import net.katsuster.scenario.ScenarioSwitcher;
+import static main.java.Main.printException;
 
 public class BTInOut {
     public static final int NUM_DEVICES = 2;
@@ -64,8 +65,7 @@ public class BTInOut {
             }
         } catch (Exception ex) {
             switcher.addLogLater("Failed to connect device " + id + "\n");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("Failed to connect device " + id, ex);
         }
     }
 
@@ -93,8 +93,7 @@ public class BTInOut {
             streamWr[id] = null;
         } catch (InterruptedException ex) {
             switcher.addLogLater("Failed to join receiver thread for device " + id + "\n");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("Failed to join receiver thread for device " + id, ex);
         }
     }
 
@@ -107,8 +106,7 @@ public class BTInOut {
             }
         } catch (Exception ex) {
             switcher.addLogLater("Failed to disconnect device " + id + "\n");
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
+            printException("Failed to disconnect device " + id, ex);
         }
     }
 
