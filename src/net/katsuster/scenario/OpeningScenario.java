@@ -29,6 +29,8 @@ public class OpeningScenario extends AbstractScenario {
     private Font fontSmall;
     private DevState[] devState = new DevState[BTInOut.NUM_DEVICES];
     private boolean flagReady = false;
+    private boolean flagFailed = false;
+    private boolean flagRestart = false;
     private boolean flagStart = false;
     private TextLine tlMsg;
     private TextLine tlVersion;
@@ -155,10 +157,12 @@ public class OpeningScenario extends AbstractScenario {
         for (int i = 0; i < devState.length; i++) {
             switch (devState[i]) {
             case FAILED:
+                timerParent.cancel();
                 tlDevState[i].setText("Dev" + i + " Failed");
                 tlDevState[i].setForeground(Color.RED);
-                tlMsg.setText("ERROR! Please restart");
+                tlMsg.setText("ERROR! Please check settings (press button to restart)");
                 tlMsg.setForeground(Color.RED);
+                setFlagFailed(true);
                 break;
             case RESET:
                 tlDevState[i].setText("Dev" + i + " Reset");
@@ -191,6 +195,9 @@ public class OpeningScenario extends AbstractScenario {
         }
         flagReady = finish;
 
+        if (flagFailed && flagRestart) {
+            getSwitcher().setNextScenario(new OpeningScenario(getSwitcher()));
+        }
         if (flagReady && flagStart) {
             getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
         }
@@ -208,6 +215,16 @@ public class OpeningScenario extends AbstractScenario {
         }
     }
 
+    public boolean getFlagFailed() {
+        return flagFailed;
+    }
+
+    public void setFlagFailed(boolean f) {
+        synchronized (this) {
+            flagFailed = f;
+        }
+    }
+
     public boolean getFlagReady() {
         return flagReady;
     }
@@ -215,6 +232,12 @@ public class OpeningScenario extends AbstractScenario {
     public void setFlagReady(boolean f) {
         synchronized (this) {
             flagReady = f;
+        }
+    }
+
+    public void setFlagRestart(boolean f) {
+        synchronized (this) {
+            flagRestart = f;
         }
     }
 
@@ -275,6 +298,14 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void run() {
+            try {
+                runInner();
+            } catch (InterruptedException ex) {
+                //ignore
+            }
+        }
+
+        public void runInner() throws InterruptedException {
             ScenarioSwitcher switcher = scenario.getSwitcher();
             BTInOut btIO = switcher.getBTInOut();
             int retry = 5;
@@ -321,6 +352,27 @@ public class OpeningScenario extends AbstractScenario {
                     scenario.getSwitcher().termBTIO();
                 }
                 scenario.setDevState(i, DevState.INIT_WAIT);
+            }
+            switcher.addLogLater("Wait for initialized.\n");
+
+            for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
+                if (scenario.getDevState(i) == DevState.INIT) {
+                    continue;
+                }
+
+                done = false;
+                for (int j = 0; j < 30; j++) {
+                    if (scenario.getDevState(i) == DevState.INIT) {
+                        done = true;
+                        break;
+                    }
+                    Thread.sleep(100);
+                }
+                if (!done) {
+                    switcher.addLogLater("Failed to init in id:" + i + ".\n");
+                    scenario.setDevState(i, DevState.FAILED);
+                    return;
+                }
             }
             switcher.addLogLater("Initialized.\n");
         }
@@ -406,7 +458,9 @@ public class OpeningScenario extends AbstractScenario {
         }
 
         public void mouseLeftClicked(MouseEvent e) {
-            if (scenario.getFlagReady()) {
+            if (scenario.getFlagFailed()) {
+                scenario.setFlagRestart(true);
+            } else if (scenario.getFlagReady()) {
                 scenario.setFlagStart(true);
             } else {
                 scenario.printWarn("Devices are not ready.", null);
