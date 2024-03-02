@@ -298,6 +298,7 @@ public class OpeningScenario extends AbstractScenario {
 
                     switcher.addLogLater("Failed to connect device " + id + "\n");
                     System.err.println("  msg:" + ex.getMessage());
+                    break;
                 }
 
                 if (btIO.getNumberOfConnectedDevices() == BTInOut.NUM_DEVICES) {
