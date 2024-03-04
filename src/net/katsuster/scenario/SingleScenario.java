@@ -20,12 +20,6 @@ import net.katsuster.ui.MainWindow;
 public class SingleScenario extends AbstractScenario {
     public static final int DEV_SINGLE = 1;
 
-    public static final int FONT_SIZE_LARGE = 120;
-    public static final int FONT_SIZE_MEDIUM = 80;
-    public static final int FONT_SIZE_SMALL = 24;
-    public static final int FONT_SIZE_SMALLEST = 16;
-    public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
-
     public static final String CMD_SINGLE = "single";
     public static final String CMD_HIT = "hit";
 
@@ -76,13 +70,13 @@ public class SingleScenario extends AbstractScenario {
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
-        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
         fontSmallest = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
-        bg.setForeground(new Color(240, 240, 240));
+        bg.setForeground(COLOR_BG_GRAY);
         bg.setGridSize(48, 48);
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());

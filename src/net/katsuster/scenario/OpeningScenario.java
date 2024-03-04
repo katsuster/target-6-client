@@ -16,11 +16,6 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class OpeningScenario extends AbstractScenario {
-    public static final int FONT_SIZE_LARGE = 120;
-    public static final int FONT_SIZE_MEDIUM = 32;
-    public static final int FONT_SIZE_SMALL = 16;
-    public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
-
     public static final String CMD_INIT = "init";
 
     private BTDeviceHandler handlerBT;
@@ -58,12 +53,12 @@ public class OpeningScenario extends AbstractScenario {
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
-        bg.setForeground(new Color(240, 240, 240));
+        bg.setForeground(COLOR_BG_GRAY);
         bg.setGridSize(48, 48);
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
@@ -71,7 +66,7 @@ public class OpeningScenario extends AbstractScenario {
         TextLine tlTitle = new TextLine();
         tlTitle.setText("Titleタイトル");
         tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-        tlTitle.setForeground(Color.DARK_GRAY);
+        tlTitle.setForeground(COLOR_DARK_BLUE);
         tlTitle.setFont(fontLarge);
         tlTitle.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
@@ -90,7 +85,7 @@ public class OpeningScenario extends AbstractScenario {
         tlClock.setFont(fontSmall);
         tlClock.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
+        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
 
         tlVersion = new TextLine();
         tlVersion.setText("Application v0.1 Copyright(c) Name 2023-2024.");
@@ -99,7 +94,7 @@ public class OpeningScenario extends AbstractScenario {
         tlVersion.setFont(fontSmall);
         tlVersion.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlVersion.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
+        tlVersion.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
 
         ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
@@ -110,21 +105,21 @@ public class OpeningScenario extends AbstractScenario {
             tlDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tlDevState[i].setFont(fontSmall);
             tlDevState[i].getContentBox().setBounds(scrw * i, mainWnd.getHeight() - scrh, scrw, scrh);
-            tlDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2,
-                    FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2);
+            tlDevState[i].getContentBox().setMargin(FONT_SIZE_SMALLEST / 2, FONT_SIZE_SMALLEST / 2,
+                    FONT_SIZE_SMALLEST / 2, FONT_SIZE_SMALLEST / 2);
             tlDevState[i].getContentBox().setPadding(5, 5, 5, 5);
 
             shDevState[i] = new ShapeBox();
-            shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALL / 2,
-                    scrw, FONT_SIZE_SMALL * 2, 30, 30));
+            shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALLEST / 2,
+                    scrw, FONT_SIZE_SMALLEST * 2, 30, 30));
             shDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             shDevState[i].setBackground(Color.WHITE);
-            shDevState[i].setForeground(new Color(192, 192, 255));
+            shDevState[i].setForeground(COLOR_LIGHT_BLUE);
             shDevState[i].setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
             shDevState[i].setStroke(new BasicStroke(2));
             shDevState[i].getContentBox().setBounds(tlDevState[i].getContentBox().getBounds());
-            shDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2,
-                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2);
+            shDevState[i].getContentBox().setMargin(FONT_SIZE_SMALLEST, FONT_SIZE_SMALLEST / 2,
+                    FONT_SIZE_SMALLEST, FONT_SIZE_SMALLEST / 2);
         }
 
         clearDrawable();
@@ -194,7 +189,7 @@ public class OpeningScenario extends AbstractScenario {
                 break;
             case INIT:
                 tlDevState[i].setText("Dev" + i + " Init [OK]");
-                tlDevState[i].setForeground(Color.BLUE);
+                tlDevState[i].setForeground(COLOR_DARK_BLUE);
                 break;
             }
         }

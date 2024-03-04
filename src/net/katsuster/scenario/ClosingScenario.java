@@ -2,7 +2,6 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
-import java.io.BufferedWriter;
 import java.util.Arrays;
 
 import net.katsuster.ble.BTDeviceEvent;
@@ -15,10 +14,6 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class ClosingScenario extends AbstractScenario {
-    public static final int FONT_SIZE_LARGE = 120;
-    public static final int FONT_SIZE_MEDIUM = 32;
-    public static final int FONT_SIZE_SMALL = 16;
-
     private BTDeviceHandler handler;
     private Font fontMedium;
     private Font fontSmall;
@@ -43,10 +38,10 @@ public class ClosingScenario extends AbstractScenario {
 
         Font f = getSwitcher().getSetting().getFont();
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
-        bg.setForeground(new Color(240, 240, 240));
+        bg.setForeground(COLOR_BG_GRAY);
         bg.setGridSize(48, 48);
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
@@ -68,21 +63,21 @@ public class ClosingScenario extends AbstractScenario {
             tlDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tlDevState[i].setFont(fontSmall);
             tlDevState[i].getContentBox().setBounds(scrw * i, mainWnd.getHeight() - scrh, scrw, scrh);
-            tlDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2,
-                    FONT_SIZE_SMALL / 2, FONT_SIZE_SMALL / 2);
+            tlDevState[i].getContentBox().setMargin(FONT_SIZE_SMALLEST / 2, FONT_SIZE_SMALLEST / 2,
+                    FONT_SIZE_SMALLEST / 2, FONT_SIZE_SMALLEST / 2);
             tlDevState[i].getContentBox().setPadding(5, 5, 5, 5);
 
             shDevState[i] = new ShapeBox();
-            shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALL / 2,
-                    scrw, FONT_SIZE_SMALL * 2, 30, 30));
+            shDevState[i].setShape(new RoundRectangle2D.Double(1, FONT_SIZE_SMALLEST / 2,
+                    scrw, FONT_SIZE_SMALLEST * 2, 30, 30));
             shDevState[i].setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             shDevState[i].setBackground(Color.WHITE);
-            shDevState[i].setForeground(new Color(192, 192, 255));
+            shDevState[i].setForeground(COLOR_LIGHT_BLUE);
             shDevState[i].setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
             shDevState[i].setStroke(new BasicStroke(2));
             shDevState[i].getContentBox().setBounds(tlDevState[i].getContentBox().getBounds());
-            shDevState[i].getContentBox().setMargin(FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2,
-                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 2);
+            shDevState[i].getContentBox().setMargin(FONT_SIZE_SMALLEST, FONT_SIZE_SMALLEST / 2,
+                    FONT_SIZE_SMALLEST, FONT_SIZE_SMALLEST / 2);
         }
 
         clearDrawable();
@@ -132,9 +127,10 @@ public class ClosingScenario extends AbstractScenario {
         }
 
         boolean finish = true;
-        for (int i = 0; i < devState.length; i++) {
-            if (devState[i] != DevState.RESET) {
+        for (DevState ds : devState) {
+            if (ds != DevState.RESET) {
                 finish = false;
+                break;
             }
         }
         if (finish) {
