@@ -19,6 +19,6 @@ public class BTDeviceItem {
 
     @Override
     public String toString() {
-        return device.getAddress() + " (" + device.getDbusPath() + ")";
+        return device.getAddress() + " (" + device.getName() + ")" + device.getDbusPath();
     }
 }
