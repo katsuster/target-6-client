@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridBG extends AbstractDrawable {
-    private List<Shape> gridX = new ArrayList<>();
-    private List<Shape> gridY = new ArrayList<>();
+    private List<Integer> gridX = new ArrayList<>();
+    private List<Integer> gridY = new ArrayList<>();
     private Rectangle cache = new Rectangle();
     private int gridWidth = 5;
     private int gridHeight = 5;
@@ -23,11 +23,11 @@ public class GridBG extends AbstractDrawable {
 
         g2.setColor(getForeground());
 
-        for (Shape s : gridX) {
-            g2.draw(s);
+        for (Integer x : gridX) {
+            g2.drawLine(x, 0, x, cache.height);
         }
-        for (Shape s : gridY) {
-            g2.draw(s);
+        for (Integer y : gridY) {
+            g2.drawLine(0, y, cache.width, y);
         }
     }
 
@@ -67,10 +67,10 @@ public class GridBG extends AbstractDrawable {
         gridY = new ArrayList<>();
 
         for (int x = cnt.x; x < cnt.width; x += getGridWidth()) {
-            gridX.add(new Rectangle(x, cnt.y, getGridWidth(), cnt.height));
+            gridX.add(x);
         }
         for (int y = cnt.y; y < cnt.height; y += getGridHeight()) {
-            gridY.add(new Rectangle(cnt.x, y, cnt.width, getGridHeight()));
+            gridY.add(y);
         }
 
         cache = cnt;
