@@ -16,8 +16,6 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class OpeningScenario extends AbstractScenario {
-    public static final String CMD_INIT = "init";
-
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
     private Font fontLarge;

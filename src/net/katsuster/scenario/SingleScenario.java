@@ -20,9 +20,6 @@ import net.katsuster.ui.MainWindow;
 public class SingleScenario extends AbstractScenario {
     public static final int DEV_SINGLE = 1;
 
-    public static final String CMD_SINGLE = "single";
-    public static final String CMD_HIT = "hit";
-
     public static final String PREFIX_DEVICE_ID = "d";
     public static final String PREFIX_SENSOR_ID = "s";
 
@@ -270,6 +267,11 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void cancelScenario() {
+        boolean success = writeLine(DEV_SINGLE, CMD_CANCEL + "\n");
+        if (!success) {
+            getSwitcher().termBTIO();
+        }
+
         tlResult.setText("Canceled");
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);

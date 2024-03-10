@@ -3,16 +3,21 @@ package net.katsuster.scenario;
 import java.awt.*;
 
 public interface Scenario {
-    public static final Color COLOR_BG_GRAY = new Color(240, 240, 240);
-    public static final Color COLOR_LIGHT_BLUE = new Color(192, 192, 255);
-    public static final Color COLOR_DARK_BLUE = new Color(40, 85, 160);
-    public static final Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
+    Color COLOR_BG_GRAY = new Color(240, 240, 240);
+    Color COLOR_LIGHT_BLUE = new Color(192, 192, 255);
+    Color COLOR_DARK_BLUE = new Color(40, 85, 160);
+    Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
-    public static final int FONT_SIZE_LARGEST = 96;
-    public static final int FONT_SIZE_LARGE = 64;
-    public static final int FONT_SIZE_MEDIUM = 32;
-    public static final int FONT_SIZE_SMALL = 24;
-    public static final int FONT_SIZE_SMALLEST = 16;
+    int FONT_SIZE_LARGEST = 96;
+    int FONT_SIZE_LARGE = 64;
+    int FONT_SIZE_MEDIUM = 32;
+    int FONT_SIZE_SMALL = 24;
+    int FONT_SIZE_SMALLEST = 16;
+
+    String CMD_INIT = "init";
+    String CMD_SINGLE = "single";
+    String CMD_CANCEL = "cancel";
+    String CMD_HIT = "hit";
 
     String getName();
     ScenarioSwitcher getSwitcher();
