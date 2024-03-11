@@ -6,12 +6,24 @@ import java.awt.image.VolatileImage;
 
 public class MainWindow extends JFrame {
     private Image img;
+    private boolean debugMode = false;
 
-    public MainWindow() {
+    public MainWindow(boolean dbg) {
         setTitle("Main");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setUndecorated(true);
         setSize(1024, 768);
+        setDebugMode(dbg);
+    }
+
+    public boolean getDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean d) {
+        if (!d) {
+            setUndecorated(true);
+        }
+        debugMode = d;
     }
 
     public void setImg(VolatileImage i) {

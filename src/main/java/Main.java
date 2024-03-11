@@ -17,16 +17,19 @@ import net.katsuster.scenario.ScenarioSwitcher;
 
 public class Main {
     public static String OPT_HELP = "-h";
+    public static String OPT_DEBUG = "--debug";
     public static String OPT_SETTING_BT = "--sb";
 
     public static void main(String[] args) {
         Font uiFontBase, uiFont;
-        boolean runSettingBT = false, runNormal = false;
+        boolean runSettingBT = false, runDebug = false, runNormal = false;
 
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase(OPT_HELP)) {
                 printUsage();
                 return;
+            } else if (args[0].equalsIgnoreCase(OPT_DEBUG)) {
+                runDebug = true;
             } else if (args[0].equalsIgnoreCase(OPT_SETTING_BT)) {
                 runSettingBT = true;
             } else {
@@ -68,12 +71,14 @@ public class Main {
                 BTScanWindow w = new BTScanWindow();
                 w.setVisible(true);
             }
-            if (runNormal) {
-                MainWindow mw = new MainWindow();
+            if (runNormal || runDebug) {
+                MainWindow mw = new MainWindow(runDebug);
                 mw.setVisible(true);
                 mw.createBufferStrategy(2);
                 LogWindow lw = new LogWindow();
-                lw.setVisible(true);
+                if (runDebug) {
+                    lw.setVisible(true);
+                }
 
                 ScenarioSetting settingScenario = new ScenarioSetting();
                 settingScenario.setFont(uiFont);
