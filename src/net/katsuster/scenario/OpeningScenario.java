@@ -71,11 +71,12 @@ public class OpeningScenario extends AbstractScenario {
 
         tlMsg = new TextLine();
         tlMsg.setText("Please Wait...");
-        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
         tlMsg.setForeground(Color.DARK_GRAY);
         tlMsg.setFont(fontMedium);
-        tlMsg.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
-                mainWnd.getWidth(), mainWnd.getHeight() / 2);
+        tlMsg.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight() - FONT_SIZE_MEDIUM * 2);
+        tlMsg.getContentBox().setMargin(20, 20, 20, 20);
 
         tlClock = new TextLine();
         tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);

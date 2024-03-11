@@ -34,6 +34,7 @@ public class SingleScenario extends AbstractScenario {
 
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
+    private Font fontTimer;
     private Font fontLarge;
     private Font fontMedium;
     private Font fontSmall;
@@ -67,6 +68,7 @@ public class SingleScenario extends AbstractScenario {
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
+        fontTimer = f.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
         fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
@@ -81,24 +83,24 @@ public class SingleScenario extends AbstractScenario {
         tlTime = new TextLine();
         tlTime.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlTime.setForeground(Color.DARK_GRAY);
-        tlTime.setFont(fontLarge);
-        tlTime.getContentBox().setBounds(0, 0,
+        tlTime.setFont(fontTimer);
+        tlTime.getContentBox().setBounds(0, FONT_SIZE_TIMER / 2,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
         tlWarning = new TextLine();
         tlWarning.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
         tlWarning.setFont(fontSmall);
         tlWarning.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() - 100);
+                mainWnd.getWidth(), mainWnd.getHeight() - FONT_SIZE_SMALL * 2);
         tlWarning.getContentBox().setMargin(20, 20, 20, 20);
         tlWarning.setVisible(false);
 
         tlResult = new TextLine();
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
         tlResult.setFont(fontMedium);
-        tlResult.getContentBox().setBounds(0, 0,
+        tlResult.getContentBox().setBounds(0, FONT_SIZE_MEDIUM,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlResult.getContentBox().setMargin(20, 20, 20, 20);
+        tlResult.getContentBox().setMargin(20, 0, 20, 0);
         tlResult.setVisible(false);
 
         tlClock = new TextLine();
@@ -207,7 +209,7 @@ public class SingleScenario extends AbstractScenario {
                 tl.setForeground(Color.DARK_GRAY);
                 tl.setFont(fontSmall);
                 tl.getContentBox().setBounds(
-                        0, (int)((i + 3) * FONT_SIZE_SMALL * 1.3),
+                        0, (int)((i + 1) * FONT_SIZE_SMALL * 1.3),
                         100, (int)(FONT_SIZE_SMALL * 1.3));
                 tl.getContentBox().setMargin(
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
@@ -219,7 +221,7 @@ public class SingleScenario extends AbstractScenario {
                 before = sen.getTimeHit();
             }
 
-            tlTime.setText(String.format("Total %3d.%03d",
+            tlTime.setText(String.format("%3d.%03d",
                     before / 1000, before % 1000));
 
             tlResult.setText("Result");

@@ -8,10 +8,11 @@ public interface Scenario {
     Color COLOR_DARK_BLUE = new Color(40, 85, 160);
     Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
+    int FONT_SIZE_TIMER = 256;
     int FONT_SIZE_LARGEST = 96;
     int FONT_SIZE_LARGE = 64;
-    int FONT_SIZE_MEDIUM = 32;
-    int FONT_SIZE_SMALL = 24;
+    int FONT_SIZE_MEDIUM = 48;
+    int FONT_SIZE_SMALL = 32;
     int FONT_SIZE_SMALLEST = 16;
 
     String CMD_INIT = "init";

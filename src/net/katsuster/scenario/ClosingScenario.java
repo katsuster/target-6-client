@@ -15,7 +15,7 @@ import net.katsuster.ui.MainWindow;
 
 public class ClosingScenario extends AbstractScenario {
     private BTDeviceHandler handler;
-    private Font fontMedium;
+    private Font fontLarge;
     private Font fontSmall;
     private DevState[] devState = new DevState[BTInOut.NUM_DEVICES];
     private TextLine tlMsg;
@@ -37,7 +37,7 @@ public class ClosingScenario extends AbstractScenario {
         btIO.addBTDeviceListener(handler);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
@@ -50,7 +50,7 @@ public class ClosingScenario extends AbstractScenario {
         tlMsg.setText("Closing...");
         tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlMsg.setForeground(Color.DARK_GRAY);
-        tlMsg.setFont(fontMedium);
+        tlMsg.setFont(fontLarge);
         tlMsg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
