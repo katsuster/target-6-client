@@ -408,9 +408,7 @@ public class OpeningScenario extends AbstractScenario {
                 }
 
                 scenario.setDevState(devid, DevState.INIT);
-            } catch (NoSuchElementException ex) {
-                scenario.printError(CMD_INIT + ": Illegal number format in answers.", ex);
-            } catch (NumberFormatException ex) {
+            } catch (NoSuchElementException | NumberFormatException ex) {
                 scenario.printError(CMD_INIT + ": Illegal number format in answers.", ex);
             }
 

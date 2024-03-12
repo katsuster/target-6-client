@@ -164,7 +164,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerInit(Graphics2D g2) {
-        boolean success = writeLine(DEV_SINGLE, CMD_SINGLE + "\n");
+        boolean success = writeLine(DEV_SINGLE, CMD_SINGLE);
         if (!success) {
             getSwitcher().termBTIO();
         }
@@ -269,7 +269,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void cancelScenario() {
-        boolean success = writeLine(DEV_SINGLE, CMD_CANCEL + "\n");
+        boolean success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
         if (!success) {
             getSwitcher().termBTIO();
         }
@@ -402,6 +402,12 @@ public class SingleScenario extends AbstractScenario {
                     scenario.resetTimeStart();
                 } else {
                     scenario.printError(CMD_SINGLE + ": Command is failed.", null);
+                }
+            } else if (next.equalsIgnoreCase(CMD_INIT)) {
+                next = st.nextToken();
+
+                if (!next.equalsIgnoreCase("OK")) {
+                    scenario.printError(CMD_INIT + ": Command is failed.", null);
                 }
             } else {
                 int senid = parseID(next, PREFIX_SENSOR_ID);

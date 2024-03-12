@@ -17,7 +17,6 @@ public interface Scenario {
 
     String CMD_INIT = "init";
     String CMD_SINGLE = "single";
-    String CMD_CANCEL = "cancel";
     String CMD_HIT = "hit";
 
     String getName();
