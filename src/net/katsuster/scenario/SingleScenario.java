@@ -164,7 +164,13 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerInit(Graphics2D g2) {
-        boolean success = writeLine(DEV_SINGLE, CMD_SINGLE);
+        boolean success;
+
+        success = writeLine(DEV_SINGLE, CMD_SINGLE);
+        if (!success) {
+            getSwitcher().termBTIO();
+        }
+        success = writeLine(0, CMD_MULTI);
         if (!success) {
             getSwitcher().termBTIO();
         }
@@ -269,7 +275,13 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public void cancelScenario() {
-        boolean success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
+        boolean success;
+
+        success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
+        if (!success) {
+            getSwitcher().termBTIO();
+        }
+        success = writeLine(0, CMD_INIT + " " + 0);
         if (!success) {
             getSwitcher().termBTIO();
         }

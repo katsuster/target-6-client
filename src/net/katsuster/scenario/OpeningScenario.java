@@ -166,7 +166,7 @@ public class OpeningScenario extends AbstractScenario {
                 timerParent.cancel();
                 tlDevState[i].setText("Dev" + i + " Failed");
                 tlDevState[i].setForeground(COLOR_DARK_ORANGE);
-                tlMsg.setText("ERROR! Please check settings (press button to restart)");
+                tlMsg.setText("ERROR! Press button to retry");
                 tlMsg.setForeground(COLOR_DARK_ORANGE);
                 setFlagFailed(true);
                 break;
