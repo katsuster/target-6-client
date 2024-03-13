@@ -22,6 +22,7 @@ public class MainWindow extends JFrame {
     public void setDebugMode(boolean d) {
         if (!d) {
             setUndecorated(true);
+            setAlwaysOnTop(true);
         }
         debugMode = d;
     }
