@@ -18,6 +18,7 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 
 public class SingleScenario extends AbstractScenario {
+    public static final int DEV_CONTROLLER = 0;
     public static final int DEV_SINGLE = 1;
 
     public static final String PREFIX_DEVICE_ID = "d";
@@ -169,10 +170,12 @@ public class SingleScenario extends AbstractScenario {
         success = writeLine(DEV_SINGLE, CMD_SINGLE);
         if (!success) {
             getSwitcher().termBTIO();
+            return;
         }
-        success = writeLine(0, CMD_MULTI);
+        success = writeLine(DEV_CONTROLLER, CMD_MULTI);
         if (!success) {
             getSwitcher().termBTIO();
+            return;
         }
 
         resetTimeStart();
@@ -225,6 +228,12 @@ public class SingleScenario extends AbstractScenario {
                 addDrawable(tl);
 
                 before = sen.getTimeHit();
+            }
+
+            boolean success = writeLine(DEV_CONTROLLER, CMD_BEEP);
+            if (!success) {
+                getSwitcher().termBTIO();
+                return;
             }
 
             tlTime.setText(String.format("%3d.%03d",
@@ -280,10 +289,12 @@ public class SingleScenario extends AbstractScenario {
         success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
         if (!success) {
             getSwitcher().termBTIO();
+            return;
         }
-        success = writeLine(0, CMD_INIT + " " + 0);
+        success = writeLine(DEV_CONTROLLER, CMD_INIT + " " + 0);
         if (!success) {
             getSwitcher().termBTIO();
+            return;
         }
 
         tlResult.setText("Canceled");
