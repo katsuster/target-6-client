@@ -17,4 +17,5 @@
 
 ## Other documents
 
+* [How to build](doc/build.md)
 * [Setup Linux](doc/setup_linux.md)
