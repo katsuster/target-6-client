@@ -87,7 +87,7 @@ public class OpeningScenario extends AbstractScenario {
         tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
 
         tlVersion = new TextLine();
-        tlVersion.setText("Application v0.1 Copyright(c) Name 2023-2024.");
+        tlVersion.setText("Target-6 v0.1");
         tlVersion.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.BOTTOM);
         tlVersion.setForeground(Color.DARK_GRAY);
         tlVersion.setFont(fontSmall);
