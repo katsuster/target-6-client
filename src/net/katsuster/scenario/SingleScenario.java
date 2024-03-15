@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
@@ -276,7 +277,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public synchronized void tryToCancelScenario() {
-        tlWarning.setText("Press a button 3 times to cancel");
+        tlWarning.setText("Press a button 3 seconds to cancel");
         tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setVisible(true);
     }
@@ -469,15 +470,51 @@ public class SingleScenario extends AbstractScenario {
 
     protected class MouseHandler extends MouseAdapter {
         private SingleScenario scenario;
-        private int cnt = 0;
+        private AtomicInteger press = new AtomicInteger(0);
+        private Timer tm;
 
         public MouseHandler(SingleScenario s) {
             scenario = s;
         }
 
+        protected class HoldTask extends TimerTask {
+            MouseEvent event;
+
+            public HoldTask(MouseEvent e) {
+                event = e;
+            }
+
+            @Override
+            public void run() {
+                if (press.get() != 1) {
+                    return;
+                }
+                press.set(0);
+
+                switch (event.getButton()) {
+                case MouseEvent.BUTTON1:
+                    mouseLeftPressKept(event);
+                    break;
+                }
+            }
+        }
+
         @Override
-        public void mouseClicked(MouseEvent e) {
-            synchronized (scenario) {
+        public void mousePressed(MouseEvent e) {
+            tm = new Timer();
+            tm.schedule(new HoldTask(e), 3000);
+            press.getAndAdd(1);
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (press.get() == 0) {
+                //Do not fire Clicked event if Kept event has already happened
+            } else if (press.get() == 1) {
+                tm.cancel();
+                press.set(0);
+
                 switch (e.getButton()) {
                 case MouseEvent.BUTTON1:
                     mouseLeftClicked(e);
@@ -489,17 +526,15 @@ public class SingleScenario extends AbstractScenario {
             }
         }
 
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            mouseReleased(e);
+        }
+
         protected void mouseLeftClicked(MouseEvent e) {
             switch (scenario.getState()) {
             case RUN:
-                cnt++;
-
-                if (cnt > 0) {
-                    scenario.tryToCancelScenario();
-                }
-                if (cnt >= 3) {
-                    scenario.cancelScenario();
-                }
+                scenario.tryToCancelScenario();
                 break;
             case RESULT:
                 scenario.nextScenario();
@@ -511,6 +546,14 @@ public class SingleScenario extends AbstractScenario {
             switch (scenario.getState()) {
             case RESULT:
                 scenario.closeScenario();
+                break;
+            }
+        }
+
+        protected void mouseLeftPressKept(MouseEvent e) {
+            switch (scenario.getState()) {
+            case RUN:
+                scenario.cancelScenario();
                 break;
             }
         }
