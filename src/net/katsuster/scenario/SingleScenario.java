@@ -302,6 +302,7 @@ public class SingleScenario extends AbstractScenario {
 
         tlWarning.setText("Press a button to next");
         tlWarning.setForeground(Color.DARK_GRAY);
+        tlWarning.setVisible(true);
 
         tlClock.setVisible(true);
 
