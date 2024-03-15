@@ -270,6 +270,9 @@ public class BTStream {
 
                 if (GattRx.getDbusPath().equalsIgnoreCase(props.getPath())) {
                     for (Map.Entry<String, Variant<?>> e : mapProp.entrySet()) {
+                        if (!e.getKey().equalsIgnoreCase("value")) {
+                            continue;
+                        }
                         if (e.getValue().getValue() instanceof byte[]) {
                             dat = (byte[])e.getValue().getValue();
                             found = true;
