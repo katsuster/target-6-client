@@ -214,49 +214,39 @@ public class OpeningScenario extends AbstractScenario {
         drawAllDrawable(g2);
     }
 
-    public DevState getDevState(int id) {
+    public synchronized DevState getDevState(int id) {
         return devState[id];
     }
 
-    public void setDevState(int id, DevState s) {
-        synchronized (this) {
-            devState[id] = s;
-        }
+    public synchronized void setDevState(int id, DevState s) {
+        devState[id] = s;
     }
 
-    public boolean getFlagFailed() {
+    public synchronized boolean getFlagFailed() {
         return flagFailed;
     }
 
-    public void setFlagFailed(boolean f) {
-        synchronized (this) {
-            flagFailed = f;
-        }
+    public synchronized void setFlagFailed(boolean f) {
+        flagFailed = f;
     }
 
-    public boolean getFlagReady() {
+    public synchronized boolean getFlagReady() {
         return flagReady;
     }
 
-    public void setFlagReady(boolean f) {
-        synchronized (this) {
-            flagReady = f;
-        }
+    public synchronized void setFlagReady(boolean f) {
+        flagReady = f;
     }
 
-    public void setFlagRestart(boolean f) {
-        synchronized (this) {
-            flagRestart = f;
-        }
+    public synchronized void setFlagRestart(boolean f) {
+        flagRestart = f;
     }
 
-    public void setFlagStart(boolean f) {
-        synchronized (this) {
-            flagStart = f;
-        }
+    public synchronized void setFlagStart(boolean f) {
+        flagStart = f;
     }
 
-    public void closeScenario() {
+    public synchronized void closeScenario() {
         getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
     }
 

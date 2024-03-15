@@ -140,14 +140,12 @@ public class ClosingScenario extends AbstractScenario {
         drawAllDrawable(g2);
     }
 
-    public DevState getDevState(int id) {
+    public synchronized DevState getDevState(int id) {
         return devState[id];
     }
 
-    public void setDevState(int id, DevState s) {
-        synchronized (this) {
-            devState[id] = s;
-        }
+    public synchronized void setDevState(int id, DevState s) {
+        devState[id] = s;
     }
 
     protected class BTTerm implements Runnable {

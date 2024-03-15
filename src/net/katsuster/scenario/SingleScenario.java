@@ -267,23 +267,21 @@ public class SingleScenario extends AbstractScenario {
         getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
     }
 
-    public ScenarioState getState() {
+    public synchronized ScenarioState getState() {
         return state;
     }
 
-    public void setState(ScenarioState s) {
-        synchronized (this) {
-            state = s;
-        }
+    public synchronized void setState(ScenarioState s) {
+        state = s;
     }
 
-    public void tryToCancelScenario() {
+    public synchronized void tryToCancelScenario() {
         tlWarning.setText("Press a button 3 times to cancel");
         tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setVisible(true);
     }
 
-    public void cancelScenario() {
+    public synchronized void cancelScenario() {
         boolean success;
 
         success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
@@ -310,11 +308,11 @@ public class SingleScenario extends AbstractScenario {
         setState(ScenarioState.RESULT);
     }
 
-    public void nextScenario() {
+    public synchronized void nextScenario() {
         setState(ScenarioState.FINISH);
     }
 
-    public void closeScenario() {
+    public synchronized void closeScenario() {
         setState(ScenarioState.CLOSE);
     }
 
@@ -366,11 +364,11 @@ public class SingleScenario extends AbstractScenario {
         return sensors.get(sensorID);
     }
 
-    public void resetTimeStart() {
+    public synchronized void resetTimeStart() {
         tStart = System.nanoTime();
     }
 
-    public boolean isFinished() {
+    public synchronized boolean isFinished() {
         boolean finish = true;
 
         for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
