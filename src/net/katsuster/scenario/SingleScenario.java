@@ -426,11 +426,23 @@ public class SingleScenario extends AbstractScenario {
                 } else {
                     scenario.printError(CMD_SINGLE + ": Command is failed.", null);
                 }
+            } else if (next.equalsIgnoreCase(CMD_MULTI)) {
+                next = st.nextToken();
+
+                if (!next.equalsIgnoreCase("OK")) {
+                    scenario.printError(CMD_MULTI + ": Command is failed.", null);
+                }
             } else if (next.equalsIgnoreCase(CMD_INIT)) {
                 next = st.nextToken();
 
                 if (!next.equalsIgnoreCase("OK")) {
                     scenario.printError(CMD_INIT + ": Command is failed.", null);
+                }
+            } else if (next.equalsIgnoreCase(CMD_BEEP)) {
+                next = st.nextToken();
+
+                if (!next.equalsIgnoreCase("OK")) {
+                    scenario.printError(CMD_BEEP + ": Command is failed.", null);
                 }
             } else {
                 int senid = parseID(next, PREFIX_SENSOR_ID);
