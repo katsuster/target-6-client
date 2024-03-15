@@ -94,40 +94,11 @@ public class ScenarioSwitcher implements Runnable {
 
     protected void initGraphics() {
         strategy = mainWnd.getBufferStrategy();
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gs = ge.getScreenDevices();
-        GraphicsConfiguration[] gc = gs[0].getConfigurations();
-        mainGC = gc[0];
-        mainImg = mainGC.createCompatibleVolatileImage(1024, 768);
-        mainWnd.setImg(mainImg);
         setStartTime(System.nanoTime());
         clearLogLater();
     }
 
     protected void drawFrame() {
-        if (curScenario == null) {
-            return;
-        }
-
-        if (mainImg.contentsLost()) {
-            mainImg.validate(mainGC);
-        }
-
-        Graphics2D g2 = mainImg.createGraphics();
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2.setBackground(Color.WHITE);
-        g2.clearRect(0, 0, mainWnd.getWidth(), mainWnd.getHeight());
-
-        synchronized (curScenario) {
-            curScenario.drawFrame(g2);
-        }
-
-        mainWnd.repaint();
-    }
-
-    protected void drawFrameOld() {
         if (curScenario == null) {
             return;
         }

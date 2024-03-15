@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.image.VolatileImage;
 
 public class MainWindow extends JFrame {
-    private Image img;
     private boolean debugMode = false;
 
     public MainWindow(boolean dbg) {
@@ -25,21 +24,5 @@ public class MainWindow extends JFrame {
             setAlwaysOnTop(true);
         }
         debugMode = d;
-    }
-
-    public void setImg(VolatileImage i) {
-        img = i;
-    }
-
-    @Override
-    public void update(Graphics g) {
-        paint(g);
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        if (img != null) {
-            g.drawImage(img, 0, 0, this);
-        }
     }
 }
