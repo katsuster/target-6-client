@@ -57,3 +57,13 @@ The `--debug` option can be used if you want to check internal logs.
 ```
 $ java -jar target/target-6-client-0.1-jar-with-dependencies.jar
 ```
+
+
+## Debug
+
+This project includes sample settings for IntelliJ IDEA 2023 under `.idea` directory.
+
+![Run/Debug configurations for IntelliJ IDEA](run_configs_for_intellij.png)
+
+The sample settings has some Run/Debug configurations for running bluetooth setting and debug mode.
+
