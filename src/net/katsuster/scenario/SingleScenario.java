@@ -18,9 +18,6 @@ public class SingleScenario extends AbstractScenario {
     public static final int DEV_CONTROLLER = 0;
     public static final int DEV_SINGLE = 1;
 
-    public static final String PREFIX_DEVICE_ID = "d";
-    public static final String PREFIX_SENSOR_ID = "s";
-
     public enum ScenarioState {
         INIT,
         WAIT,
@@ -396,7 +393,7 @@ public class SingleScenario extends AbstractScenario {
             String next = st.nextToken();
 
             if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(Scenario.CMD_INIT + ": Command is failed.", null);
+                scenario.printError(CMD_INIT + ": Command is failed.", null);
             }
         }
 
@@ -407,7 +404,7 @@ public class SingleScenario extends AbstractScenario {
             if (next.equalsIgnoreCase("OK")) {
                 scenario.resetTimeStart();
             } else {
-                scenario.printError(Scenario.CMD_SINGLE + ": Command is failed.", null);
+                scenario.printError(CMD_SINGLE + ": Command is failed.", null);
             }
         }
 
@@ -416,7 +413,7 @@ public class SingleScenario extends AbstractScenario {
             String next = st.nextToken();
 
             if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(Scenario.CMD_MULTI + ": Command is failed.", null);
+                scenario.printError(CMD_MULTI + ": Command is failed.", null);
             }
         }
 
@@ -425,7 +422,7 @@ public class SingleScenario extends AbstractScenario {
             String next = st.nextToken();
 
             if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(Scenario.CMD_BEEP + ": Command is failed.", null);
+                scenario.printError(CMD_BEEP + ": Command is failed.", null);
             }
         }
 
