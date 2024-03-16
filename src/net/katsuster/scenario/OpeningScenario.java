@@ -1,19 +1,17 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import net.katsuster.ble.BTDeviceEvent;
-import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 import net.katsuster.draw.GridBG;
 import net.katsuster.draw.ShapeBox;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
+import net.katsuster.ui.MouseAdapterEx;
 
 public class OpeningScenario extends AbstractScenario {
     private BTDeviceHandler handlerBT;
@@ -374,46 +372,20 @@ public class OpeningScenario extends AbstractScenario {
         }
     }
 
-    protected class BTDeviceHandler implements BTDeviceListener {
+    protected class BTDeviceHandler extends BTCommandHandler {
         private OpeningScenario scenario;
 
         public BTDeviceHandler(OpeningScenario s) {
+            super(s);
+
             scenario = s;
         }
 
-        public void messageReceived(BTDeviceEvent e) {
-            if (!scenario.getActivated()) {
-                return;
-            }
-
-            try {
-                StringTokenizer st = new StringTokenizer(e.getMessage(), " ", false);
-
-                int devid = parseDeviceID(st.nextToken());
-                String cmdEcho = st.nextToken();
-                if (!cmdEcho.equalsIgnoreCase(CMD_INIT)) {
-                    //answers of another cmd, ignored
-                    scenario.printWarn("Ignore answers of " + cmdEcho + ".", null);
-                    return;
-                }
-
-                scenario.setDevState(devid, DevState.INIT);
-            } catch (NoSuchElementException | NumberFormatException ex) {
-                scenario.printError(CMD_INIT + ": Illegal number format in answers.", ex);
-            }
+        @Override
+        public void cmdInit(StringTokenizer st, int devid) {
+            scenario.setDevState(devid, DevState.INIT);
 
             checkAllDevices();
-        }
-
-        protected int parseDeviceID(String token) {
-            StringTokenizer st = new StringTokenizer(token, ":", false);
-
-            String prefix = st.nextToken();
-            if (!prefix.equalsIgnoreCase("d")) {
-                throw new IllegalArgumentException(CMD_INIT + ": Answers have no prefix 'd'.");
-            }
-
-            return Integer.parseInt(st.nextToken());
         }
 
         protected void checkAllDevices() {
@@ -430,7 +402,7 @@ public class OpeningScenario extends AbstractScenario {
         }
     }
 
-    protected class MouseHandler extends MouseAdapter {
+    protected class MouseHandler extends MouseAdapterEx {
         private OpeningScenario scenario;
 
         public MouseHandler(OpeningScenario s) {
@@ -438,31 +410,24 @@ public class OpeningScenario extends AbstractScenario {
         }
 
         @Override
-        public void mouseClicked(MouseEvent e) {
-            synchronized (scenario) {
-                switch (e.getButton()) {
-                case MouseEvent.BUTTON1:
-                    mouseLeftClicked(e);
-                    break;
-                case MouseEvent.BUTTON3:
-                    mouseRightClicked(e);
-                    break;
-                }
-            }
-        }
-
-        public void mouseLeftClicked(MouseEvent e) {
-            if (scenario.getFlagFailed()) {
-                scenario.setFlagRestart(true);
-            } else if (scenario.getFlagReady()) {
-                scenario.setFlagStart(true);
+        public void mouseLeftClicked() {
+            if (getFlagFailed()) {
+                setFlagRestart(true);
+            } else if (getFlagReady()) {
+                setFlagStart(true);
             } else {
-                scenario.printWarn("Devices are not ready.", null);
+                printWarn("Devices are not ready.", null);
             }
         }
 
-        public void mouseRightClicked(MouseEvent e) {
-            scenario.closeScenario();
+        @Override
+        public void mouseRightClicked() {
+            closeScenario();
+        }
+
+        @Override
+        public void mouseLeftLongPressed() {
+            closeScenario();
         }
     }
 }

@@ -1,22 +1,18 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import net.katsuster.ble.BTDeviceEvent;
-import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 import net.katsuster.draw.GridBG;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
+import net.katsuster.ui.MouseAdapterEx;
 
 public class SingleScenario extends AbstractScenario {
     public static final int DEV_CONTROLLER = 0;
@@ -386,153 +382,80 @@ public class SingleScenario extends AbstractScenario {
         return finish;
     }
 
-    protected class BTDeviceHandler implements BTDeviceListener {
+    protected class BTDeviceHandler extends BTCommandHandler {
         private SingleScenario scenario;
 
         public BTDeviceHandler(SingleScenario s) {
+            super(s);
+
             scenario = s;
         }
 
-        public void messageReceived(BTDeviceEvent e) {
-            if (!scenario.getActivated()) {
-                return;
-            }
+        @Override
+        public void cmdInit(StringTokenizer st, int devid) {
+            String next = st.nextToken();
 
-            try {
-                parse(e);
-            } catch (RuntimeException ex) {
-                scenario.printError(CMD_HIT + ": Illegal format in answers.", ex);
-                scenario.printError(CMD_HIT + ": ans:" + e.getMessage(), null);
-            } catch (ParseException ex) {
-                scenario.printError(CMD_HIT + ": Illegal format format (time) in answers.", ex);
-                scenario.printError(CMD_HIT + ": ans:" + e.getMessage(), null);
+            if (!next.equalsIgnoreCase("OK")) {
+                scenario.printError(Scenario.CMD_INIT + ": Command is failed.", null);
             }
         }
 
-        protected void parse(BTDeviceEvent e) throws ParseException {
-            StringTokenizer st = new StringTokenizer(e.getMessage(), " ", false);
+        @Override
+        public void cmdSingle(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+
+            if (next.equalsIgnoreCase("OK")) {
+                scenario.resetTimeStart();
+            } else {
+                scenario.printError(Scenario.CMD_SINGLE + ": Command is failed.", null);
+            }
+        }
+
+        @Override
+        public void cmdMulti(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+
+            if (!next.equalsIgnoreCase("OK")) {
+                scenario.printError(Scenario.CMD_MULTI + ": Command is failed.", null);
+            }
+        }
+
+        @Override
+        public void cmdBeep(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+
+            if (!next.equalsIgnoreCase("OK")) {
+                scenario.printError(Scenario.CMD_BEEP + ": Command is failed.", null);
+            }
+        }
+
+        @Override
+        public void cmdHit(StringTokenizer st, int devid) throws ParseException {
+            String next = st.nextToken();
             SimpleDateFormat sd = new SimpleDateFormat("mm:ss.SSS");
             sd.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String next;
+            int senid = parseID(next, PREFIX_SENSOR_ID);
+            Date datePast = sd.parse(st.nextToken());
+            long msPast = datePast.getTime();
+            Sensor sen = scenario.getSensor(devid, senid);
 
-            int devid = parseID(st.nextToken(), PREFIX_DEVICE_ID);
+            scenario.printInfo(String.format("%s dev:%d sen:%d %3d.%03d",
+                    tlTime.getText(), devid, senid, msPast / 1000, msPast % 1000), null);
 
-            next = st.nextToken();
-            if (next.equalsIgnoreCase(CMD_SINGLE)) {
-                next = st.nextToken();
-
-                if (next.equalsIgnoreCase("OK")) {
-                    scenario.resetTimeStart();
-                } else {
-                    scenario.printError(CMD_SINGLE + ": Command is failed.", null);
-                }
-            } else if (next.equalsIgnoreCase(CMD_MULTI)) {
-                next = st.nextToken();
-
-                if (!next.equalsIgnoreCase("OK")) {
-                    scenario.printError(CMD_MULTI + ": Command is failed.", null);
-                }
-            } else if (next.equalsIgnoreCase(CMD_INIT)) {
-                next = st.nextToken();
-
-                if (!next.equalsIgnoreCase("OK")) {
-                    scenario.printError(CMD_INIT + ": Command is failed.", null);
-                }
-            } else if (next.equalsIgnoreCase(CMD_BEEP)) {
-                next = st.nextToken();
-
-                if (!next.equalsIgnoreCase("OK")) {
-                    scenario.printError(CMD_BEEP + ": Command is failed.", null);
-                }
-            } else {
-                int senid = parseID(next, PREFIX_SENSOR_ID);
-                Date datePast = sd.parse(st.nextToken());
-                long msPast = datePast.getTime();
-                Sensor sen = scenario.getSensor(devid, senid);
-
-                scenario.printInfo(String.format("%s dev:%d sen:%d %3d.%03d",
-                        tlTime.getText(), devid, senid, msPast / 1000, msPast % 1000), null);
-
-                sen.setTimeHit(msPast);
-                sen.setState(Sensor.SensorState.HIT);
-            }
-        }
-
-        protected int parseID(String token, String prefix) {
-            StringTokenizer st = new StringTokenizer(token, ":", false);
-            String pre = st.nextToken();
-            if (!pre.equalsIgnoreCase(prefix)) {
-                throw new IllegalArgumentException(CMD_HIT + ": Answers have no prefix '" + prefix + "'.");
-            }
-
-            return Integer.parseInt(st.nextToken());
+            sen.setTimeHit(msPast);
+            sen.setState(Sensor.SensorState.HIT);
         }
     }
 
-    protected class MouseHandler extends MouseAdapter {
+    protected class MouseHandler extends MouseAdapterEx {
         private SingleScenario scenario;
-        private AtomicInteger press = new AtomicInteger(0);
-        private Timer tm;
 
         public MouseHandler(SingleScenario s) {
             scenario = s;
         }
 
-        protected class HoldTask extends TimerTask {
-            MouseEvent event;
-
-            public HoldTask(MouseEvent e) {
-                event = e;
-            }
-
-            @Override
-            public void run() {
-                if (press.get() != 1) {
-                    return;
-                }
-                press.set(0);
-
-                switch (event.getButton()) {
-                case MouseEvent.BUTTON1:
-                    mouseLeftPressKept(event);
-                    break;
-                }
-            }
-        }
-
         @Override
-        public void mousePressed(MouseEvent e) {
-            tm = new Timer();
-            tm.schedule(new HoldTask(e), 3000);
-            press.getAndAdd(1);
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (press.get() == 0) {
-                //Do not fire Clicked event if Kept event has already happened
-            } else if (press.get() == 1) {
-                tm.cancel();
-                press.set(0);
-
-                switch (e.getButton()) {
-                case MouseEvent.BUTTON1:
-                    mouseLeftClicked(e);
-                    break;
-                case MouseEvent.BUTTON3:
-                    mouseRightClicked(e);
-                    break;
-                }
-            }
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            mouseReleased(e);
-        }
-
-        protected void mouseLeftClicked(MouseEvent e) {
+        public void mouseLeftClicked() {
             switch (scenario.getState()) {
             case RUN:
                 scenario.tryToCancelScenario();
@@ -543,7 +466,8 @@ public class SingleScenario extends AbstractScenario {
             }
         }
 
-        protected void mouseRightClicked(MouseEvent e) {
+        @Override
+        public void mouseRightClicked() {
             switch (scenario.getState()) {
             case RESULT:
                 scenario.closeScenario();
@@ -551,7 +475,8 @@ public class SingleScenario extends AbstractScenario {
             }
         }
 
-        protected void mouseLeftPressKept(MouseEvent e) {
+        @Override
+        public void mouseLeftLongPressed() {
             switch (scenario.getState()) {
             case RUN:
                 scenario.cancelScenario();

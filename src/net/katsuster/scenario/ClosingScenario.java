@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Arrays;
 
-import net.katsuster.ble.BTDeviceEvent;
-import net.katsuster.ble.BTDeviceListener;
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 import net.katsuster.draw.GridBG;
@@ -193,19 +191,13 @@ public class ClosingScenario extends AbstractScenario {
         }
     }
 
-    protected class BTDeviceHandler implements BTDeviceListener {
+    protected class BTDeviceHandler extends BTCommandHandler {
         ClosingScenario scenario;
 
         public BTDeviceHandler(ClosingScenario s) {
+            super(s);
+
             scenario = s;
-        }
-
-        public void messageReceived(BTDeviceEvent e) {
-            if (!scenario.getActivated()) {
-                return;
-            }
-
-            System.out.println("opening: " + e.getMessage());
         }
     }
 }

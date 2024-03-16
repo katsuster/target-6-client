@@ -56,6 +56,21 @@ public class AbstractScenario implements Scenario {
         //do nothing
     }
 
+    @Override
+    public void printError(String str, Exception ex) {
+        printErrorInner("Error", str, ex);
+    }
+
+    @Override
+    public void printWarn(String str, Exception ex) {
+        printErrorInner("Warn ", str, ex);
+    }
+
+    @Override
+    public void printInfo(String str, Exception ex) {
+        printErrorInner("Info ", str, ex);
+    }
+
     public void clearDrawable() {
         listDrawable.clear();
     }
@@ -115,17 +130,5 @@ public class AbstractScenario implements Scenario {
             System.err.println("  msg:" + ex.getMessage());
             ex.printStackTrace(System.err);
         }
-    }
-
-    public void printError(String str, Exception ex) {
-        printErrorInner("Error", str, ex);
-    }
-
-    public void printWarn(String str, Exception ex) {
-        printErrorInner("Warn ", str, ex);
-    }
-
-    public void printInfo(String str, Exception ex) {
-        printErrorInner("Info ", str, ex);
     }
 }

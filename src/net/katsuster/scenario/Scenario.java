@@ -29,4 +29,8 @@ public interface Scenario {
     void activate();
     void deactivate();
     void drawFrame(Graphics2D g2);
+
+    void printError(String str, Exception ex);
+    void printWarn(String str, Exception ex);
+    void printInfo(String str, Exception ex);
 }
