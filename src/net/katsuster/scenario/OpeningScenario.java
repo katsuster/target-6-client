@@ -383,6 +383,13 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void cmdInit(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+
+            if (!next.equalsIgnoreCase("OK")) {
+                scenario.printError(CMD_INIT + ": Command is failed.", null);
+                return;
+            }
+
             scenario.setDevState(devid, DevState.INIT);
 
             checkAllDevices();
@@ -411,23 +418,23 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void mouseLeftClicked() {
-            if (getFlagFailed()) {
-                setFlagRestart(true);
+            if (scenario.getFlagFailed()) {
+                scenario.setFlagRestart(true);
             } else if (getFlagReady()) {
-                setFlagStart(true);
+                scenario.setFlagStart(true);
             } else {
-                printWarn("Devices are not ready.", null);
+                scenario.printWarn("Devices are not ready.", null);
             }
         }
 
         @Override
         public void mouseRightClicked() {
-            closeScenario();
+            scenario.closeScenario();
         }
 
         @Override
         public void mouseLeftLongPressed() {
-            closeScenario();
+            scenario.closeScenario();
         }
     }
 }
