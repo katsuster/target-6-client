@@ -19,7 +19,8 @@ public interface Scenario {
     String CMD_SINGLE = "single";
     String CMD_MULTI = "multi";
     String CMD_BEEP = "beep";
-    String CMD_HIT = "hit";
+    String RES_BUTTON = "button";
+    String RES_HIT = "hit";
 
     String getName();
     ScenarioSwitcher getSwitcher();

@@ -1,10 +1,7 @@
 package net.katsuster.scenario;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.StringTokenizer;
-import java.util.TimeZone;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
@@ -47,6 +44,9 @@ public class BTCommandHandler implements BTDeviceListener {
     public void cmdBeep(StringTokenizer st, int devid) throws ParseException {
     }
 
+    public void cmdButton(StringTokenizer st, int devid) throws ParseException {
+    }
+
     public void cmdHit(StringTokenizer st, int devid) throws ParseException {
     }
 
@@ -65,8 +65,12 @@ public class BTCommandHandler implements BTDeviceListener {
             cmdMulti(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_BEEP)) {
             cmdBeep(st, devid);
-        } else if (next.equalsIgnoreCase(Scenario.CMD_HIT)) {
+        } else if (next.equalsIgnoreCase(Scenario.RES_BUTTON)) {
+            cmdButton(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.RES_HIT)) {
             cmdHit(st, devid);
+        } else {
+            scenario.printError("BTCommand: unknown cmd " + next, null);
         }
     }
 
