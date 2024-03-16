@@ -19,3 +19,4 @@
 
 * [How to build](doc/build.md)
 * [Setup Linux](doc/setup_linux.md)
+* [Single mode](doc/single.md)
