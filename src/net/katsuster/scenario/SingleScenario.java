@@ -1,6 +1,7 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -423,6 +424,24 @@ public class SingleScenario extends AbstractScenario {
 
             if (!next.equalsIgnoreCase("OK")) {
                 scenario.printError(CMD_BEEP + ": Command is failed.", null);
+            }
+        }
+
+        @Override
+        public void cmdButton(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+            MainWindow wnd = scenario.getSwitcher().getMainWindow();
+
+            if (next.equalsIgnoreCase("press")) {
+                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
+                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
+                handlerMouse.mousePressed(e);
+            } else if (next.equalsIgnoreCase("release")) {
+                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
+                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
+                handlerMouse.mouseReleased(e);
+            } else {
+                scenario.printError(RES_BUTTON + ": unknown event " + next + ".", null);
             }
         }
 

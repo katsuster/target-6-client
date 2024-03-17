@@ -50,9 +50,6 @@ public class MouseAdapterEx extends MouseAdapter {
         if (press.get() == 0) {
             //Do not fire Clicked event if Kept event has already happened
         } else if (press.get() == 1) {
-            tm.cancel();
-            press.set(0);
-
             switch (e.getButton()) {
             case MouseEvent.BUTTON1:
                 mouseLeftClicked();
@@ -65,6 +62,9 @@ public class MouseAdapterEx extends MouseAdapter {
                 break;
             }
         }
+
+        tm.cancel();
+        press.set(0);
     }
 
     @Override
@@ -73,26 +73,20 @@ public class MouseAdapterEx extends MouseAdapter {
     }
 
     public void mouseLeftClicked() {
-
     }
 
     public void mouseCenterClicked() {
-
     }
 
     public void mouseRightClicked() {
-
     }
 
     public void mouseLeftLongPressed() {
-
     }
 
     public void mouseCenterLongPressed() {
-
     }
 
     public void mouseRightLongPressed() {
-
     }
 }
