@@ -111,6 +111,8 @@ public class AbstractScenario implements Scenario {
                 printError("I/O error in write.", ex);
             } catch (RuntimeException ex) {
                 printError("Runtime error in write.", ex);
+            } catch (Exception ex) {
+                printError("Unknown error in write.", ex);
             }
 
             if (retry > 5) {
