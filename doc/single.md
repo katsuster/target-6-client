@@ -1,17 +1,17 @@
 
-# Single mode
+# Single player mode
 
-This document describes specification and implementation of single mode.
+This document describes specification and implementation of single player mode.
 
 
 ## Specification
 
-Single mode has 1 game.
+Single player mode has 1 game.
 
 * Time attack
   * Shoot all 6 targets as fast as possible
 
-Single mode is using 2 nodes at same time.
+Single player mode is using 2 nodes at same time.
 
 * Controller node (device ID: 0)
   * Detect push button
@@ -42,22 +42,22 @@ sensor --> init
 
 state controller {
   [*] --> init_controller
-  init_controller --> multi_wait1: multi cmd
+  init_controller --> single_wait1: single cmd
   init_controller --> [*]: init cmd
-  multi_wait1 --> multi_wait2: set out0 High
-  multi_wait2 --> beep: passed 3 sec. set out0 Low
+  single_wait1 --> single_wait2: set out0 High
+  single_wait2 --> beep: passed 3 sec. set out0 Low
   beep --> beep_wait: output high for beep
   beep_wait --> [*]: beep 0.6 sec.
 }
 
 state sensor {
   [*] --> init_sensor
-  init_sensor --> single_wait1: single cmd
+  init_sensor --> six_wait1: six cmd
   init_sensor --> [*]: init cmd
-  single_wait1 --> single_wait2: LED ON
-  single_wait2 --> single_run: wait for falling edge, LED OFF
-  single_run --> [*]: wait for game finished, send results
-  single_run --> [*]: init cmd
+  six_wait1 --> six_wait2: LED ON
+  six_wait2 --> six_run: wait for falling edge, LED OFF
+  six_run --> [*]: wait for game finished, send results
+  six_run --> [*]: init cmd
 }
 ```
 
@@ -86,13 +86,13 @@ sensor ->> led: All off
 sensor ->> target: All off
 sensor -->> client: OK
 
-client ->> sensor: single cmd
+client ->> sensor: six cmd
 activate sensor
 sensor ->> led: All on
 activate led
 sensor -->> client: OK
 
-client ->> controller: multi cmd
+client ->> controller: single cmd
 activate controller
 controller ->> sensor: GPIO0 Out/High
 controller -->> client: OK
