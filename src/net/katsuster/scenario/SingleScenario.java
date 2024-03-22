@@ -162,12 +162,12 @@ public class SingleScenario extends AbstractScenario {
     protected void drawFrameInnerInit(Graphics2D g2) {
         boolean success;
 
-        success = writeLine(DEV_SINGLE, CMD_SINGLE);
+        success = writeLine(DEV_SINGLE, CMD_SIX);
         if (!success) {
             getSwitcher().termBTIO();
             return;
         }
-        success = writeLine(DEV_CONTROLLER, CMD_MULTI);
+        success = writeLine(DEV_CONTROLLER, CMD_SINGLE);
         if (!success) {
             getSwitcher().termBTIO();
             return;
@@ -402,19 +402,8 @@ public class SingleScenario extends AbstractScenario {
         public void cmdSingle(StringTokenizer st, int devid) {
             String next = st.nextToken();
 
-            if (next.equalsIgnoreCase("OK")) {
-                scenario.resetTimeStart();
-            } else {
-                scenario.printError(CMD_SINGLE + ": Command is failed.", null);
-            }
-        }
-
-        @Override
-        public void cmdMulti(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-
             if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(CMD_MULTI + ": Command is failed.", null);
+                scenario.printError(CMD_SINGLE + ": Command is failed.", null);
             }
         }
 
@@ -424,6 +413,17 @@ public class SingleScenario extends AbstractScenario {
 
             if (!next.equalsIgnoreCase("OK")) {
                 scenario.printError(CMD_BEEP + ": Command is failed.", null);
+            }
+        }
+
+        @Override
+        public void cmdSix(StringTokenizer st, int devid) {
+            String next = st.nextToken();
+
+            if (next.equalsIgnoreCase("OK")) {
+                scenario.resetTimeStart();
+            } else {
+                scenario.printError(CMD_SIX + ": Command is failed.", null);
             }
         }
 
