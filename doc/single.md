@@ -9,7 +9,9 @@ This document describes specification and implementation of single player mode.
 Single player mode has 1 game.
 
 * Time attack
+  * Start by `tatk` command
   * Shoot all 6 targets as fast as possible
+  * Pass the target if 30 seconds past
 
 Single player mode is using 2 nodes at same time.
 
@@ -52,12 +54,12 @@ state controller {
 
 state sensor {
   [*] --> init_sensor
-  init_sensor --> six_wait1: six cmd
+  init_sensor --> tatk_wait1: tatk cmd
   init_sensor --> [*]: init cmd
-  six_wait1 --> six_wait2: LED ON
-  six_wait2 --> six_run: wait for falling edge, LED OFF
-  six_run --> [*]: wait for game finished, send results
-  six_run --> [*]: init cmd
+  tatk_wait1 --> tatk_wait2: LED ON
+  tatk_wait2 --> tatk_run: wait for falling edge, LED OFF
+  tatk_run --> [*]: wait for game finished, send results
+  tatk_run --> [*]: init cmd
 }
 ```
 
@@ -86,7 +88,7 @@ sensor ->> led: All off
 sensor ->> target: All off
 sensor -->> client: OK
 
-client ->> sensor: six cmd
+client ->> sensor: tatk cmd
 activate sensor
 sensor ->> led: All on
 activate led
