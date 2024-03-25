@@ -63,7 +63,7 @@ public class BTCommandHandler implements BTDeviceListener {
             cmdSingle(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_BEEP)) {
             cmdBeep(st, devid);
-        } else if (next.equalsIgnoreCase(Scenario.CMD_SIX)) {
+        } else if (next.equalsIgnoreCase(Scenario.CMD_TATK)) {
             cmdSix(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.RES_BUTTON)) {
             cmdButton(st, devid);

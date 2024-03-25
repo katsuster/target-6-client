@@ -18,7 +18,7 @@ public interface Scenario {
     String CMD_INIT = "init";
     String CMD_SINGLE = "single";
     String CMD_BEEP = "beep";
-    String CMD_SIX = "six";
+    String CMD_TATK = "tatk";
     String RES_BUTTON = "button";
     String RES_HIT = "hit";
 

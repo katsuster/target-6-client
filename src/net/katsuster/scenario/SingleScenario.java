@@ -162,7 +162,7 @@ public class SingleScenario extends AbstractScenario {
     protected void drawFrameInnerInit(Graphics2D g2) {
         boolean success;
 
-        success = writeLine(DEV_SINGLE, CMD_SIX);
+        success = writeLine(DEV_SINGLE, CMD_TATK);
         if (!success) {
             getSwitcher().termBTIO();
             return;
@@ -423,7 +423,7 @@ public class SingleScenario extends AbstractScenario {
             if (next.equalsIgnoreCase("OK")) {
                 scenario.resetTimeStart();
             } else {
-                scenario.printError(CMD_SIX + ": Command is failed.", null);
+                scenario.printError(CMD_TATK + ": Command is failed.", null);
             }
         }
 
