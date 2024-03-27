@@ -332,6 +332,7 @@ public class OpeningScenario extends AbstractScenario {
             }
             if (!done) {
                 switcher.addLogLater("Failed to connect. Please check bluetooth settings.\n");
+                switcher.setBTRecover(true);
                 return;
             }
             switcher.addLogLater("Connected.\n");
@@ -344,7 +345,8 @@ public class OpeningScenario extends AbstractScenario {
 
                 boolean success = writeLine(i, CMD_INIT + " " + i);
                 if (!success) {
-                    scenario.getSwitcher().termBTIO();
+                    switcher.addLogLater("Failed to initialize dev " + i + ".\n");
+                    return;
                 }
                 scenario.setDevState(i, DevState.INIT_WAIT);
             }

@@ -164,12 +164,10 @@ public class SingleScenario extends AbstractScenario {
 
         success = writeLine(DEV_SINGLE, CMD_TATK);
         if (!success) {
-            getSwitcher().termBTIO();
             return;
         }
         success = writeLine(DEV_CONTROLLER, CMD_SINGLE);
         if (!success) {
-            getSwitcher().termBTIO();
             return;
         }
 
@@ -227,7 +225,6 @@ public class SingleScenario extends AbstractScenario {
 
             boolean success = writeLine(DEV_CONTROLLER, CMD_BEEP);
             if (!success) {
-                getSwitcher().termBTIO();
                 return;
             }
 
@@ -281,12 +278,10 @@ public class SingleScenario extends AbstractScenario {
 
         success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
         if (!success) {
-            getSwitcher().termBTIO();
             return;
         }
         success = writeLine(DEV_CONTROLLER, CMD_INIT + " " + 0);
         if (!success) {
-            getSwitcher().termBTIO();
             return;
         }
 

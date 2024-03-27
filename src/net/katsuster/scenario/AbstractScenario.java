@@ -115,8 +115,9 @@ public class AbstractScenario implements Scenario {
                 printError("Unknown error in write.", ex);
             }
 
-            if (retry > 5) {
-                printError("Too many error in write, maybe disconnected.", null);
+            if (retry > 1) {
+                printError("Too many error in write, maybe failed.", null);
+                getSwitcher().getBTInOut().failDevice(id);
                 return false;
             }
             retry++;

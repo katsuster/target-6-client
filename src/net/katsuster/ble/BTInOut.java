@@ -25,6 +25,7 @@ public class BTInOut {
 
     public enum BTStatus {
         DISCONNECTED,
+        FAILED,
         CONNECTED,
     }
 
@@ -80,9 +81,13 @@ public class BTInOut {
 
         try {
             switcher.addLogLater("Disconnect to Device " + id + "\n");
-            receiver[id].terminate();
-            receiverThread[id].interrupt();
-            receiverThread[id].join();
+            if (receiver[id] != null) {
+                receiver[id].terminate();
+            }
+            if (receiverThread[id] != null) {
+                receiverThread[id].interrupt();
+                receiverThread[id].join();
+            }
             deviceStatus[id] = BTStatus.DISCONNECTED;
 
             streamBT[id] = null;
@@ -114,7 +119,7 @@ public class BTInOut {
         int cnt = 0;
 
         for (BTStatus i : deviceStatus) {
-            if (i != BTStatus.DISCONNECTED) {
+            if (i == BTStatus.CONNECTED) {
                 cnt++;
             }
         }
@@ -156,6 +161,14 @@ public class BTInOut {
         }
 
         return deviceStatus[id];
+    }
+
+    public void failDevice(int id) {
+        if (id < 0 || NUM_DEVICES <= id) {
+            throw new IndexOutOfBoundsException("BTIO Status: Device ID is out of bounds.");
+        }
+
+        deviceStatus[id] = BTStatus.FAILED;
     }
 
     public void addBTDeviceListener(BTDeviceListener l) {
