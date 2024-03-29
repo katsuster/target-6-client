@@ -61,7 +61,7 @@ public class ScenarioSwitcher implements Runnable {
         boolean done = false;
 
         for (int i = 0; i < 5; i++) {
-            addLogLater("Try to connect " + i + ".\n");
+            printInfo("Try to connect " + i, null);
             btIO.connectBTDevices();
             if (btIO.getNumberOfConnectedDevices() == BTInOut.NUM_DEVICES) {
                 done = true;
@@ -69,10 +69,10 @@ public class ScenarioSwitcher implements Runnable {
             }
         }
         if (!done) {
-            addLogLater("Failed to connect. Please check bluetooth settings.\n");
+            printError("Failed to connect. Please check bluetooth settings.", null);
             return;
         }
-        addLogLater("Connected.\n");
+        printInfo("Connected.", null);
     }
 
     protected void termBTIO() {
@@ -86,10 +86,10 @@ public class ScenarioSwitcher implements Runnable {
             }
         }
         if (!done) {
-            addLogLater("Failed to disconnect. Please check bluetooth settings.\n");
+            printError("Failed to disconnect. Please check bluetooth settings.", null);
             return;
         }
-        addLogLater("Disconnected.\n");
+        printInfo("Disconnected.", null);
     }
 
     protected void initGraphics() {
@@ -141,10 +141,10 @@ public class ScenarioSwitcher implements Runnable {
             if (curScenario != null) {
                 curScenario.deactivate();
                 curScenario.setActivated(false);
-                addLogLater("Leaving " + curScenario.getName() + "\n");
+                printInfo("Leaving " + curScenario.getName(), null);
             }
 
-            addLogLater("Entering " + nextScenario.getName() + "\n");
+            printInfo("Entering " + nextScenario.getName(), null);
             nextScenario.setActivated(true);
             nextScenario.activate();
             curScenario = nextScenario;
@@ -223,5 +223,26 @@ public class ScenarioSwitcher implements Runnable {
         SwingUtilities.invokeLater(() -> {
             logWnd.getLogGame().setText(logBuffer.toString());
         });
+    }
+
+    public void printError(String str, Exception ex) {
+        printErrorInner("Error", str, ex);
+    }
+
+    public void printWarn(String str, Exception ex) {
+        printErrorInner("Warn ", str, ex);
+    }
+
+    public void printInfo(String str, Exception ex) {
+        printErrorInner("Info ", str, ex);
+    }
+
+    public void printErrorInner(String header, String str, Exception ex) {
+        addLogLater(header + ": " + str + "\n");
+        System.err.println(header + ": " + str);
+        if (ex != null) {
+            System.err.println("  msg:" + ex.getMessage());
+            ex.printStackTrace(System.err);
+        }
     }
 }

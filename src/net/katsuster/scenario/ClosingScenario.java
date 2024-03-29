@@ -164,7 +164,7 @@ public class ClosingScenario extends AbstractScenario {
             for (int j = 0; j < retry; j++) {
                 int id = -1;
 
-                switcher.addLogLater("Try to disconnect " + j + ".\n");
+                printInfo("Try to disconnect " + j, null);
                 try {
                     for (id = 0; id < BTInOut.NUM_DEVICES; id++) {
                         scenario.setDevState(id, DevState.CONNECT_WAIT);
@@ -185,9 +185,9 @@ public class ClosingScenario extends AbstractScenario {
                 }
             }
             if (!done) {
-                switcher.addLogLater("Failed to disconnect, but forced to continue.\n");
+                printWarn("Failed to disconnect, but forced to continue.", null);
             }
-            switcher.addLogLater("Disconnected.\n");
+            printInfo("Disconnected.", null);
         }
     }
 

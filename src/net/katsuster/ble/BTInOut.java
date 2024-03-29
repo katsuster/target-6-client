@@ -44,7 +44,7 @@ public class BTInOut {
             return;
         }
 
-        switcher.addLogLater("Connect to Device " + id + "\n");
+        switcher.printInfo("Connect to Device " + id, null);
         streamBT[id] = new BTStream(id, 3);
         streamIn[id] = streamBT[id].getInputStream();
         streamOut[id] = streamBT[id].getOutputStream();
@@ -65,8 +65,7 @@ public class BTInOut {
                 connectBTDevice(id);
             }
         } catch (Exception ex) {
-            switcher.addLogLater("Failed to connect device " + id + "\n");
-            printException("Failed to connect device " + id, ex);
+            switcher.printError("Failed to connect device " + id, ex);
         }
     }
 
@@ -80,7 +79,7 @@ public class BTInOut {
         }
 
         try {
-            switcher.addLogLater("Disconnect to Device " + id + "\n");
+            switcher.printInfo("Disconnect to Device " + id, null);
             if (receiver[id] != null) {
                 receiver[id].terminate();
             }
@@ -97,8 +96,7 @@ public class BTInOut {
             receiverThread[id] = null;
             streamWr[id] = null;
         } catch (InterruptedException ex) {
-            switcher.addLogLater("Failed to join receiver thread for device " + id + "\n");
-            printException("Failed to join receiver thread for device " + id, ex);
+            switcher.printError("Failed to join receiver thread for device " + id, ex);
         }
     }
 
@@ -110,8 +108,7 @@ public class BTInOut {
                 disconnectBTDevice(id);
             }
         } catch (Exception ex) {
-            switcher.addLogLater("Failed to disconnect device " + id + "\n");
-            printException("Failed to disconnect device " + id, ex);
+            switcher.printError("Failed to disconnect device " + id, ex);
         }
     }
 

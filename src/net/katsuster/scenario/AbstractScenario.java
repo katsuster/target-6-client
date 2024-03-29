@@ -127,11 +127,6 @@ public class AbstractScenario implements Scenario {
     }
 
     public void printErrorInner(String header, String str, Exception ex) {
-        getSwitcher().addLogLater(header + ": " + getName() + ": " + str + "\n");
-        System.err.println(header + ": " + getName() + ": " + str);
-        if (ex != null) {
-            System.err.println("  msg:" + ex.getMessage());
-            ex.printStackTrace(System.err);
-        }
+        getSwitcher().printErrorInner(header + ": " + getName(), str, ex);
     }
 }

@@ -309,7 +309,7 @@ public class OpeningScenario extends AbstractScenario {
             for (int j = 0; j < retry; j++) {
                 int id = -1;
 
-                switcher.addLogLater("Try to connect " + j + ".\n");
+                printInfo("Try to connect " + j, null);
                 try {
                     for (id = 0; id < BTInOut.NUM_DEVICES; id++) {
                         scenario.setDevState(id, DevState.CONNECT_WAIT);
@@ -331,11 +331,11 @@ public class OpeningScenario extends AbstractScenario {
                 }
             }
             if (!done) {
-                switcher.addLogLater("Failed to connect. Please check bluetooth settings.\n");
+                printError("Failed to connect. Please check bluetooth settings.", null);
                 switcher.setBTRecover(true);
                 return;
             }
-            switcher.addLogLater("Connected.\n");
+            printInfo("Connected.", null);
             switcher.setBTRecover(true);
 
             for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
@@ -345,12 +345,12 @@ public class OpeningScenario extends AbstractScenario {
 
                 boolean success = writeLine(i, CMD_INIT + " " + i);
                 if (!success) {
-                    switcher.addLogLater("Failed to initialize dev " + i + ".\n");
+                    printError("Failed to initialize dev " + i, null);
                     return;
                 }
                 scenario.setDevState(i, DevState.INIT_WAIT);
             }
-            switcher.addLogLater("Wait for initialized.\n");
+            printInfo("Wait for initialized.", null);
 
             for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
                 if (scenario.getDevState(i) == DevState.INIT) {
@@ -366,12 +366,12 @@ public class OpeningScenario extends AbstractScenario {
                     Thread.sleep(100);
                 }
                 if (!done) {
-                    switcher.addLogLater("Failed to init in id:" + i + ".\n");
+                    printError("Failed to init in id:" + i, null);
                     scenario.setDevState(i, DevState.FAILED);
                     return;
                 }
             }
-            switcher.addLogLater("Initialized.\n");
+            printInfo("Initialized.", null);
         }
     }
 
