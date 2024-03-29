@@ -139,6 +139,12 @@ public class ScenarioSwitcher implements Runnable {
 
     protected void switchScenario() {
         if (nextScenario != curScenario) {
+            if (nextScenario.getActivated()) {
+                printError("Next scenario is already activated, ignore it.", null);
+                nextScenario = curScenario;
+                return;
+            }
+
             if (curScenario != null) {
                 curScenario.deactivate();
                 curScenario.setActivated(false);
