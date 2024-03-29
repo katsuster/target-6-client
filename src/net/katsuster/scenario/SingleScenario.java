@@ -31,15 +31,18 @@ public class SingleScenario extends AbstractScenario {
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
     private Font fontTimer;
-    private Font fontLarge;
+    private Font fontLargest;
     private Font fontMedium;
     private Font fontSmall;
+    private Font fontDetail;
     private Font fontSmallest;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
     private long tStart;
     private TextLine tlTime;
     private TextLine tlWarning;
+    private TextLine tlInfo;
+    private TextLine tlInfo2;
     private TextLine tlResult;
     private TextLine tlClock;
     private List<TextLine> results = new ArrayList<>();
@@ -65,9 +68,10 @@ public class SingleScenario extends AbstractScenario {
 
         Font f = getSwitcher().getSetting().getFont();
         fontTimer = f.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
-        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
-        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontLargest = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontDetail = f.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
         fontSmallest = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
@@ -84,19 +88,41 @@ public class SingleScenario extends AbstractScenario {
                 mainWnd.getWidth(), mainWnd.getHeight());
 
         tlWarning = new TextLine();
+        tlWarning.setText("Press(Long): Cancel Game");
+        tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlWarning.setFont(fontSmall);
+        tlWarning.setFont(fontMedium);
         tlWarning.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() - FONT_SIZE_SMALL * 2);
+                mainWnd.getWidth(), mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
         tlWarning.getContentBox().setMargin(20, 20, 20, 20);
         tlWarning.setVisible(false);
 
+        tlInfo = new TextLine();
+        tlInfo.setText("Press(Short): Next Game");
+        tlInfo.setForeground(COLOR_DARK_BLUE);
+        tlInfo.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlInfo.setFont(fontSmall);
+        tlInfo.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
+        tlInfo.getContentBox().setMargin(20, 20, 20, 20);
+        tlInfo.setVisible(false);
+
+        tlInfo2 = new TextLine();
+        tlInfo2.setText("Press(Long): Back to Title");
+        tlInfo2.setForeground(COLOR_DARK_BLUE);
+        tlInfo2.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlInfo2.setFont(fontSmall);
+        tlInfo2.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
+        tlInfo2.getContentBox().setMargin(20, 20, 20, 20);
+        tlInfo2.setVisible(false);
+
         tlResult = new TextLine();
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-        tlResult.setFont(fontMedium);
-        tlResult.getContentBox().setBounds(0, FONT_SIZE_MEDIUM,
+        tlResult.setFont(fontLargest);
+        tlResult.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
-        tlResult.getContentBox().setMargin(20, 0, 20, 0);
+        tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
         tlClock = new TextLine();
@@ -113,6 +139,8 @@ public class SingleScenario extends AbstractScenario {
         addDrawable(tlClock);
         addDrawable(tlTime);
         addDrawable(tlWarning);
+        addDrawable(tlInfo);
+        addDrawable(tlInfo2);
         addDrawable(tlResult);
     }
 
@@ -201,6 +229,7 @@ public class SingleScenario extends AbstractScenario {
 
             long before = 0;
             for (int i = 0; i < sensors.size(); i++) {
+                MainWindow mainWnd = getSwitcher().getMainWindow();
                 Sensor sen = sensors.get(i);
                 int diff = (int)(sen.getTimeHit() - before);
                 TextLine tl = new TextLine();
@@ -208,11 +237,12 @@ public class SingleScenario extends AbstractScenario {
                         i + 1,
                         sen.getTimeHit() / 1000, sen.getTimeHit() % 1000,
                         diff / 1000, diff % 1000));
+                tl.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
                 tl.setForeground(Color.DARK_GRAY);
-                tl.setFont(fontSmall);
+                tl.setFont(fontDetail);
                 tl.getContentBox().setBounds(
-                        0, (int)((i + 1) * FONT_SIZE_SMALL * 1.3),
-                        100, (int)(FONT_SIZE_SMALL * 1.3));
+                        0, FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                        mainWnd.getWidth(), (int)(FONT_SIZE_DETAIL * 1.3));
                 tl.getContentBox().setMargin(
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
@@ -235,10 +265,9 @@ public class SingleScenario extends AbstractScenario {
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
 
-            tlWarning.setText("Press a button to next");
-            tlWarning.setForeground(Color.DARK_GRAY);
-            tlWarning.setVisible(true);
-
+            tlWarning.setVisible(false);
+            tlInfo.setVisible(true);
+            tlInfo2.setVisible(true);
             tlClock.setVisible(true);
 
             getSwitcher().setTargetFPS(3);
@@ -256,7 +285,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerClose(Graphics2D g2) {
-        getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
+        getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
     }
 
     public synchronized ScenarioState getState() {
@@ -268,8 +297,6 @@ public class SingleScenario extends AbstractScenario {
     }
 
     public synchronized void tryToCancelScenario() {
-        tlWarning.setText("Press a button 3 seconds to cancel");
-        tlWarning.setForeground(COLOR_DARK_ORANGE);
         tlWarning.setVisible(true);
     }
 
@@ -289,10 +316,9 @@ public class SingleScenario extends AbstractScenario {
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
 
-        tlWarning.setText("Press a button to next");
-        tlWarning.setForeground(Color.DARK_GRAY);
-        tlWarning.setVisible(true);
-
+        tlWarning.setVisible(false);
+        tlInfo.setVisible(true);
+        tlInfo2.setVisible(true);
         tlClock.setVisible(true);
 
         getSwitcher().setTargetFPS(3);
@@ -314,8 +340,6 @@ public class SingleScenario extends AbstractScenario {
             return 0;
         case 1:
             return 6;
-        case 2:
-            return 0;
         default:
             return 0;
         }
@@ -329,7 +353,7 @@ public class SingleScenario extends AbstractScenario {
             n += getNumOfSensorsOfDev(i);
         }
 
-        return n;
+        return 6;
     }
 
     protected int getLinearID(int devid, int senid) {
@@ -491,6 +515,9 @@ public class SingleScenario extends AbstractScenario {
             switch (scenario.getState()) {
             case RUN:
                 scenario.cancelScenario();
+                break;
+            case RESULT:
+                scenario.closeScenario();
                 break;
             }
         }

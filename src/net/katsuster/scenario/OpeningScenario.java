@@ -17,7 +17,6 @@ import net.katsuster.ui.MouseAdapterEx;
 public class OpeningScenario extends AbstractScenario {
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
-    private Font fontLarge;
     private Font fontMedium;
     private Font fontSmall;
     private DevState[] devState = new DevState[BTInOut.NUM_DEVICES];
@@ -26,8 +25,6 @@ public class OpeningScenario extends AbstractScenario {
     private boolean flagRestart = false;
     private boolean flagStart = false;
     private TextLine tlMsg;
-    private TextLine tlClock;
-    private TextLine tlVersion;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
     private Timer timerParent;
     private Thread thBTInit;
@@ -50,7 +47,6 @@ public class OpeningScenario extends AbstractScenario {
         mainWnd.addMouseListener(handlerMouse);
 
         Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
@@ -60,14 +56,6 @@ public class OpeningScenario extends AbstractScenario {
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
-        TextLine tlTitle = new TextLine();
-        tlTitle.setText("Titleタイトル");
-        tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-        tlTitle.setForeground(COLOR_DARK_BLUE);
-        tlTitle.setFont(fontLarge);
-        tlTitle.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() / 2);
-
         tlMsg = new TextLine();
         tlMsg.setText("Please Wait...");
         tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
@@ -76,23 +64,6 @@ public class OpeningScenario extends AbstractScenario {
         tlMsg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() - FONT_SIZE_MEDIUM * 2);
         tlMsg.getContentBox().setMargin(20, 20, 20, 20);
-
-        tlClock = new TextLine();
-        tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);
-        tlClock.setForeground(Color.DARK_GRAY);
-        tlClock.setFont(fontSmall);
-        tlClock.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight());
-        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
-
-        tlVersion = new TextLine();
-        tlVersion.setText("Target-6 v0.1");
-        tlVersion.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.BOTTOM);
-        tlVersion.setForeground(Color.DARK_GRAY);
-        tlVersion.setFont(fontSmall);
-        tlVersion.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight());
-        tlVersion.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
 
         ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
@@ -122,8 +93,6 @@ public class OpeningScenario extends AbstractScenario {
 
         clearDrawable();
         addDrawable(bg);
-        addDrawable(tlClock);
-        addDrawable(tlVersion);
         for (ShapeBox sh : shDevState) {
             addDrawable(sh);
         }
@@ -131,7 +100,6 @@ public class OpeningScenario extends AbstractScenario {
             addDrawable(tl);
         }
         addDrawable(tlMsg);
-        addDrawable(tlTitle);
 
         timerParent = new Timer();
         timerParent.schedule(new TaskClock(this), 0, 500);
@@ -192,9 +160,6 @@ public class OpeningScenario extends AbstractScenario {
             }
         }
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        tlClock.setText(df.format(new Date()));
-
         boolean finish = true;
         for (int i = 0; i < devState.length; i++) {
             if (devState[i] != DevState.INIT) {
@@ -207,7 +172,7 @@ public class OpeningScenario extends AbstractScenario {
             getSwitcher().setNextScenario(new OpeningScenario(getSwitcher()));
         }
         if (flagReady && flagStart) {
-            getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
+            getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
         }
 
         drawAllDrawable(g2);
@@ -271,7 +236,7 @@ public class OpeningScenario extends AbstractScenario {
                     break;
                 }
             } else {
-                tlMsg.setText("Push Button to Start");
+                tlMsg.setText("Press Button to Start");
 
                 if (cnt % 4 < 3) {
                     tlMsg.setVisible(true);
