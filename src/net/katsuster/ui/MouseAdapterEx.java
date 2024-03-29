@@ -63,7 +63,9 @@ public class MouseAdapterEx extends MouseAdapter {
             }
         }
 
-        tm.cancel();
+        if (tm != null) {
+            tm.cancel();
+        }
         press.set(0);
     }
 
