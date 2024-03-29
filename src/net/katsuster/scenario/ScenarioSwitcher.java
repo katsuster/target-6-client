@@ -53,6 +53,7 @@ public class ScenarioSwitcher implements Runnable {
                 termBTIO();
                 setBTRecover(false);
                 setNextScenario(new OpeningScenario(this));
+                switchScenario();
             }
         }
     }
