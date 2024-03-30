@@ -4,8 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class LogWindow extends JFrame {
-    private int fontSize = 16;
-
     private JTextArea logGame;
 
     public LogWindow() {
