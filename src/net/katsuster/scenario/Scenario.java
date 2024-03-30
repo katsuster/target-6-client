@@ -8,6 +8,9 @@ public interface Scenario {
     Color COLOR_DARK_BLUE = new Color(40, 85, 160);
     Color COLOR_DARK_ORANGE = new Color(247, 119, 15);
 
+    int DEV_CONTROLLER = 0;
+    int DEV_SINGLE = 1;
+
     int FONT_SIZE_TIMER = 272;
     int FONT_SIZE_DETAIL = 30;
     int FONT_SIZE_LARGEST = 96;

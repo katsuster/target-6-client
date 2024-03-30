@@ -15,9 +15,6 @@ import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
 public class SingleScenario extends AbstractScenario {
-    public static final int DEV_CONTROLLER = 0;
-    public static final int DEV_SINGLE = 1;
-
     public enum ScenarioState {
         INIT,
         WAIT,
@@ -356,7 +353,7 @@ public class SingleScenario extends AbstractScenario {
             n += getNumOfSensorsOfDev(i);
         }
 
-        return 6;
+        return n;
     }
 
     protected int getLinearID(int devid, int senid) {
@@ -439,7 +436,7 @@ public class SingleScenario extends AbstractScenario {
         }
 
         @Override
-        public void cmdSix(StringTokenizer st, int devid) {
+        public void cmdTatk(StringTokenizer st, int devid) {
             String next = st.nextToken();
 
             if (next.equalsIgnoreCase("OK")) {
