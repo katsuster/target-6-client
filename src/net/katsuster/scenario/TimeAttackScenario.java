@@ -14,7 +14,7 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
-public class SingleScenario extends AbstractScenario {
+public class TimeAttackScenario extends AbstractScenario {
     public enum ScenarioState {
         INIT,
         WAIT,
@@ -44,7 +44,7 @@ public class SingleScenario extends AbstractScenario {
     private TextLine tlClock;
     private List<TextLine> results = new ArrayList<>();
 
-    public SingleScenario(ScenarioSwitcher sw) {
+    public TimeAttackScenario(ScenarioSwitcher sw) {
         super(sw);
         for (int i = 0; i < getNumOfSensors(); i++) {
             sensors.add(new Sensor());
@@ -281,7 +281,7 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected void drawFrameInnerFinish(Graphics2D g2) {
-        getSwitcher().setNextScenario(new SingleScenario(getSwitcher()));
+        getSwitcher().setNextScenario(new TimeAttackScenario(getSwitcher()));
     }
 
     protected void drawFrameInnerClose(Graphics2D g2) {
@@ -400,9 +400,9 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected class BTDeviceHandler extends BTCommandHandler {
-        private SingleScenario scenario;
+        private TimeAttackScenario scenario;
 
-        public BTDeviceHandler(SingleScenario s) {
+        public BTDeviceHandler(TimeAttackScenario s) {
             super(s);
 
             scenario = s;
@@ -465,9 +465,9 @@ public class SingleScenario extends AbstractScenario {
     }
 
     protected class MouseHandler extends MouseAdapterEx {
-        private SingleScenario scenario;
+        private TimeAttackScenario scenario;
 
-        public MouseHandler(SingleScenario s) {
+        public MouseHandler(TimeAttackScenario s) {
             scenario = s;
         }
 

@@ -154,7 +154,7 @@ public class SelectScenario extends AbstractScenario {
     private Scenario getSelectedScenario() {
         switch (scenarios.get(indexSelected)) {
         case SCENARIO_TIME_ATTACK:
-            return new SingleScenario(getSwitcher());
+            return new TimeAttackScenario(getSwitcher());
         case SCENARIO_COUNT_UP:
         default:
             printError("Invalid scenario is selected.", null);
