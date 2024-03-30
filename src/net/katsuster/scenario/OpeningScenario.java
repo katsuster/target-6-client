@@ -1,9 +1,7 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.katsuster.ble.BTInOut;
@@ -16,6 +14,7 @@ import net.katsuster.ui.MouseAdapterEx;
 
 public class OpeningScenario extends AbstractScenario {
     private BTDeviceHandler handlerBT;
+    private BTButtonHandler handlerBTButton;
     private MouseHandler handlerMouse;
     private Font fontMedium;
     private Font fontSmall;
@@ -41,10 +40,12 @@ public class OpeningScenario extends AbstractScenario {
 
         getSwitcher().setTargetFPS(3);
 
-        handlerBT = new BTDeviceHandler(this);
-        btIO.addBTDeviceListener(handlerBT);
         handlerMouse = new MouseHandler(this);
         mainWnd.addMouseListener(handlerMouse);
+        handlerBT = new BTDeviceHandler(this);
+        btIO.addBTDeviceListener(handlerBT);
+        handlerBTButton = new BTButtonHandler(this, handlerMouse);
+        btIO.addBTDeviceListener(handlerBTButton);
 
         Font f = getSwitcher().getSetting().getFont();
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
@@ -113,6 +114,7 @@ public class OpeningScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
+        btIO.removeBTDeviceListener(handlerBTButton);
         btIO.removeBTDeviceListener(handlerBT);
         mainWnd.removeMouseListener(handlerMouse);
 
@@ -208,10 +210,6 @@ public class OpeningScenario extends AbstractScenario {
 
     public synchronized void setFlagStart(boolean f) {
         flagStart = f;
-    }
-
-    public synchronized void closeScenario() {
-        getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
     }
 
     private class TaskClock extends TimerTask {
@@ -363,24 +361,6 @@ public class OpeningScenario extends AbstractScenario {
             checkAllDevices();
         }
 
-        @Override
-        public void cmdButton(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-            MainWindow wnd = scenario.getSwitcher().getMainWindow();
-
-            if (next.equalsIgnoreCase("press")) {
-                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
-                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
-                handlerMouse.mousePressed(e);
-            } else if (next.equalsIgnoreCase("release")) {
-                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
-                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
-                handlerMouse.mouseReleased(e);
-            } else {
-                scenario.printError(RES_BUTTON + ": unknown event " + next + ".", null);
-            }
-        }
-
         protected void checkAllDevices() {
             boolean finish = true;
 
@@ -411,16 +391,6 @@ public class OpeningScenario extends AbstractScenario {
             } else {
                 scenario.printWarn("Devices are not ready.", null);
             }
-        }
-
-        @Override
-        public void mouseRightClicked() {
-            scenario.closeScenario();
-        }
-
-        @Override
-        public void mouseLeftLongPressed() {
-            scenario.closeScenario();
         }
     }
 }

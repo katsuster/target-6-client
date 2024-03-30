@@ -1,12 +1,10 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
@@ -19,7 +17,7 @@ public class SelectScenario extends AbstractScenario {
     public static final String SCENARIO_COUNT_UP = "Count Up";
     public static final String SCENARIO_TIME_ATTACK = "Time Attack";
 
-    private BTDeviceHandler handlerBT;
+    private BTButtonHandler handlerBT;
     private MouseHandler handlerMouse;
     private Font fontLarge;
     private Font fontSmall;
@@ -44,10 +42,10 @@ public class SelectScenario extends AbstractScenario {
 
         getSwitcher().setTargetFPS(3);
 
-        handlerBT = new BTDeviceHandler(this);
-        btIO.addBTDeviceListener(handlerBT);
         handlerMouse = new MouseHandler(this);
         mainWnd.addMouseListener(handlerMouse);
+        handlerBT = new BTButtonHandler(this, handlerMouse);
+        btIO.addBTDeviceListener(handlerBT);
 
         Font f = getSwitcher().getSetting().getFont();
         fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
@@ -179,34 +177,6 @@ public class SelectScenario extends AbstractScenario {
 
     public synchronized void closeScenario() {
         flagClose = true;
-    }
-
-    protected class BTDeviceHandler extends BTCommandHandler {
-        SelectScenario scenario;
-
-        public BTDeviceHandler(SelectScenario s) {
-            super(s);
-
-            scenario = s;
-        }
-
-        @Override
-        public void cmdButton(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-            MainWindow wnd = scenario.getSwitcher().getMainWindow();
-
-            if (next.equalsIgnoreCase("press")) {
-                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
-                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
-                handlerMouse.mousePressed(e);
-            } else if (next.equalsIgnoreCase("release")) {
-                MouseEvent e = new MouseEvent(wnd, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
-                        0, 0, 0, 1, false, MouseEvent.BUTTON1);
-                handlerMouse.mouseReleased(e);
-            } else {
-                scenario.printError(RES_BUTTON + ": unknown event " + next + ".", null);
-            }
-        }
     }
 
     protected class MouseHandler extends MouseAdapterEx {
