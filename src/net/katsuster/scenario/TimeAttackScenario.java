@@ -1,7 +1,6 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -155,39 +154,31 @@ public class TimeAttackScenario extends AbstractScenario {
 
     @Override
     public void drawFrame(Graphics2D g2) {
-        try {
-            drawFrameInner(g2);
-        } catch (IOException ex) {
-            //do nothing
+        switch (getState()) {
+        case INIT:
+            drawFrameInit(g2);
+            break;
+        case WAIT:
+            drawFrameWait(g2);
+            break;
+        case RUN:
+            drawFrameRun(g2);
+            break;
+        case RESULT:
+            drawFrameResult(g2);
+            break;
+        case FINISH:
+            drawFrameFinish(g2);
+            break;
+        case CLOSE:
+            drawFrameClose(g2);
+            break;
         }
 
         drawAllDrawable(g2);
     }
 
-    protected void drawFrameInner(Graphics2D g2) throws IOException {
-        switch (getState()) {
-        case INIT:
-            drawFrameInnerInit(g2);
-            break;
-        case WAIT:
-            drawFrameInnerWait(g2);
-            break;
-        case RUN:
-            drawFrameInnerRun(g2);
-            break;
-        case RESULT:
-            drawFrameInnerResult(g2);
-            break;
-        case FINISH:
-            drawFrameInnerFinish(g2);
-            break;
-        case CLOSE:
-            drawFrameInnerClose(g2);
-            break;
-        }
-    }
-
-    protected void drawFrameInnerInit(Graphics2D g2) {
+    protected void drawFrameInit(Graphics2D g2) {
         boolean success;
 
         success = writeLine(DEV_SINGLE, CMD_TATK);
@@ -203,7 +194,7 @@ public class TimeAttackScenario extends AbstractScenario {
         setState(ScenarioState.WAIT);
     }
 
-    protected void drawFrameInnerWait(Graphics2D g2) {
+    protected void drawFrameWait(Graphics2D g2) {
         long nano = System.nanoTime() - tStart;
         long sec = 3 - (nano / ScenarioSwitcher.NS_1SEC);
         String curTime = String.format("%3d", sec);
@@ -215,7 +206,7 @@ public class TimeAttackScenario extends AbstractScenario {
         }
     }
 
-    protected void drawFrameInnerRun(Graphics2D g2) {
+    protected void drawFrameRun(Graphics2D g2) {
         long nano = System.nanoTime() - tStart;
         long sec = nano / ScenarioSwitcher.NS_1SEC;
         long mil = (nano / ScenarioSwitcher.NS_1MSEC) % 1000;
@@ -275,16 +266,16 @@ public class TimeAttackScenario extends AbstractScenario {
         }
     }
 
-    protected void drawFrameInnerResult(Graphics2D g2) {
+    protected void drawFrameResult(Graphics2D g2) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         tlClock.setText(df.format(new Date()));
     }
 
-    protected void drawFrameInnerFinish(Graphics2D g2) {
+    protected void drawFrameFinish(Graphics2D g2) {
         getSwitcher().setNextScenario(new TimeAttackScenario(getSwitcher()));
     }
 
-    protected void drawFrameInnerClose(Graphics2D g2) {
+    protected void drawFrameClose(Graphics2D g2) {
         getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
     }
 
