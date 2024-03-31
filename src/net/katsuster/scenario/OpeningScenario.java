@@ -23,6 +23,7 @@ public class OpeningScenario extends AbstractScenario {
     private boolean flagFailed = false;
     private boolean flagRestart = false;
     private boolean flagStart = false;
+    private boolean flagClose = false;
     private TextLine tlMsg;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
     private Timer timerParent;
@@ -176,6 +177,10 @@ public class OpeningScenario extends AbstractScenario {
         if (flagReady && flagStart) {
             getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
         }
+        if (flagClose) {
+            getSwitcher().setBTRecover(false);
+            getSwitcher().setNextScenario(new ClosingScenario(getSwitcher()));
+        }
 
         drawAllDrawable(g2);
     }
@@ -210,6 +215,14 @@ public class OpeningScenario extends AbstractScenario {
 
     public synchronized void setFlagStart(boolean f) {
         flagStart = f;
+    }
+
+    public synchronized boolean getFlagClose() {
+        return flagClose;
+    }
+
+    public synchronized void closeScenario() {
+        flagClose = true;
     }
 
     private class TaskClock extends TimerTask {
@@ -295,7 +308,9 @@ public class OpeningScenario extends AbstractScenario {
             }
             if (!done) {
                 printError("Failed to connect. Please check bluetooth settings.", null);
-                switcher.setBTRecover(true);
+                if (!scenario.getFlagClose()) {
+                    switcher.setBTRecover(true);
+                }
                 return;
             }
             printInfo("Connected.", null);
@@ -391,6 +406,11 @@ public class OpeningScenario extends AbstractScenario {
             } else {
                 scenario.printWarn("Devices are not ready.", null);
             }
+        }
+
+        @Override
+        public void mouseRightClicked() {
+            scenario.closeScenario();
         }
     }
 }

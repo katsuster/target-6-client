@@ -49,7 +49,7 @@ public class ScenarioSwitcher implements Runnable {
 
             /* Check health of Bluetooth devices */
             if (getBTRecover() && !isReadyBTIO()) {
-                System.err.println("Warn: bluetooth device health is not good, try to recover...");
+                printWarn("bluetooth device health is not good, try to recover...", null);
                 termBTIO();
                 setBTRecover(false);
                 setNextScenario(new OpeningScenario(this));
