@@ -20,8 +20,6 @@ public class OpeningScenario extends AbstractScenario {
     private Font fontSmall;
     private DevState[] devState = new DevState[BTInOut.NUM_DEVICES];
     private boolean flagReady = false;
-    private boolean flagFailed = false;
-    private boolean flagRestart = false;
     private boolean flagStart = false;
     private boolean flagClose = false;
     private TextLine tlMsg;
@@ -138,7 +136,6 @@ public class OpeningScenario extends AbstractScenario {
                 tlDevState[i].setForeground(COLOR_DARK_ORANGE);
                 tlMsg.setText("ERROR! Press button to retry");
                 tlMsg.setForeground(COLOR_DARK_ORANGE);
-                setFlagFailed(true);
                 break;
             case RESET:
                 tlDevState[i].setText("Dev" + i + " Reset");
@@ -171,9 +168,6 @@ public class OpeningScenario extends AbstractScenario {
         }
         flagReady = finish;
 
-        if (flagFailed && flagRestart) {
-            getSwitcher().setNextScenario(new OpeningScenario(getSwitcher()));
-        }
         if (flagReady && flagStart) {
             getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
         }
@@ -193,14 +187,6 @@ public class OpeningScenario extends AbstractScenario {
         devState[id] = s;
     }
 
-    public synchronized boolean getFlagFailed() {
-        return flagFailed;
-    }
-
-    public synchronized void setFlagFailed(boolean f) {
-        flagFailed = f;
-    }
-
     public synchronized boolean getFlagReady() {
         return flagReady;
     }
@@ -209,12 +195,8 @@ public class OpeningScenario extends AbstractScenario {
         flagReady = f;
     }
 
-    public synchronized void setFlagRestart(boolean f) {
-        flagRestart = f;
-    }
-
-    public synchronized void setFlagStart(boolean f) {
-        flagStart = f;
+    public synchronized void nextScenario() {
+        flagStart = true;
     }
 
     public synchronized boolean getFlagClose() {
@@ -399,10 +381,8 @@ public class OpeningScenario extends AbstractScenario {
 
         @Override
         public void mouseLeftClicked() {
-            if (scenario.getFlagFailed()) {
-                scenario.setFlagRestart(true);
-            } else if (getFlagReady()) {
-                scenario.setFlagStart(true);
+            if (getFlagReady()) {
+                scenario.nextScenario();
             } else {
                 scenario.printWarn("Devices are not ready.", null);
             }
