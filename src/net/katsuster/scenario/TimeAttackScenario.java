@@ -36,11 +36,10 @@ public class TimeAttackScenario extends AbstractScenario {
     private List<Sensor> sensors = new ArrayList<>();
     private long tStart;
     private TextLine tlTime;
-    private TextLine tlWarning;
-    private TextLine tlInfo;
-    private TextLine tlInfo2;
+    private TextLine tlMsgCancel;
+    private TextLine tlMsgNext;
+    private TextLine tlMsgClose;
     private TextLine tlResult;
-    private TextLine tlClock;
     private List<TextLine> results = new ArrayList<>();
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
@@ -82,38 +81,38 @@ public class TimeAttackScenario extends AbstractScenario {
         tlTime.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlTime.setForeground(Color.DARK_GRAY);
         tlTime.setFont(fontTimer);
-        tlTime.getContentBox().setBounds(0, FONT_SIZE_TIMER / 2,
+        tlTime.getContentBox().setBounds(0, FONT_SIZE_TIMER / 2 + FONT_SIZE_SMALL * 2,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
-        tlWarning = new TextLine();
-        tlWarning.setText("Press(Long): Cancel Game");
-        tlWarning.setForeground(COLOR_DARK_ORANGE);
-        tlWarning.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlWarning.setFont(fontMedium);
-        tlWarning.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
-        tlWarning.getContentBox().setMargin(20, 20, 20, 20);
-        tlWarning.setVisible(false);
+        tlMsgCancel = new TextLine();
+        tlMsgCancel.setText("Press(Long): Cancel Game");
+        tlMsgCancel.setForeground(COLOR_DARK_ORANGE);
+        tlMsgCancel.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlMsgCancel.setFont(fontMedium);
+        tlMsgCancel.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth(), mainWnd.getHeight());
+        tlMsgCancel.getContentBox().setMargin(20, 20, 20, 20);
+        tlMsgCancel.setVisible(false);
 
-        tlInfo = new TextLine();
-        tlInfo.setText("Press(Short): Next Game");
-        tlInfo.setForeground(COLOR_DARK_BLUE);
-        tlInfo.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlInfo.setFont(fontSmall);
-        tlInfo.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth() / 2, mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
-        tlInfo.getContentBox().setMargin(20, 20, 20, 20);
-        tlInfo.setVisible(false);
+        tlMsgNext = new TextLine();
+        tlMsgNext.setText("Press(Short): Next Game");
+        tlMsgNext.setForeground(COLOR_DARK_BLUE);
+        tlMsgNext.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlMsgNext.setFont(fontSmall);
+        tlMsgNext.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight());
+        tlMsgNext.getContentBox().setMargin(20, 20, 20, 20);
+        tlMsgNext.setVisible(false);
 
-        tlInfo2 = new TextLine();
-        tlInfo2.setText("Press(Long): Back to Title");
-        tlInfo2.setForeground(COLOR_DARK_BLUE);
-        tlInfo2.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlInfo2.setFont(fontSmall);
-        tlInfo2.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
-                mainWnd.getWidth() / 2, mainWnd.getHeight() - (int)(FONT_SIZE_SMALL * 1.5));
-        tlInfo2.getContentBox().setMargin(20, 20, 20, 20);
-        tlInfo2.setVisible(false);
+        tlMsgClose = new TextLine();
+        tlMsgClose.setText("Press(Long): Back to Title");
+        tlMsgClose.setForeground(COLOR_DARK_BLUE);
+        tlMsgClose.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlMsgClose.setFont(fontSmall);
+        tlMsgClose.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight());
+        tlMsgClose.getContentBox().setMargin(20, 20, 20, 20);
+        tlMsgClose.setVisible(false);
 
         tlResult = new TextLine();
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
@@ -123,22 +122,12 @@ public class TimeAttackScenario extends AbstractScenario {
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
-        tlClock = new TextLine();
-        tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);
-        tlClock.setForeground(Color.DARK_GRAY);
-        tlClock.setFont(fontSmallest);
-        tlClock.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight());
-        tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALL, 5);
-        tlClock.setVisible(false);
-
         clearDrawable();
         addDrawable(bg);
-        addDrawable(tlClock);
         addDrawable(tlTime);
-        addDrawable(tlWarning);
-        addDrawable(tlInfo);
-        addDrawable(tlInfo2);
+        addDrawable(tlMsgCancel);
+        addDrawable(tlMsgNext);
+        addDrawable(tlMsgClose);
         addDrawable(tlResult);
     }
 
@@ -256,10 +245,9 @@ public class TimeAttackScenario extends AbstractScenario {
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
 
-            tlWarning.setVisible(false);
-            tlInfo.setVisible(true);
-            tlInfo2.setVisible(true);
-            tlClock.setVisible(true);
+            tlMsgCancel.setVisible(false);
+            tlMsgNext.setVisible(true);
+            tlMsgClose.setVisible(true);
 
             getSwitcher().setTargetFPS(3);
             setState(ScenarioState.RESULT);
@@ -267,8 +255,6 @@ public class TimeAttackScenario extends AbstractScenario {
     }
 
     protected void drawFrameResult(Graphics2D g2) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        tlClock.setText(df.format(new Date()));
     }
 
     protected void drawFrameFinish(Graphics2D g2) {
@@ -288,7 +274,7 @@ public class TimeAttackScenario extends AbstractScenario {
     }
 
     public synchronized void tryToCancelScenario() {
-        tlWarning.setVisible(true);
+        tlMsgCancel.setVisible(true);
     }
 
     public synchronized void cancelScenario() {
@@ -307,10 +293,9 @@ public class TimeAttackScenario extends AbstractScenario {
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
 
-        tlWarning.setVisible(false);
-        tlInfo.setVisible(true);
-        tlInfo2.setVisible(true);
-        tlClock.setVisible(true);
+        tlMsgCancel.setVisible(false);
+        tlMsgNext.setVisible(true);
+        tlMsgClose.setVisible(true);
 
         getSwitcher().setTargetFPS(3);
         setState(ScenarioState.RESULT);
