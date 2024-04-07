@@ -5,10 +5,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.*;
 
 import net.katsuster.ble.BTInOut;
-import net.katsuster.draw.Drawable;
-import net.katsuster.draw.GridBG;
-import net.katsuster.draw.ShapeBox;
-import net.katsuster.draw.TextLine;
+import net.katsuster.draw.*;
 import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
@@ -24,7 +21,6 @@ public class OpeningScenario extends AbstractScenario {
     private boolean flagClose = false;
     private TextLine tlMsg;
     private TextLine[] tlDevState = new TextLine[BTInOut.NUM_DEVICES];
-    private Timer timerParent;
     private Thread thBTInit;
 
     public OpeningScenario(ScenarioSwitcher sw) {
@@ -91,6 +87,9 @@ public class OpeningScenario extends AbstractScenario {
                     FONT_SIZE_SMALLEST, FONT_SIZE_SMALLEST / 2);
         }
 
+        TimerAnimation timerP = new TimerAnimation();
+        timerP.schedule(new TaskClock(this), 500);
+
         clearDrawable();
         addDrawable(bg);
         for (ShapeBox sh : shDevState) {
@@ -100,9 +99,7 @@ public class OpeningScenario extends AbstractScenario {
             addDrawable(tl);
         }
         addDrawable(tlMsg);
-
-        timerParent = new Timer();
-        timerParent.schedule(new TaskClock(this), 0, 500);
+        addDrawable(timerP);
 
         thBTInit = new Thread(new BTInit(this));
         thBTInit.start();
@@ -117,7 +114,6 @@ public class OpeningScenario extends AbstractScenario {
         btIO.removeBTDeviceListener(handlerBT);
         mainWnd.removeMouseListener(handlerMouse);
 
-        timerParent.cancel();
         try {
             thBTInit.interrupt();
             thBTInit.join();
@@ -131,7 +127,6 @@ public class OpeningScenario extends AbstractScenario {
         for (int i = 0; i < devState.length; i++) {
             switch (devState[i]) {
             case FAILED:
-                timerParent.cancel();
                 tlDevState[i].setText("Dev" + i + " Failed");
                 tlDevState[i].setForeground(COLOR_DARK_ORANGE);
                 tlMsg.setText("ERROR! Press button to retry");
@@ -207,7 +202,7 @@ public class OpeningScenario extends AbstractScenario {
         flagClose = true;
     }
 
-    private class TaskClock extends TimerTask {
+    private class TaskClock implements Runnable {
         private int cnt = 0;
 
         public TaskClock(OpeningScenario s) {
