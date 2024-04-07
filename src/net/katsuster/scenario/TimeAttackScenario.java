@@ -213,7 +213,7 @@ public class TimeAttackScenario extends AbstractScenario {
                 Sensor sen = sensors.get(i);
                 int diff = (int)(sen.getTimeHit() - before);
                 TextLine tl = new TextLine();
-                tl.setText(String.format("Target%2d: %3d.%03d (+%d.%03d)",
+                tl.setText(String.format("Target%2d:%3d.%03d (+%2d.%03d)",
                         i + 1,
                         sen.getTimeHit() / 1000, sen.getTimeHit() % 1000,
                         diff / 1000, diff % 1000));
