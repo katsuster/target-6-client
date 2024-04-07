@@ -8,7 +8,6 @@ import java.util.List;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import net.katsuster.scenario.ScenarioSwitcher;
-import static main.java.Main.printException;
 
 public class BTInOut {
     public static final int NUM_DEVICES = 2;
