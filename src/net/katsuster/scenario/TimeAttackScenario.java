@@ -14,6 +14,7 @@ import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
 public class TimeAttackScenario extends AbstractScenario {
+    public static final int RANKING_TOP_NUM = 5;
     public enum ScenarioState {
         INIT,
         WAIT,
@@ -39,7 +40,10 @@ public class TimeAttackScenario extends AbstractScenario {
     private TextLine tlMsgCancel;
     private TextLine tlMsgNext;
     private TextLine tlMsgClose;
+    private TextLine tlRank;
+    private TextLine tlRankHead;
     private TextLine tlResult;
+    private List<TextLine> ranking = new ArrayList<>();
     private List<TextLine> results = new ArrayList<>();
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
@@ -114,11 +118,33 @@ public class TimeAttackScenario extends AbstractScenario {
         tlMsgClose.getContentBox().setMargin(20, 20, 20, 20);
         tlMsgClose.setVisible(false);
 
+        tlRank = new TextLine();
+        tlRank.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+        tlRank.setForeground(Color.DARK_GRAY);
+        tlRank.setFont(fontLargest);
+        tlRank.getContentBox().setBounds(0, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight());
+        tlRank.getContentBox().setMargin(20, 20, 20, 20);
+        tlRank.setVisible(false);
+
+        tlRankHead = new TextLine();
+        tlRankHead.setText("TOP " + RANKING_TOP_NUM);
+        tlRankHead.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+        tlRankHead.setForeground(Color.DARK_GRAY);
+        tlRankHead.setFont(fontDetail);
+        tlRankHead.getContentBox().setBounds(
+                0, FONT_SIZE_LARGEST + (int)(FONT_SIZE_DETAIL * 1.3),
+                mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
+        tlRankHead.getContentBox().setMargin(
+                FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
+        tlRankHead.setVisible(false);
+
         tlResult = new TextLine();
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
         tlResult.setFont(fontLargest);
-        tlResult.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight());
+        tlResult.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
+                mainWnd.getWidth() / 2, mainWnd.getHeight());
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
@@ -128,6 +154,8 @@ public class TimeAttackScenario extends AbstractScenario {
         addDrawable(tlMsgCancel);
         addDrawable(tlMsgNext);
         addDrawable(tlMsgClose);
+        addDrawable(tlRankHead);
+        addDrawable(tlRank);
         addDrawable(tlResult);
     }
 
@@ -221,8 +249,10 @@ public class TimeAttackScenario extends AbstractScenario {
                 tl.setForeground(Color.DARK_GRAY);
                 tl.setFont(fontDetail);
                 tl.getContentBox().setBounds(
-                        0, FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
-                        mainWnd.getWidth(), (int)(FONT_SIZE_DETAIL * 1.3));
+                        mainWnd.getWidth() / 2,
+                        FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                        mainWnd.getWidth() / 2,
+                        (int)(FONT_SIZE_DETAIL * 1.3));
                 tl.getContentBox().setMargin(
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
@@ -241,6 +271,50 @@ public class TimeAttackScenario extends AbstractScenario {
             tlTime.setText(String.format("%3d.%03d",
                     before / 1000, before % 1000));
 
+            //Ranking
+            ScoreBoard scboard = new ScoreBoard(getName());
+            Score sc = new Score(before, new Date());
+            int rank;
+            scboard.loadScores();
+            rank = scboard.getRank(sc);
+            scboard.addScore(sc);
+            scboard.saveScores();
+
+            if (rank <= ScoreBoard.MAX_RECORDS) {
+                tlRank.setText("Rank " + rank);
+            } else {
+                tlRank.setText("Rank --");
+            }
+            tlRank.setVisible(true);
+
+            tlRankHead.setVisible(true);
+            for (int i = 0; i < RANKING_TOP_NUM; i++) {
+                MainWindow mainWnd = getSwitcher().getMainWindow();
+                Score s = scboard.getScoreByRank(i + 1);
+                TextLine tl = new TextLine();
+                tl.setText(String.format("%d:%3d.%03d (%s)",
+                        i + 1,
+                        s.getTime() / 1000, s.getTime() % 1000,
+                        s.getDateString().substring(0, 10)));
+                tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+                if (i + 1 == rank) {
+                    tl.setForeground(Scenario.COLOR_DARK_ORANGE);
+                } else {
+                    tl.setForeground(Color.DARK_GRAY);
+                }
+                tl.setFont(fontDetail);
+                tl.getContentBox().setBounds(
+                        0, FONT_SIZE_LARGEST + (int)((i + 2) * FONT_SIZE_DETAIL * 1.3),
+                        mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
+                tl.getContentBox().setMargin(
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
+
+                results.add(tl);
+                addDrawable(tl);
+            }
+
+            //Other messages
             tlResult.setText("Result");
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
