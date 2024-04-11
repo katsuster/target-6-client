@@ -6,14 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.*;
 
-import com.github.hypfvieh.bluetooth.DeviceManager;
 import org.freedesktop.dbus.exceptions.DBusException;
+import com.github.hypfvieh.bluetooth.DeviceManager;
+
+import net.katsuster.scenario.*;
 import net.katsuster.ui.BTScanWindow;
 import net.katsuster.ui.LogWindow;
 import net.katsuster.ui.MainWindow;
-import net.katsuster.scenario.OpeningScenario;
-import net.katsuster.scenario.ScenarioSetting;
-import net.katsuster.scenario.ScenarioSwitcher;
 
 public class Main {
     public static String OPT_HELP = "-h";
@@ -40,7 +39,6 @@ public class Main {
         }
 
         try {
-            //InputStream is = Main.class.getResourceAsStream("/openfont/ZenMaruGothic-Medium.ttf");
             InputStream is = Main.class.getResourceAsStream("/openfont/KosugiMaru-Regular.ttf");
             if (is == null) {
                 System.err.println("Error: Cannot found Font resource.");
