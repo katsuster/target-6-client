@@ -16,6 +16,8 @@ import net.katsuster.ui.MouseAdapterEx;
 public class SelectScenario extends AbstractScenario {
     public static final String SCENARIO_COUNT_UP = "Count Up";
     public static final String SCENARIO_TIME_ATTACK = "Time Attack";
+    public static final String SCENARIO_RANKING = "Ranking";
+    public static final String SCENARIO_SEPARATOR = "-----";
 
     private BTButtonHandler handlerBT;
     private MouseHandler handlerMouse;
@@ -33,6 +35,8 @@ public class SelectScenario extends AbstractScenario {
 
         scenarios.add(SCENARIO_COUNT_UP);
         scenarios.add(SCENARIO_TIME_ATTACK);
+        scenarios.add(SCENARIO_SEPARATOR);
+        scenarios.add(SCENARIO_RANKING);
     }
 
     @Override
@@ -151,10 +155,34 @@ public class SelectScenario extends AbstractScenario {
         drawAllDrawable(g2);
     }
 
+    public static String getScenarioPrefName(String scr) {
+        Scenario s = null;
+
+        switch (scr) {
+        case SCENARIO_TIME_ATTACK:
+            s = new TimeAttackScenario(null);
+            break;
+        case SCENARIO_COUNT_UP:
+        case SCENARIO_RANKING:
+        case SCENARIO_SEPARATOR:
+        default:
+            return "";
+        }
+
+        return s.getName();
+    }
+
     private Scenario getSelectedScenario() {
         switch (scenarios.get(indexSelected)) {
         case SCENARIO_TIME_ATTACK:
             return new TimeAttackScenario(getSwitcher());
+        case SCENARIO_RANKING:
+            RankingScenario ns = new RankingScenario(getSwitcher());
+            ns.setScenarios(scenarios.stream()
+                    .filter(w -> !w.equals(SCENARIO_SEPARATOR))
+                    .filter(w -> !w.equals(SCENARIO_RANKING))
+                    .toList());
+            return ns;
         case SCENARIO_COUNT_UP:
         default:
             printError("Invalid scenario is selected.", null);
@@ -168,6 +196,11 @@ public class SelectScenario extends AbstractScenario {
         indexSelected++;
         if (indexSelected >= scenarios.size()) {
             indexSelected = 0;
+        }
+
+        //Skip separator
+        if (scenarios.get(indexSelected).equalsIgnoreCase(SCENARIO_SEPARATOR)) {
+            nextSelection();
         }
     }
 

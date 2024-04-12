@@ -290,7 +290,12 @@ public class TimeAttackScenario extends AbstractScenario {
             tlRankHead.setVisible(true);
             for (int i = 0; i < RANKING_TOP_NUM; i++) {
                 MainWindow mainWnd = getSwitcher().getMainWindow();
-                Score s = scboard.getScoreByRank(i + 1);
+                Score s;
+                try {
+                    s = scboard.getScoreByRank(i + 1);
+                } catch (IndexOutOfBoundsException ex) {
+                    break;
+                }
                 TextLine tl = new TextLine();
                 tl.setText(String.format("%d:%3d.%03d (%s)",
                         i + 1,
