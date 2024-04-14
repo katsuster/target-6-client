@@ -18,6 +18,12 @@ ROCK 3 model C is a Raspberry Pi compatible size ARM board that supports HDMI ou
 * URL: https://wiki.radxa.com/Rock3/3c
 * Image: `rock-3c_debian_bullseye_xfce_b42.img.xz`
 
+It would be better to set some settings if you plan to run this application for a long time:
+
+* Disable blank screen
+* Enable automatically login
+* Hide taskbar panel
+
 How to disable blank screen and screen lock.
 
 (Language: English)
@@ -55,4 +61,12 @@ This is an example to enable automatically login as username `rock`.
 * Open `/etc/lightdm/lightdm.conf`
 * Find `autologin-user`
 * Rewirte such as `autologin-user=rock`
+
+How to hide taskbar panel.
+Right click on the taskbar panel on the top of screen.
+
+* Panel
+  * Panel Preferences...
+    * Remove panel 2 (select Panel 2 and push "-" button)
+    * Automatically hide the panel: select "Always"
 
