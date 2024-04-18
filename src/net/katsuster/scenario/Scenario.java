@@ -26,6 +26,8 @@ public interface Scenario {
     String RES_BUTTON = "button";
     String RES_HIT = "hit";
 
+    int SENSORS_DEFAULT = 6;
+
     String getName();
     ScenarioSwitcher getSwitcher();
     boolean getActivated();

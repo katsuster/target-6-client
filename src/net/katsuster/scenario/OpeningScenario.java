@@ -129,7 +129,7 @@ public class OpeningScenario extends AbstractScenario {
             case FAILED:
                 tlDevState[i].setText("Dev" + i + " Failed");
                 tlDevState[i].setForeground(COLOR_DARK_ORANGE);
-                tlMsg.setText("ERROR! Press button to retry");
+                tlMsg.setText("ERROR! Please restart");
                 tlMsg.setForeground(COLOR_DARK_ORANGE);
                 break;
             case RESET:
@@ -298,7 +298,7 @@ public class OpeningScenario extends AbstractScenario {
                     continue;
                 }
 
-                boolean success = writeLine(i, CMD_INIT + " " + i);
+                boolean success = writeInitCommand(i);
                 if (!success) {
                     printError("Failed to initialize dev " + i, null);
                     return;

@@ -48,7 +48,7 @@ public class TimeAttackScenario extends AbstractScenario {
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
         super(sw);
-        for (int i = 0; i < getNumOfSensors(); i++) {
+        for (int i = 0; i < getNumAllSensors(); i++) {
             sensors.add(new Sensor());
         }
     }
@@ -359,11 +359,11 @@ public class TimeAttackScenario extends AbstractScenario {
     public synchronized void cancelScenario() {
         boolean success;
 
-        success = writeLine(DEV_SINGLE, CMD_INIT + " " + DEV_SINGLE);
+        success = writeInitCommand(DEV_SINGLE);
         if (!success) {
             return;
         }
-        success = writeLine(DEV_CONTROLLER, CMD_INIT + " " + 0);
+        success = writeInitCommand(DEV_CONTROLLER);
         if (!success) {
             return;
         }
@@ -388,41 +388,18 @@ public class TimeAttackScenario extends AbstractScenario {
         setState(ScenarioState.CLOSE);
     }
 
-    //TODO
-    protected int getNumOfSensorsOfDev(int devid) {
-        switch (devid) {
-        case 0:
-            return 0;
-        case 1:
-            return 6;
-        default:
-            return 0;
-        }
-    }
-
-    //TODO
-    protected int getNumOfSensors() {
-        int n = 0;
-
-        for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
-            n += getNumOfSensorsOfDev(i);
-        }
-
-        return n;
-    }
-
     protected int getLinearID(int devid, int senid) {
         int sensorID = 0;
 
         if (devid < 0 || BTInOut.NUM_DEVICES <= devid) {
             throw new IllegalArgumentException("Illegal device ID:" + devid + ".");
         }
-        if (senid < 0 || getNumOfSensorsOfDev(devid) <= senid) {
+        if (senid < 0 || getNumSensors(devid) <= senid) {
             throw new IllegalArgumentException("Illegal sensor ID:" + senid + ".");
         }
 
         for (int i = 0; i < devid; i++) {
-            sensorID += getNumOfSensorsOfDev(i);
+            sensorID += getNumSensors(i);
         }
 
         return sensorID + senid;
@@ -442,7 +419,7 @@ public class TimeAttackScenario extends AbstractScenario {
         boolean finish = true;
 
         for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
-            for (int j = 0; j < getNumOfSensorsOfDev(i); j++) {
+            for (int j = 0; j < getNumSensors(i); j++) {
                 Sensor.SensorState ss = getSensor(i, j).getState();
 
                 if (ss != Sensor.SensorState.HIT) {

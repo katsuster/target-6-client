@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 
 public class AbstractScenario implements Scenario {
     private ScenarioSwitcher switcher;
     private boolean activated = false;
     private List<Drawable> listDrawable = new ArrayList<>();
+    private int numSensors = SENSORS_DEFAULT;
 
     public AbstractScenario(ScenarioSwitcher sw) {
         switcher = sw;
@@ -124,6 +126,46 @@ public class AbstractScenario implements Scenario {
         }
 
         return true;
+    }
+
+    public boolean writeInitCommand(int id) {
+        boolean success;
+
+        success = writeLine(id, String.format("%s %d %d", CMD_INIT, id, getNumSensors(id)));
+
+        return success;
+    }
+
+    public int getNumSensors(int devid) {
+        switch (devid) {
+        case DEV_CONTROLLER:
+            return 0;
+        case DEV_SINGLE:
+            return numSensors;
+        default:
+            return 0;
+        }
+    }
+
+    public void setNumSensors(int devid, int n) {
+        switch (devid) {
+        case DEV_SINGLE:
+            numSensors = n;
+            break;
+        default:
+            //ignore
+            return;
+        }
+    }
+
+    public int getNumAllSensors() {
+        int n = 0;
+
+        for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
+            n += getNumSensors(i);
+        }
+
+        return n;
     }
 
     public void printErrorInner(String header, String str, Exception ex) {
