@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.*;
 
 public class RankingScenario extends AbstractScenario {
-    public static final int RANKING_TOP_NUM = 10;
+    public static final int RANKING_TOP_NUM = 20;
     public static final int INTERVAL_MSEC = 6000;
 
     private MouseHandler handlerMouse;
@@ -141,34 +141,37 @@ public class RankingScenario extends AbstractScenario {
         ScoreBoard scboard = new ScoreBoard(prefName);
         scboard.loadScores();
 
-        for (int i = 0; i < RANKING_TOP_NUM; i++) {
-            Score s = null;
-            try {
-                s = scboard.getScoreByRank(i + 1);
-            } catch (IndexOutOfBoundsException ex) {
-                //do nothing
-            }
-            TextLine tl = new TextLine();
-            if (s == null) {
-                tl.setText(String.format("%2d:---.--- (----/--/--)", i + 1));
-            } else {
-                tl.setText(String.format("%2d:%3d.%03d (%s)",
-                        i + 1,
-                        s.getTime() / 1000, s.getTime() % 1000,
-                        s.getDateString().substring(0, 10)));
-            }
-            tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
-            tl.setForeground(Color.DARK_GRAY);
-            tl.setFont(fontDetail);
-            tl.getContentBox().setBounds(
-                    0, FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
-                    mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
-            tl.getContentBox().setMargin(
-                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
-                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
-            tl.setVisible(false);
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < RANKING_TOP_NUM / 2; i++) {
+                int index = RANKING_TOP_NUM / 2 * j + i;
+                Score s = null;
+                try {
+                    s = scboard.getScoreByRank(index + 1);
+                } catch (IndexOutOfBoundsException ex) {
+                    //do nothing
+                }
+                TextLine tl = new TextLine();
+                if (s == null) {
+                    tl.setText(String.format("%2d:---.--- (----/--/--)", index + 1));
+                } else {
+                    tl.setText(String.format("%2d:%3d.%03d (%s)",
+                            index + 1, s.getTime() / 1000, s.getTime() % 1000,
+                            s.getDateString().substring(0, 10)));
+                }
+                tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+                tl.setForeground(Color.DARK_GRAY);
+                tl.setFont(fontDetail);
+                tl.getContentBox().setBounds(
+                        mainWnd.getWidth() / 2 * j,
+                        FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                        mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
+                tl.getContentBox().setMargin(
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
+                tl.setVisible(false);
 
-            tlList.add(tl);
+                tlList.add(tl);
+            }
         }
 
         return tlList;
