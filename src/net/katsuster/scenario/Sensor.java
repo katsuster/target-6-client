@@ -11,6 +11,7 @@ public class Sensor {
 
     private SensorState state;
     private long timeHit;
+    private int cntHit;
 
     public Sensor() {
         state = SensorState.RESET;
@@ -30,5 +31,13 @@ public class Sensor {
 
     public void setTimeHit(long t) {
         timeHit = t;
+    }
+
+    public int getCountHit() {
+        return cntHit;
+    }
+
+    public void setCountHit(int n) {
+        cntHit = n;
     }
 }

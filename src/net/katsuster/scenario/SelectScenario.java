@@ -163,6 +163,8 @@ public class SelectScenario extends AbstractScenario {
             s = new TimeAttackScenario(null);
             break;
         case SCENARIO_COUNT_UP:
+            s = new CountUpScenario(null);
+            break;
         case SCENARIO_RANKING:
         case SCENARIO_SEPARATOR:
         default:
@@ -174,6 +176,8 @@ public class SelectScenario extends AbstractScenario {
 
     private Scenario getSelectedScenario() {
         switch (scenarios.get(indexSelected)) {
+        case SCENARIO_COUNT_UP:
+            return new CountUpScenario(getSwitcher());
         case SCENARIO_TIME_ATTACK:
             return new TimeAttackScenario(getSwitcher());
         case SCENARIO_RANKING:
@@ -183,7 +187,6 @@ public class SelectScenario extends AbstractScenario {
                     .filter(w -> !w.equals(SCENARIO_RANKING))
                     .toList());
             return ns;
-        case SCENARIO_COUNT_UP:
         default:
             printError("Invalid scenario is selected.", null);
             break;

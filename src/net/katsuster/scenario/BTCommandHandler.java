@@ -9,6 +9,7 @@ import net.katsuster.ble.BTDeviceListener;
 public class BTCommandHandler implements BTDeviceListener {
     public static final String PREFIX_DEVICE_ID = "d";
     public static final String PREFIX_SENSOR_ID = "s";
+    public static final String PREFIX_HIT_COUNT = "h";
 
     private Scenario scenario;
 
@@ -33,6 +34,9 @@ public class BTCommandHandler implements BTDeviceListener {
     }
 
     public void cmdInit(StringTokenizer st, int devid) throws ParseException {
+    }
+
+    public void cmdCntup(StringTokenizer st, int devid) throws ParseException {
     }
 
     public void cmdTatk(StringTokenizer st, int devid) throws ParseException {
@@ -63,6 +67,8 @@ public class BTCommandHandler implements BTDeviceListener {
             cmdSingle(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_BEEP)) {
             cmdBeep(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.CMD_CNTUP)) {
+            cmdCntup(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_TATK)) {
             cmdTatk(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.RES_BUTTON)) {
