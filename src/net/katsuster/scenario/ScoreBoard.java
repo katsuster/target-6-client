@@ -1,18 +1,16 @@
 package net.katsuster.scenario;
 
-import net.katsuster.ui.MainWindow;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import net.katsuster.scenario.Scenario.SCORE_TYPE;
+import net.katsuster.ui.MainWindow;
+
 public class ScoreBoard {
     public static final int MAX_RECORDS = 30;
-    public static final String DATA_TIME = "Time";
-    public static final String DATA_DATE = "Date";
 
-    private String boardName = "Global";
+    private SCORE_TYPE scoreType = SCORE_TYPE.SCORE_EMPTY;
     private Preferences prefs = Preferences.userNodeForPackage(MainWindow.class);
     private List<Score> scores = new ArrayList<>();
 
@@ -20,16 +18,16 @@ public class ScoreBoard {
 
     }
 
-    public ScoreBoard(String n) {
-        boardName = n;
+    public ScoreBoard(SCORE_TYPE st) {
+        scoreType = st;
     }
 
-    public String getBoardName() {
-        return boardName;
+    public SCORE_TYPE getScoreType() {
+        return scoreType;
     }
 
-    public void setBoardName(String n) {
-        boardName = n;
+    public void setScoreType(SCORE_TYPE st) {
+        scoreType = st;
     }
 
     public Score getScoreByRank(int r) {
@@ -55,7 +53,7 @@ public class ScoreBoard {
 
     public int getRank(Score sc) {
         long rankL = scores.stream()
-                .filter(w -> w.getTime() <= sc.getTime())
+                .filter(w -> w.lessThanEqual(sc))
                 .count();
 
         if (rankL >= Integer.MAX_VALUE) {
@@ -67,27 +65,21 @@ public class ScoreBoard {
     }
 
     protected String getPrefName(int rank, String datatype) {
-        return getBoardName() + ":" + "Rank" + rank + ":" + datatype;
+        return getScoreType() + ":" + "Rank" + rank + ":" + datatype;
     }
 
     public void loadScores() {
         scores.clear();
 
         for (int i = 0; i < MAX_RECORDS; i++) {
-            long t = prefs.getLong(getPrefName(i + 1, DATA_TIME), -1);
-            String strDate = prefs.get(getPrefName(i + 1, DATA_DATE), "");
+            Score s = ScoreFactory.createScore(getScoreType());
 
-            if (t == -1 || strDate.isEmpty()) {
-                //Skip empty data
+            boolean success = s.load(i + 1, prefs);
+            if (!success) {
                 continue;
             }
 
-            try {
-                Score s = new Score(t, strDate);
-                scores.add(s);
-            } catch (ParseException ex) {
-                //Skip broken data
-            }
+            scores.add(s);
         }
     }
 
@@ -96,15 +88,15 @@ public class ScoreBoard {
 
         num = Integer.min(scores.size(), MAX_RECORDS);
         for (i = 0; i < num; i++) {
-            Score sc = scores.get(i);
+            Score s = scores.get(i);
 
-            prefs.putLong(getPrefName(i + 1, DATA_TIME), sc.getTime());
-            prefs.put(getPrefName(i + 1, DATA_DATE), sc.getDateString());
+            s.save(i + 1, prefs);
         }
 
         for (; i < MAX_RECORDS; i++) {
-            prefs.putLong(getPrefName(i + 1, DATA_TIME), -1);
-            prefs.put(getPrefName(i + 1, DATA_DATE), "");
+            Score s = ScoreFactory.createScore(getScoreType());
+
+            s.erase(i + 1, prefs);
         }
     }
 }

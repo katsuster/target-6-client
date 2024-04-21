@@ -3,28 +3,26 @@ package net.katsuster.scenario;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.prefs.Preferences;
+
+import net.katsuster.scenario.Scenario.SCORE_TYPE;
 
 public class Score {
+    public static final String DATA_DATE = "Date";
     public static final String FORMAT_DATE = "yyyy/MM/dd HH:mm:ss Z";
 
-    private long time;
+    private SCORE_TYPE scoreType = SCORE_TYPE.SCORE_EMPTY;
     private Date date;
 
     public Score() {
-
+        setDate(new Date());
     }
 
-    public Score(long t) {
-        setTime(t);
-    }
-
-    public Score(long t, Date d) {
-        setTime(t);
+    public Score(Date d) {
         setDate(d);
     }
 
-    public Score(long t, String str) throws ParseException {
-        setTime(t);
+    public Score(String str) throws ParseException {
         setDateString(str);
     }
 
@@ -38,15 +36,39 @@ public class Score {
         }
 
         Score obj = (Score)o;
-        return time == obj.time && date.equals(obj.date);
+        return date.equals(obj.date);
     }
 
-    public long getTime() {
-        return time;
+    public boolean lessThanEqual(Score obj) {
+        return false;
     }
 
-    public void setTime(long t) {
-        time = t;
+    public String toRankingString() {
+        return "";
+    }
+
+    public boolean load(int rank, Preferences prefs) {
+        return false;
+    }
+
+    public void save(int rank, Preferences prefs) {
+        //do nothing
+    }
+
+    public void erase(int rank, Preferences prefs) {
+        //do nothing
+    }
+
+    protected String getPrefName(int rank, String datatype) {
+        return getScoreType() + ":" + "Rank" + rank + ":" + datatype;
+    }
+
+    public SCORE_TYPE getScoreType() {
+        return scoreType;
+    }
+
+    protected void setScoreType(SCORE_TYPE t) {
+        scoreType = t;
     }
 
     public Date getDate() {
@@ -71,6 +93,6 @@ public class Score {
 
     @Override
     public String toString() {
-        return "time:" + time + ", date:" + getDateString();
+        return "date:" + getDateString();
     }
 }
