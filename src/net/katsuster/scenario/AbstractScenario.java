@@ -25,6 +25,11 @@ public class AbstractScenario implements Scenario {
     }
 
     @Override
+    public SCORE_TYPE getScoreType() {
+        return SCORE_TYPE.SCORE_EMPTY;
+    }
+
+    @Override
     public ScenarioSwitcher getSwitcher() {
         return switcher;
     }

@@ -29,7 +29,31 @@ public interface Scenario {
 
     int SENSORS_DEFAULT = 6;
 
+    enum SCORE_TYPE {
+        SCORE_EMPTY {
+            public String toString() {
+                return "Empty";
+            }
+        },
+        SCORE_COUNT_UP {
+            public String toString() {
+                return "CountUp";
+            }
+        },
+        SCORE_TIME_ATTACK {
+            public String toString() {
+                return "TimeAttack";
+            }
+        },
+        SCORE_TIME_ATTACK_TEST {
+            public String toString() {
+                return "TimeAttackTest";
+            }
+        },
+    }
+
     String getName();
+    SCORE_TYPE getScoreType();
     ScenarioSwitcher getSwitcher();
     boolean getActivated();
     void setActivated(boolean a);
