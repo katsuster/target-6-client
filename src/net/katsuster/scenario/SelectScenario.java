@@ -155,23 +155,17 @@ public class SelectScenario extends AbstractScenario {
         drawAllDrawable(g2);
     }
 
-    public static String getScenarioPrefName(String scr) {
-        Scenario s = null;
-
+    public static SCORE_TYPE getScoreType(String scr) {
         switch (scr) {
-        case SCENARIO_TIME_ATTACK:
-            s = new TimeAttackScenario(null);
-            break;
         case SCENARIO_COUNT_UP:
-            s = new CountUpScenario(null);
-            break;
+            return SCORE_TYPE.SCORE_COUNT_UP;
+        case SCENARIO_TIME_ATTACK:
+            return SCORE_TYPE.SCORE_TIME_ATTACK;
         case SCENARIO_RANKING:
         case SCENARIO_SEPARATOR:
         default:
-            return "";
+            return SCORE_TYPE.SCORE_EMPTY;
         }
-
-        return s.getName();
     }
 
     private Scenario getSelectedScenario() {

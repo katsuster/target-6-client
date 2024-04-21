@@ -54,6 +54,11 @@ public class TimeAttackScenario extends AbstractScenario {
     }
 
     @Override
+    public SCORE_TYPE getScoreType() {
+        return SCORE_TYPE.SCORE_TIME_ATTACK;
+    }
+
+    @Override
     public void activate() {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
@@ -272,8 +277,8 @@ public class TimeAttackScenario extends AbstractScenario {
                     before / 1000, before % 1000));
 
             //Ranking
-            ScoreBoard scboard = new ScoreBoard(getName());
-            Score sc = new Score(before, new Date());
+            ScoreBoard scboard = new ScoreBoard(getScoreType());
+            Score sc = new ScoreTatk(before, new Date());
             int rank;
             scboard.loadScores();
             rank = scboard.getRank(sc);
@@ -297,10 +302,8 @@ public class TimeAttackScenario extends AbstractScenario {
                     break;
                 }
                 TextLine tl = new TextLine();
-                tl.setText(String.format("%d:%3d.%03d (%s)",
-                        i + 1,
-                        s.getTime() / 1000, s.getTime() % 1000,
-                        s.getDateString().substring(0, 10)));
+                tl.setText(String.format("%d:%s",
+                        i + 1, s.toRankingString()));
                 tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
                 if (i + 1 == rank) {
                     tl.setForeground(Scenario.COLOR_DARK_ORANGE);

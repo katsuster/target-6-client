@@ -1,17 +1,17 @@
 package net.katsuster.scenario;
 
+import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
+
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 import net.katsuster.draw.GridBG;
 import net.katsuster.draw.TextLine;
 import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
-
-import java.awt.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.*;
 
 public class CountUpScenario extends AbstractScenario {
     public static final int RANKING_TOP_NUM = 5;
@@ -51,6 +51,11 @@ public class CountUpScenario extends AbstractScenario {
         for (int i = 0; i < getNumAllSensors(); i++) {
             sensors.add(new Sensor());
         }
+    }
+
+    @Override
+    public SCORE_TYPE getScoreType() {
+        return SCORE_TYPE.SCORE_COUNT_UP;
     }
 
     @Override
@@ -270,8 +275,8 @@ public class CountUpScenario extends AbstractScenario {
             tlTime.setText(String.format("%3d", cnt));
 
             //Ranking
-            ScoreBoard scboard = new ScoreBoard(getName());
-            Score sc = new Score(cnt,new Date());
+            ScoreBoard scboard = new ScoreBoard(getScoreType());
+            Score sc = new ScoreCntup(cnt, last, new Date());
             int rank;
             scboard.loadScores();
             rank = scboard.getRank(sc);
@@ -295,10 +300,8 @@ public class CountUpScenario extends AbstractScenario {
                     break;
                 }
                 TextLine tl = new TextLine();
-                tl.setText(String.format("%d:%3d.%03d (%s)",
-                        i + 1,
-                        0, 0, //s.getTime() / 1000, s.getTime() % 1000,
-                        s.getDateString().substring(0, 10)));
+                tl.setText(String.format("%d:%s",
+                        i + 1, s.toRankingString()));
                 tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
                 if (i + 1 == rank) {
                     tl.setForeground(Scenario.COLOR_DARK_ORANGE);

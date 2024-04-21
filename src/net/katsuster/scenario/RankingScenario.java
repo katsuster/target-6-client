@@ -1,5 +1,9 @@
 package net.katsuster.scenario;
 
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
 import net.katsuster.ble.BTInOut;
 import net.katsuster.draw.Drawable;
 import net.katsuster.draw.GridBG;
@@ -7,10 +11,6 @@ import net.katsuster.draw.TextLine;
 import net.katsuster.draw.TimerAnimation;
 import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
-
-import java.awt.*;
-import java.util.List;
-import java.util.*;
 
 public class RankingScenario extends AbstractScenario {
     public static final int RANKING_TOP_NUM = 20;
@@ -23,7 +23,7 @@ public class RankingScenario extends AbstractScenario {
     private Font fontDetail;
     private Font fontSmallest;
     private List<String> scenarioList = new ArrayList<>();
-    private List<String> prefNameList = new ArrayList<>();
+    private List<SCORE_TYPE> scoreTypeList = new ArrayList<>();
     private boolean flagErase = false;
     private boolean flagClose = false;
     private TextLine tlMsgScenario;
@@ -86,7 +86,7 @@ public class RankingScenario extends AbstractScenario {
         tlMsgErase.getContentBox().setMargin(20, 20, 20, 20);
 
         //Ranking
-        for (int i = 0; i < prefNameList.size(); i++) {
+        for (int i = 0; i < scoreTypeList.size(); i++) {
             List<TextLine> listTl = createRankingText(i);
             rankingTextList.add(listTl);
         }
@@ -120,8 +120,8 @@ public class RankingScenario extends AbstractScenario {
     @Override
     public void drawFrame(Graphics2D g2) {
         if (flagErase) {
-            for (String prefName : prefNameList) {
-                ScoreBoard scboard = new ScoreBoard(prefName);
+            for (SCORE_TYPE st : scoreTypeList) {
+                ScoreBoard scboard = new ScoreBoard(st);
                 scboard.saveScores();
             }
             getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
@@ -136,9 +136,9 @@ public class RankingScenario extends AbstractScenario {
 
     protected List<TextLine> createRankingText(int ind) {
         List<TextLine> tlList = new ArrayList<>();
-        String prefName = prefNameList.get(ind);
+        SCORE_TYPE st = scoreTypeList.get(ind);
         MainWindow mainWnd = getSwitcher().getMainWindow();
-        ScoreBoard scboard = new ScoreBoard(prefName);
+        ScoreBoard scboard = new ScoreBoard(st);
         scboard.loadScores();
 
         for (int j = 0; j < 2; j++) {
@@ -152,11 +152,10 @@ public class RankingScenario extends AbstractScenario {
                 }
                 TextLine tl = new TextLine();
                 if (s == null) {
-                    tl.setText(String.format("%2d:---.--- (----/--/--)", index + 1));
+                    tl.setText(String.format("%2d:-----", index + 1));
                 } else {
-                    tl.setText(String.format("%2d:%3d.%03d (%s)",
-                            index + 1, s.getTime() / 1000, s.getTime() % 1000,
-                            s.getDateString().substring(0, 10)));
+                    tl.setText(String.format("%2d:%s",
+                            index + 1, s.toRankingString()));
                 }
                 tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
                 tl.setForeground(Color.DARK_GRAY);
@@ -197,15 +196,15 @@ public class RankingScenario extends AbstractScenario {
     }
 
     public synchronized void setScenarios(List<String> l) {
-        List<String> ll = new ArrayList<>();
+        List<SCORE_TYPE> ll = new ArrayList<>();
 
         for (String scr : l) {
-            String pname = SelectScenario.getScenarioPrefName(scr);
-            ll.add(pname);
+            SCORE_TYPE st = SelectScenario.getScoreType(scr);
+            ll.add(st);
         }
 
         scenarioList = l;
-        prefNameList = ll;
+        scoreTypeList = ll;
     }
 
     public synchronized void eraseRanking() {
