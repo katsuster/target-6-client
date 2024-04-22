@@ -1,0 +1,65 @@
+[plantuml]
+----
+@startuml
+actor player as "Player"
+agent display as "Display"
+
+node target_c as "Contoroller (no source)" {
+    agent tc_button as "Button"
+    agent tc_buzzar as "Buzzar"
+    agent tc_rj as "RJ14"
+}
+
+node target_s as "Steel Target 1...6 (no source)" {
+    agent ts_sensor as "Steel plate & Sensor"
+    agent ts_led as "LED"
+    agent ts_rj as "RJ14"
+}
+
+node board as "Main Board (target-6-board)" {
+    node ctrl as "Controller MCU (ex. M5Stamp C3)" {
+        agent t6_ctrl as "Controller node (target-6-server)"
+    }
+
+    node sensor as "Sensor MCU (ex. M5Stamp C3)" {
+        agent t6_sensor as "Sensor node (target-6-server)"
+    }
+
+    agent mb_ph_ctrl as "Connector"
+    agent mb_ph_sensor as "Connector"
+
+    agent mb_rj_c as "RJ14"
+    collections mb_rj_s as "RJ14 x6"
+}
+
+node client as "Client PC/SBC (ex. ROCK 3C)" {
+    agent t6_client as "Game client (target-6-client)"
+    agent bt_client as "BlueZ"
+    agent x_client as "X Server"
+}
+
+player <- display: Show game screen
+player -> ts_sensor: Shoot
+player --> tc_button: Push button
+
+tc_button <--> tc_rj: Wire
+tc_buzzar <--> tc_rj: Wire
+tc_rj <--> mb_rj_c: Wire
+
+ts_sensor <--> ts_rj: Wire
+ts_led <--> ts_rj: Wire
+ts_rj <--> mb_rj_s: Wire
+
+mb_rj_c <--> mb_ph_ctrl: Wire
+mb_rj_s <--> mb_ph_sensor: Wire
+mb_ph_ctrl <--> t6_ctrl: Wire
+mb_ph_sensor <--> t6_sensor: Wire
+mb_ph_ctrl <-left-> mb_ph_sensor: Wire
+bt_client <----> t6_ctrl: Bluetooth LE
+bt_client <----> t6_sensor: Bluetooth LE
+
+t6_client <--> bt_client: DBus protocol
+t6_client --> x_client: Draw game screen
+display <-- x_client: HDMI
+@enduml
+----
