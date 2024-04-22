@@ -32,7 +32,6 @@ public class TimeAttackScenario extends AbstractScenario {
     private Font fontMedium;
     private Font fontSmall;
     private Font fontDetail;
-    private Font fontSmallest;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
     private long tStart;
@@ -78,7 +77,6 @@ public class TimeAttackScenario extends AbstractScenario {
         fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
         fontDetail = f.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
-        fontSmallest = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
         bg.setForeground(COLOR_BG_GRAY);
