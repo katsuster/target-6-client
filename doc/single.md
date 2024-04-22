@@ -6,12 +6,17 @@ This document describes specification and implementation of single player mode.
 
 ## Specification
 
-Single player mode has 1 game.
+Single player mode has 2 games.
 
+* Count up
+  * Start by `cntup` command
+  * Shoot targets as much as possible
+  * Game is finished after 30 seconds
 * Time attack
   * Start by `tatk` command
-  * Shoot all 6 targets as fast as possible
+  * Shoot all targets as fast as possible
   * Pass the target if 30 seconds past
+  * Game is finished after shoot/pass all targets
 
 Single player mode is using 2 nodes at same time.
 
