@@ -53,9 +53,25 @@ state controller {
 }
 
 state sensor {
+  [*] --> ...
+  ... --> [*]
+}
+```
+
+```mermaid
+stateDiagram-v2
+
+state sensor {
   [*] --> init_sensor
-  init_sensor --> tatk_wait1: tatk cmd
   init_sensor --> [*]: init cmd
+
+  init_sensor --> cntup_wait1: cntup cmd
+  cntup_wait1 --> cntup_wait2: LED ON
+  cntup_wait2 --> cntup_run: wait for falling edge, LED OFF
+  cntup_run --> [*]: wait 30 seconds, game finished and send results
+  cntup_run --> [*]: init cmd
+
+  init_sensor --> tatk_wait1: tatk cmd
   tatk_wait1 --> tatk_wait2: LED ON
   tatk_wait2 --> tatk_run: wait for falling edge, LED OFF
   tatk_run --> [*]: wait for game finished, send results
