@@ -20,7 +20,7 @@ public class Main {
     public static String OPT_SETTING_BT = "--sb";
 
     public static void main(String[] args) {
-        Font uiFontBase, uiFont;
+        Font fontUI, fontBase, fontMono;
         boolean runSettingBT = false, runDebug = false, runNormal = false;
 
         if (args.length > 0) {
@@ -39,23 +39,39 @@ public class Main {
         }
 
         try {
-            InputStream is = Main.class.getResourceAsStream("/openfont/KosugiMaru-Regular.ttf");
+            InputStream is = Main.class.getResourceAsStream("/openfont/ZenMaruGothic-Medium.ttf");
             if (is == null) {
-                System.err.println("Error: Cannot found Font resource.");
+                System.err.println("Error: Cannot found UI Font resource.");
                 return;
             }
-            uiFontBase = Font.createFont(Font.TRUETYPE_FONT, is);
+            fontUI = Font.createFont(Font.TRUETYPE_FONT, is);
             is.close();
         } catch (IOException ex) {
-            printException("Error: Cannot load Font.", ex);
+            printException("Error: Cannot load UI Font.", ex);
             return;
         } catch (FontFormatException ex) {
-            printException("Error: Font data is invalid or broken.", ex);
+            printException("Error: UI Font data is invalid or broken.", ex);
             return;
         }
 
-        uiFont = uiFontBase.deriveFont(Font.PLAIN, 12);
-        setUIDefaultFont(uiFont);
+        try {
+            InputStream is = Main.class.getResourceAsStream("/openfont/KosugiMaru-Regular.ttf");
+            if (is == null) {
+                System.err.println("Error: Cannot found Monospace Font resource.");
+                return;
+            }
+            fontBase = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
+        } catch (IOException ex) {
+            printException("Error: Cannot load Monospace Font.", ex);
+            return;
+        } catch (FontFormatException ex) {
+            printException("Error: Monospace Font data is invalid or broken.", ex);
+            return;
+        }
+
+        fontMono = fontBase.deriveFont(Font.PLAIN, 12);
+        setUIDefaultFont(fontMono);
 
         try {
             DeviceManager.createInstance(false);
@@ -79,7 +95,8 @@ public class Main {
                 }
 
                 ScenarioSetting settingScenario = new ScenarioSetting();
-                settingScenario.setFont(uiFont);
+                settingScenario.setFontUI(fontUI);
+                settingScenario.setFontMono(fontMono);
 
                 ScenarioSwitcher sw = new ScenarioSwitcher(settingScenario, mw, lw);
                 sw.setNextScenario(new OpeningScenario(sw));

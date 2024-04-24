@@ -42,9 +42,9 @@ public class OpeningScenario extends AbstractScenario {
         handlerBTButton = new BTButtonHandler(this, handlerMouse);
         btIO.addBTDeviceListener(handlerBTButton);
 
-        Font f = getSwitcher().getSetting().getFont();
-        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
+        Font fUI = getSwitcher().getSetting().getFontUI();
+        fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
         bg.setForeground(COLOR_BG_GRAY);

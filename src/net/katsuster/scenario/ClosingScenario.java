@@ -34,7 +34,7 @@ public class ClosingScenario extends AbstractScenario {
         handler = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handler);
 
-        Font f = getSwitcher().getSetting().getFont();
+        Font f = getSwitcher().getSetting().getFontMono();
         fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 

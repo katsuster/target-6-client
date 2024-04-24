@@ -8,18 +8,27 @@ import net.katsuster.ui.MainWindow;
 public class ScenarioSetting {
     public static String SETTING_HOST_NAME = "HostName";
 
-    private Font font = new Font(Font.MONOSPACED, Font.PLAIN, 16);
+    private Font fontUI = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+    private Font fontMono = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 
     public ScenarioSetting() {
         //do nothing
     }
 
-    public Font getFont() {
-        return font;
+    public Font getFontUI() {
+        return fontUI;
     }
 
-    public void setFont(Font f) {
-        font = f;
+    public void setFontUI(Font f) {
+        fontUI = f;
+    }
+
+    public Font getFontMono() {
+        return fontMono;
+    }
+
+    public void setFontMono(Font f) {
+        fontMono = f;
     }
 
     public static String getSetting(String key) {

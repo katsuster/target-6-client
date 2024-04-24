@@ -1,7 +1,6 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,13 +22,14 @@ public class SelectScenario extends AbstractScenario {
 
     private BTButtonHandler handlerBT;
     private MouseHandler handlerMouse;
+    private Font fontTitle;
     private Font fontLarge;
     private Font fontSmall;
     private boolean flagStart = false;
     private boolean flagClose = false;
-    private ShapeBox shSelector;
-    private TextLine tlSelector;
     private TextLine tlClock;
+    List<ShapeBox> shScenarios = new ArrayList<>();
+    List<TextLine> tlScenarios = new ArrayList<>();
     private List<String> scenarios = new ArrayList<>();
     private int indexSelected = 0;
 
@@ -54,9 +54,10 @@ public class SelectScenario extends AbstractScenario {
         handlerBT = new BTButtonHandler(this, handlerMouse);
         btIO.addBTDeviceListener(handlerBT);
 
-        Font f = getSwitcher().getSetting().getFont();
-        fontLarge = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
+        Font fUI = getSwitcher().getSetting().getFontUI();
+        fontTitle = fUI.deriveFont(Font.PLAIN, FONT_SIZE_TITLE);
+        fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
         bg.setForeground(COLOR_BG_GRAY);
@@ -65,34 +66,26 @@ public class SelectScenario extends AbstractScenario {
                 mainWnd.getWidth(), mainWnd.getHeight());
 
         TextLine tlTitle = new TextLine();
-        tlTitle.setText("Titleタイトル");
+        tlTitle.setText(CODE_TITLE);
         tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlTitle.setForeground(COLOR_DARK_BLUE);
-        tlTitle.setFont(fontLarge);
+        tlTitle.setFont(fontTitle);
         tlTitle.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight() / 2);
 
-        tlSelector = new TextLine();
-        tlSelector.setText(">>");
-        tlSelector.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-        tlSelector.setForeground(Color.WHITE);
-        tlSelector.setFont(fontLarge);
-        tlSelector.getContentBox().setBounds(0, mainWnd.getHeight() / 2,
-                mainWnd.getWidth() / 4 - FONT_SIZE_LARGE / 2, (int)(FONT_SIZE_LARGE * 1.3));
+        TextLine tlTitleS = new TextLine();
+        tlTitleS.setText(CODE_TITLE);
+        tlTitleS.setAlign(tlTitle.getHAlign(), tlTitle.getVAlign());
+        tlTitleS.setForeground(Color.LIGHT_GRAY);
+        tlTitleS.setFont(tlTitle.getFont());
+        tlTitleS.getContentBox().setBounds(5, 5,
+                mainWnd.getWidth(), mainWnd.getHeight() / 2);
 
-        shSelector = new ShapeBox();
-        shSelector.setShape(new RoundRectangle2D.Double(0, 0,
-                FONT_SIZE_LARGE * 1.1, FONT_SIZE_LARGE * 1.1, 30, 30));
-        shSelector.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-        shSelector.setBackground(COLOR_DARK_ORANGE);
-        shSelector.setForeground(COLOR_DARK_ORANGE);
-        shSelector.setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
-        shSelector.setStroke(new BasicStroke(2));
-        shSelector.getContentBox().setBounds(tlSelector.getContentBox().getBounds());
-        shSelector.getContentBox().setMargin(0, 0, 0, 0);
-
-        List<TextLine> tlScenarios = new ArrayList<>();
         for (int i = 0; i < scenarios.size(); i++) {
+            ShapeBox sh = new ShapeBox();
+
+            shScenarios.add(sh);
+
             TextLine tl = new TextLine();
             tl.setText(scenarios.get(i));
             tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
@@ -114,7 +107,7 @@ public class SelectScenario extends AbstractScenario {
         tlClock.getContentBox().setMargin(5, 0, FONT_SIZE_SMALLEST, 5);
 
         TextLine tlVersion = new TextLine();
-        tlVersion.setText("Target-6 v0.1");
+        tlVersion.setText(CODE_NAME + " " + CODE_VERSION);
         tlVersion.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.BOTTOM);
         tlVersion.setForeground(Color.DARK_GRAY);
         tlVersion.setFont(fontSmall);
@@ -124,11 +117,13 @@ public class SelectScenario extends AbstractScenario {
 
         clearDrawable();
         addDrawable(bg);
+        addDrawable(tlTitleS);
         addDrawable(tlTitle);
-        addDrawable(shSelector);
-        addDrawable(tlSelector);
         addDrawable(tlClock);
         addDrawable(tlVersion);
+        for (ShapeBox sh: shScenarios) {
+            addDrawable(sh);
+        }
         for (TextLine tl: tlScenarios) {
             addDrawable(tl);
         }
@@ -147,11 +142,13 @@ public class SelectScenario extends AbstractScenario {
     public void drawFrame(Graphics2D g2) {
         MainWindow mainWnd = getSwitcher().getMainWindow();
 
-        tlSelector.getContentBox().setBounds(0,
-                mainWnd.getHeight() / 2 + (int)(FONT_SIZE_LARGE * 1.3) * indexSelected,
-                mainWnd.getWidth() / 4 - FONT_SIZE_LARGE / 2, (int)(FONT_SIZE_LARGE * 1.3));
-
-        shSelector.getContentBox().setBounds(tlSelector.getContentBox().getBounds());
+        for (TextLine tl: tlScenarios) {
+            if (tl == tlScenarios.get(indexSelected)) {
+                tl.setForeground(COLOR_DARK_ORANGE);
+            } else {
+                tl.setForeground(Color.DARK_GRAY);
+            }
+        }
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         tlClock.setText(df.format(new Date()));

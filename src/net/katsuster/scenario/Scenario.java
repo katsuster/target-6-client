@@ -3,6 +3,10 @@ package net.katsuster.scenario;
 import java.awt.*;
 
 public interface Scenario {
+    String CODE_NAME = "Target-6";
+    String CODE_VERSION = "v0.1";
+    String CODE_TITLE = "Titleタイトル";
+
     Color COLOR_BG_GRAY = new Color(240, 240, 240);
     Color COLOR_LIGHT_BLUE = new Color(192, 192, 255);
     Color COLOR_DARK_BLUE = new Color(40, 85, 160);
@@ -11,6 +15,7 @@ public interface Scenario {
     int DEV_CONTROLLER = 0;
     int DEV_SINGLE = 1;
 
+    int FONT_SIZE_TITLE = 96;
     int FONT_SIZE_TIMER = 272;
     int FONT_SIZE_DETAIL = 36;
     int FONT_SIZE_LARGEST = 96;

@@ -15,6 +15,7 @@ import net.katsuster.ui.MouseAdapterEx;
 
 public class CountUpScenario extends AbstractScenario {
     public static final int RANKING_TOP_NUM = 5;
+    public static final int SPACE_TOP = (int)(FONT_SIZE_LARGEST * 1.2);
     public enum ScenarioState {
         INIT,
         WAIT,
@@ -71,12 +72,13 @@ public class CountUpScenario extends AbstractScenario {
         handlerBTButton = new BTButtonHandler(this, handlerMouse);
         btIO.addBTDeviceListener(handlerBTButton);
 
-        Font f = getSwitcher().getSetting().getFont();
-        fontTimer = f.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
-        fontLargest = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
-        fontMedium = f.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
-        fontDetail = f.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
+        Font fUI = getSwitcher().getSetting().getFontUI();
+        Font fMono = getSwitcher().getSetting().getFontMono();
+        fontTimer = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
+        fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
 
         GridBG bg = new GridBG();
         bg.setForeground(COLOR_BG_GRAY);
@@ -136,7 +138,7 @@ public class CountUpScenario extends AbstractScenario {
         tlRankHead.setForeground(Color.DARK_GRAY);
         tlRankHead.setFont(fontDetail);
         tlRankHead.getContentBox().setBounds(
-                0, FONT_SIZE_LARGEST + (int)(FONT_SIZE_DETAIL * 1.3),
+                0, SPACE_TOP + (int)(FONT_SIZE_DETAIL * 1.3),
                 mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
         tlRankHead.getContentBox().setMargin(
                 FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
@@ -251,7 +253,7 @@ public class CountUpScenario extends AbstractScenario {
                 tl.setFont(fontDetail);
                 tl.getContentBox().setBounds(
                         mainWnd.getWidth() / 2,
-                        FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                        SPACE_TOP + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
                         mainWnd.getWidth() / 2,
                         (int)(FONT_SIZE_DETAIL * 1.3));
                 tl.getContentBox().setMargin(
@@ -308,7 +310,7 @@ public class CountUpScenario extends AbstractScenario {
                 }
                 tl.setFont(fontDetail);
                 tl.getContentBox().setBounds(
-                        0, FONT_SIZE_LARGEST + (int)((i + 2) * FONT_SIZE_DETAIL * 1.3),
+                        0, SPACE_TOP + (int)((i + 2) * FONT_SIZE_DETAIL * 1.3),
                         mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
                 tl.getContentBox().setMargin(
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,

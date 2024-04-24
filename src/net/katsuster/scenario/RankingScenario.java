@@ -15,13 +15,13 @@ import net.katsuster.ui.MouseAdapterEx;
 public class RankingScenario extends AbstractScenario {
     public static final int RANKING_TOP_NUM = 20;
     public static final int INTERVAL_MSEC = 6000;
+    public static final int SPACE_TOP = (int)(FONT_SIZE_LARGEST * 1.2);
 
     private MouseHandler handlerMouse;
     private BTButtonHandler handlerBTButton;
     private Font fontLargest;
     private Font fontSmall;
     private Font fontDetail;
-    private Font fontSmallest;
     private List<String> scenarioList = new ArrayList<>();
     private List<SCORE_TYPE> scoreTypeList = new ArrayList<>();
     private boolean flagErase = false;
@@ -47,11 +47,11 @@ public class RankingScenario extends AbstractScenario {
         handlerBTButton = new BTButtonHandler(this, handlerMouse);
         btIO.addBTDeviceListener(handlerBTButton);
 
-        Font f = getSwitcher().getSetting().getFont();
-        fontLargest = f.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
-        fontSmall = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
-        fontDetail = f.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
-        fontSmallest = f.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
+        Font fUI = getSwitcher().getSetting().getFontUI();
+        Font fMono = getSwitcher().getSetting().getFontMono();
+        fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
+        fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
 
         GridBG bg = new GridBG();
         bg.setForeground(COLOR_BG_GRAY);
@@ -162,7 +162,7 @@ public class RankingScenario extends AbstractScenario {
                 tl.setFont(fontDetail);
                 tl.getContentBox().setBounds(
                         mainWnd.getWidth() / 2 * j,
-                        FONT_SIZE_LARGEST + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                        SPACE_TOP + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
                         mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
                 tl.getContentBox().setMargin(
                         FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
