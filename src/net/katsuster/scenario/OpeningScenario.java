@@ -13,7 +13,7 @@ public class OpeningScenario extends AbstractScenario {
     private BTDeviceHandler handlerBT;
     private BTButtonHandler handlerBTButton;
     private MouseHandler handlerMouse;
-    private Font fontMedium;
+    private Font fontLarge;
     private Font fontSmall;
     private DevState[] devState = new DevState[BTInOut.NUM_DEVICES];
     private boolean flagReady = false;
@@ -43,7 +43,7 @@ public class OpeningScenario extends AbstractScenario {
         btIO.addBTDeviceListener(handlerBTButton);
 
         Font fUI = getSwitcher().getSetting().getFontUI();
-        fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
+        fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
         GridBG bg = new GridBG();
@@ -54,12 +54,11 @@ public class OpeningScenario extends AbstractScenario {
 
         tlMsg = new TextLine();
         tlMsg.setText("Please Wait...");
-        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
+        tlMsg.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
         tlMsg.setForeground(Color.DARK_GRAY);
-        tlMsg.setFont(fontMedium);
+        tlMsg.setFont(fontLarge);
         tlMsg.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() - FONT_SIZE_MEDIUM * 2);
-        tlMsg.getContentBox().setMargin(20, 20, 20, 20);
+                mainWnd.getWidth(), mainWnd.getHeight());
 
         ShapeBox[] shDevState = new ShapeBox[BTInOut.NUM_DEVICES];
         for (int i = 0; i < tlDevState.length; i++) {
