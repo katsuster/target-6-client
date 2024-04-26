@@ -43,7 +43,6 @@ public class TimeAttackScenario extends AbstractScenario {
     private TextLine tlRank;
     private TextLine tlRankHead;
     private TextLine tlResult;
-    private List<TextLine> ranking = new ArrayList<>();
     private List<TextLine> results = new ArrayList<>();
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
