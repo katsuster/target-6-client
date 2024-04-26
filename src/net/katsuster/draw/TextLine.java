@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class TextLine extends AbstractDrawable {
     private String text = "";
+    private Color shadow;
+    private Point shadowPosition = new Point();
 
     public TextLine() {
         //do nothing
@@ -46,8 +48,11 @@ public class TextLine extends AbstractDrawable {
         g2.setColor(getBackground());
         g2.fillRect(bdContent.x, bdContent.y, bdContent.width, bdContent.height);
 
-        g2.setColor(getForeground());
         g2.setFont(getFont());
+        g2.setColor(getShadow());
+        g2.drawString(getText(), x + getShadowPositionX(), y + ascentStr + getShadowPositionY());
+
+        g2.setColor(getForeground());
         g2.drawString(getText(), x, y + ascentStr);
     }
 
@@ -58,4 +63,32 @@ public class TextLine extends AbstractDrawable {
     public void setText(String t) {
     text = t;
 }
+
+    public Color getShadow() {
+        return shadow;
+    }
+
+    public void setShadow(Color c) {
+        shadow = c;
+    }
+
+    public Point getShadowPosition() {
+        return shadowPosition;
+    }
+
+    public int getShadowPositionX() {
+        return (int)shadowPosition.getX();
+    }
+
+    public int getShadowPositionY() {
+        return (int)shadowPosition.getY();
+    }
+
+    public void setShadowPosition(int x, int y) {
+        shadowPosition.setLocation(x, y);
+    }
+
+    public void setShadowPosition(Point p) {
+        shadowPosition = p;
+    }
 }
