@@ -5,7 +5,9 @@ import java.awt.*;
 public interface Scenario {
     String CODE_NAME = "Target-6";
     String CODE_VERSION = "v0.1";
-    String CODE_TITLE = "Titleタイトル";
+    String CODE_TITLE_WORD1 = "Speed";
+    String CODE_TITLE_WORD2 = "Shooting";
+    String CODE_TITLE_WORD3 = "System";
 
     Color COLOR_BG_GRAY = new Color(240, 240, 240);
     Color COLOR_LIGHT_BLUE = new Color(192, 192, 255);

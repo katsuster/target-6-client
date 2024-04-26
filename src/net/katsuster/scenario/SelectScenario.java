@@ -19,6 +19,8 @@ public class SelectScenario extends AbstractScenario {
     public static final String SCENARIO_TIME_ATTACK = "Time Attack";
     public static final String SCENARIO_RANKING = "Ranking";
     public static final String SCENARIO_SEPARATOR = "-----";
+    public static final int TITLE_SPACE_H = (int)(FONT_SIZE_TITLE * 1.5);
+    public static final int TITLE_SPACE_V = (int)(FONT_SIZE_TITLE * 1.0);
 
     private BTButtonHandler handlerBT;
     private MouseHandler handlerMouse;
@@ -65,21 +67,25 @@ public class SelectScenario extends AbstractScenario {
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
-        TextLine tlTitle = new TextLine();
-        tlTitle.setText(CODE_TITLE);
-        tlTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-        tlTitle.setForeground(COLOR_DARK_BLUE);
-        tlTitle.setFont(fontTitle);
-        tlTitle.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight() / 2);
+        TextLine[] tlTitle = new TextLine[3];
+        for (int i = 0; i < tlTitle.length; i++) {
+            tlTitle[i] = new TextLine();
+            tlTitle[i].setVAlign(Drawable.V_ALIGN.TOP);
+            tlTitle[i].setForeground(COLOR_DARK_BLUE);
+            tlTitle[i].setShadow(Color.LIGHT_GRAY);
+            tlTitle[i].setShadowPosition(5, 5);
+            tlTitle[i].setFont(fontTitle);
+            tlTitle[i].getContentBox().setBounds(
+                    TITLE_SPACE_H, i * TITLE_SPACE_V,
+                    mainWnd.getWidth() - TITLE_SPACE_H * 2, TITLE_SPACE_V);
+        }
 
-        TextLine tlTitleS = new TextLine();
-        tlTitleS.setText(CODE_TITLE);
-        tlTitleS.setAlign(tlTitle.getHAlign(), tlTitle.getVAlign());
-        tlTitleS.setForeground(Color.LIGHT_GRAY);
-        tlTitleS.setFont(tlTitle.getFont());
-        tlTitleS.getContentBox().setBounds(5, 5,
-                mainWnd.getWidth(), mainWnd.getHeight() / 2);
+        tlTitle[0].setText(CODE_TITLE_WORD1);
+        tlTitle[0].setHAlign(Drawable.H_ALIGN.LEFT);
+        tlTitle[1].setText(CODE_TITLE_WORD2);
+        tlTitle[1].setHAlign(Drawable.H_ALIGN.CENTER);
+        tlTitle[2].setText(CODE_TITLE_WORD3);
+        tlTitle[2].setHAlign(Drawable.H_ALIGN.RIGHT);
 
         for (int i = 0; i < scenarios.size(); i++) {
             ShapeBox sh = new ShapeBox();
@@ -117,8 +123,9 @@ public class SelectScenario extends AbstractScenario {
 
         clearDrawable();
         addDrawable(bg);
-        addDrawable(tlTitleS);
-        addDrawable(tlTitle);
+        for (TextLine tl : tlTitle) {
+            addDrawable(tl);
+        }
         addDrawable(tlClock);
         addDrawable(tlVersion);
         for (ShapeBox sh: shScenarios) {
