@@ -54,6 +54,18 @@ How to disable blank screen and screen lock.
       * スリープするまでの時間: しない
       * 電源を切断するまでの時間: しない
 
+How to disable blank screen (DPMS) by using XDG and xset.
+Please create ~/.config/autostart/xset.desktop file for disabling DPMS standby and suspend timer.
+
+```
+[Desktop Entry]
+Name=xset
+Comment=Disable DPM
+Type=Application
+Exec=/usr/bin/xset dpms 0 0 0
+X-GNOME-Autostart-Phase=Initialization
+```
+
 How to enable automatically login.
 Need to change the settings of LightDM.
 This is an example to enable automatically login as username `rock`.
