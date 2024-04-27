@@ -64,7 +64,7 @@ public class ScoreCntup extends Score {
 
     @Override
     public String toRankingString() {
-        return String.format("%3d@%3d.%03d (%s)",
+        return String.format("%3d@%2d.%03d (%s)",
                 getCount(),
                 getTime() / 1000, getTime() % 1000,
                 getDateString().substring(0, 10));
