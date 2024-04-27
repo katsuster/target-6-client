@@ -1,6 +1,7 @@
 package net.katsuster.scenario;
 
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,9 +19,10 @@ public class SelectScenario extends AbstractScenario {
     public static final String SCENARIO_COUNT_UP = "Count Up";
     public static final String SCENARIO_TIME_ATTACK = "Time Attack";
     public static final String SCENARIO_RANKING = "Ranking";
-    public static final String SCENARIO_SEPARATOR = "-----";
-    public static final int TITLE_SPACE_H = (int)(FONT_SIZE_TITLE * 1.5);
-    public static final int TITLE_SPACE_V = (int)(FONT_SIZE_TITLE * 1.0);
+    public static final String SCENARIO_SEPARATOR = "・";
+    public static final int TITLE_OFFSET_LEFT = (int)(FONT_SIZE_TITLE * 1.5);
+    public static final int TITLE_MARGIN_TOP = (int)(FONT_SIZE_TITLE * 0.1);
+    public static final int TITLE_HIGHT = (int)(FONT_SIZE_TITLE * 1.0);
 
     private BTButtonHandler handlerBT;
     private MouseHandler handlerMouse;
@@ -57,7 +59,7 @@ public class SelectScenario extends AbstractScenario {
         btIO.addBTDeviceListener(handlerBT);
 
         Font fUI = getSwitcher().getSetting().getFontUI();
-        fontTitle = fUI.deriveFont(Font.PLAIN, FONT_SIZE_TITLE);
+        fontTitle = fUI.deriveFont(Font.BOLD, FONT_SIZE_TITLE);
         fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALLEST);
 
@@ -67,7 +69,7 @@ public class SelectScenario extends AbstractScenario {
         bg.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth(), mainWnd.getHeight());
 
-        TextLine[] tlTitle = new TextLine[3];
+        TextLine[] tlTitle = new TextLine[2];
         for (int i = 0; i < tlTitle.length; i++) {
             tlTitle[i] = new TextLine();
             tlTitle[i].setVAlign(Drawable.V_ALIGN.TOP);
@@ -76,32 +78,55 @@ public class SelectScenario extends AbstractScenario {
             tlTitle[i].setShadowPosition(5, 5);
             tlTitle[i].setFont(fontTitle);
             tlTitle[i].getContentBox().setBounds(
-                    TITLE_SPACE_H, i * TITLE_SPACE_V,
-                    mainWnd.getWidth() - TITLE_SPACE_H * 2, TITLE_SPACE_V);
+                    TITLE_OFFSET_LEFT, TITLE_MARGIN_TOP + i * TITLE_HIGHT,
+                    mainWnd.getWidth() - TITLE_OFFSET_LEFT * 2, TITLE_HIGHT);
         }
 
         tlTitle[0].setText(CODE_TITLE_WORD1);
         tlTitle[0].setHAlign(Drawable.H_ALIGN.LEFT);
         tlTitle[1].setText(CODE_TITLE_WORD2);
         tlTitle[1].setHAlign(Drawable.H_ALIGN.CENTER);
-        tlTitle[2].setText(CODE_TITLE_WORD3);
-        tlTitle[2].setHAlign(Drawable.H_ALIGN.RIGHT);
+
+        ShapeBox shTitle = new ShapeBox();
+        shTitle.setShape(new RoundRectangle2D.Double(1, 1,
+                mainWnd.getWidth() - TITLE_OFFSET_LEFT,
+                TITLE_MARGIN_TOP + tlTitle.length * TITLE_HIGHT,
+                10, 10));
+        shTitle.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+        shTitle.setBackground(Color.WHITE);
+        shTitle.setForeground(COLOR_DARK_BLUE);
+        shTitle.setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
+        shTitle.setStroke(new BasicStroke(2));
+        shTitle.getContentBox().setBounds(
+                TITLE_OFFSET_LEFT / 2, FONT_SIZE_TITLE / 2 - TITLE_MARGIN_TOP,
+                mainWnd.getWidth() - TITLE_OFFSET_LEFT,
+                TITLE_MARGIN_TOP * 2 + tlTitle.length * TITLE_HIGHT);
 
         for (int i = 0; i < scenarios.size(); i++) {
-            ShapeBox sh = new ShapeBox();
-
-            shScenarios.add(sh);
-
             TextLine tl = new TextLine();
             tl.setText(scenarios.get(i));
-            tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+            tl.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
             tl.setForeground(Color.DARK_GRAY);
             tl.setFont(fontLarge);
             tl.getContentBox().setBounds(mainWnd.getWidth() / 4,
-                    mainWnd.getHeight() / 2 + (int)(FONT_SIZE_LARGE * 1.3) * i,
-                    mainWnd.getWidth() / 4 * 2, (int)(FONT_SIZE_LARGE * 1.3));
-
+                    (int)(mainWnd.getHeight() / 2.3) + (int)(FONT_SIZE_LARGE * 1.2) * i,
+                    mainWnd.getWidth() / 4 * 2, (int)(FONT_SIZE_LARGE * 1.4));
             tlScenarios.add(tl);
+
+            ShapeBox sh = new ShapeBox();
+            sh.setShape(new RoundRectangle2D.Double(1, 1,
+                    tl.getContentBox().getWidth(),
+                    tl.getContentBox().getHeight() - FONT_SIZE_LARGE / 3,
+                    FONT_SIZE_LARGE, FONT_SIZE_LARGE));
+            sh.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+            sh.setBackground(Color.WHITE);
+            sh.setForeground(Color.DARK_GRAY);
+            sh.setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
+            sh.setStroke(new BasicStroke(1));
+            sh.getContentBox().setBounds(tl.getContentBox().getBounds());
+            sh.getContentBox().setMargin(0, FONT_SIZE_LARGE / 3, 0, 0);
+            sh.setVisible(false);
+            shScenarios.add(sh);
         }
 
         tlClock = new TextLine();
@@ -123,6 +148,7 @@ public class SelectScenario extends AbstractScenario {
 
         clearDrawable();
         addDrawable(bg);
+        addDrawable(shTitle);
         for (TextLine tl : tlTitle) {
             addDrawable(tl);
         }
@@ -155,6 +181,9 @@ public class SelectScenario extends AbstractScenario {
             } else {
                 tl.setForeground(Color.DARK_GRAY);
             }
+        }
+        for (ShapeBox sh: shScenarios) {
+            sh.setVisible(sh == shScenarios.get(indexSelected));
         }
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
