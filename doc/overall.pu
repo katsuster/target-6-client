@@ -4,19 +4,19 @@
 actor player as "Player"
 agent display as "Display"
 
-node target_c as "Contoroller (no source)" {
+node target_c as "Contoroller (target-6-board/ctrl)" {
     agent tc_button as "Button"
     agent tc_buzzar as "Buzzar"
     agent tc_rj as "RJ14"
 }
 
-node target_s as "Steel Target 1...6 (no source)" {
+node target_s as "Steel Target 1...6 (target-6-board/sensor)" {
     agent ts_sensor as "Steel plate & Sensor"
     agent ts_led as "LED"
     agent ts_rj as "RJ14"
 }
 
-node board as "Main Board (target-6-board)" {
+node board as "Main Board (target-6-board/io)" {
     node ctrl as "Controller MCU (ex. M5Stamp C3)" {
         agent t6_ctrl as "Controller node (target-6-server)"
     }
