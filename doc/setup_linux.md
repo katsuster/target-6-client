@@ -1,5 +1,5 @@
 
-# Setup a Linux environment
+# Setup Client Machine
 
 The client side needs to use Linux desktop environment.
 There is no limitaion about CPU architectures if the Linux environment supports Java/D-Bus/Bluez/Bluetooth stacks.

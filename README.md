@@ -30,9 +30,10 @@ Please refer these repositories if you have interest in other modules of `target
 
 ## How to use
 
+* [Build and Run](doc/build.md)
+* [Setup Client Machine](doc/setup_linux.md)
+
 
 ## Other documents
 
-* [How to build](doc/build.md)
-* [Setup Linux](doc/setup_linux.md)
-* [Single mode](doc/single.md)
+* [Single Player Mode](doc/single.md)

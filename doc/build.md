@@ -1,5 +1,5 @@
 
-# How to build
+# Build and Run
 
 This document describes how to build and run this project.
 
