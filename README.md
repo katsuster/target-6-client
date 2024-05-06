@@ -21,6 +21,7 @@ Please refer these repositories if you have interest in other modules of `target
 * Software
   * Linux
   * Java
+  * Maven
   * D-Bus
   * BlueZ
 * Hardware
