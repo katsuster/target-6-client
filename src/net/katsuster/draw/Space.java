@@ -1,51 +1,50 @@
 package net.katsuster.draw;
 
 /**
- * 上下、左右の空白の大きさを表すクラスです。
+ * This class represents size of space of left/top/right/bottom.
  */
 public class Space {
-    //左側の空白の大きさ
+    //Size of left space
     public int left;
-    //上側の空白の大きさ
+    //Size of top space
     public int top;
-    //右側の空白の大きさ
+    //Size of right space
     public int right;
-    //下側の空白の大きさ
+    //Size of bottom space
     public int bottom;
 
     /**
-     * 空白の大きさをすべて 0 として新たなオブジェクトを生成します。
+     * Create a new object with zero-sized space.
      */
     public Space() {
         this(0);
     }
 
     /**
-     * 空白の大きさにすべて同じ値を指定して新たなオブジェクトを生成します。
+     * Create a new object with same size of space (left = top = right = bottom = n).
      *
-     * @param n 空白の大きさ
+     * @param n Size of space
      */
     public Space(int n) {
         this(n, n, n, n);
     }
 
     /**
-     * 指定された空白と同じ大きさの空白を指定して、
-     * 新たなオブジェクトを生成します。
+     * Create a new object with same size as other object.
      *
-     * @param s 元となる空白
+     * @param s Space object
      */
     public Space(Space s) {
         this(s.left, s.top, s.right, s.bottom);
     }
 
     /**
-     * 左、上、右、下の空白の大きさを指定して新たなオブジェクトを生成します。
+     * Create a new object with specified size.
      *
-     * @param l 左側の空白の大きさ
-     * @param t 上側の空白の大きさ
-     * @param r 右側の空白の大きさ
-     * @param b 下側の空白の大きさ
+     * @param l Size of left
+     * @param t Size of top
+     * @param r Size of right
+     * @param b Size of bottom
      */
     public Space(int l, int t, int r, int b) {
         left = l;

@@ -3,16 +3,16 @@ package net.katsuster.draw;
 import java.awt.*;
 
 /**
- * コンテンツの描画領域をあらわすクラスです。
+ * This class represents a drawing area of contents.
  *
- * 下記の構成要素からなります。
+ * Drawing area is consisted some areas as follows:
  *
  * <ul>
- * <li>描画領域（Bounds）</li>
- * <li>描画領域と枠の間の余白（Margin）</li>
- * <li>枠（Border）</li>
- * <li>枠とコンテンツの間の空白（Padding）</li>
- * <li>コンテンツ領域（Contents）</li>
+ * <li>Bounds: The whole area.</li>
+ * <li>Margin: The gap between borders and bounds.</li>
+ * <li>Borders: The area for drawing borders.</li>
+ * <li>Padding: The gap between contents and borders.</li>
+ * <li>Contents: The area for drawing contents (texts, pictures, etc.)</li>
  * </ul>
  *
  * <pre>
@@ -21,7 +21,7 @@ import java.awt.*;
  *        |                           |/
  *        |  +--------------------+  ______ Margin
  *        |  |                    | / |
- *        |  |  +-------------+   | _______ Border
+ *        |  |  +-------------+   | _______ Borders
  *        |  |  |aaaaaaaaaaaaa|   |/  |
  *        |  |  |bbbbbbbbbbbbb|  __________ Padding
  * height |  |  |ccccccccccccc| / |   |
@@ -34,28 +34,20 @@ import java.awt.*;
  *        +---------------------------+
  * </pre>
  *
- * このうち大きさや位置を設定可能なのは、
- * 描画領域（Bounds）、描画領域と枠の間の余白（Margin）、
- * 枠とコンテンツの間の空白（Padding）のみです。
- *
- * 枠（Border）の大きさは、
- * Bounds と Margin から自動的に決まります。
- * また、コンテンツ領域（Contents）の大きさは、
- * Border と Padding から自動的に決まります。
+ * The programmers can specify size of area of bounds, margin and padding only.
+ * Other size of areas will be calculated automatically.
+ * The area of borders is defined by bounds and margin, contents is defined by borders and paddings.
  */
 public class ContentBox {
-    //描画領域
+    //The whole area (Bounds)
     private Rectangle bounds;
-    //描画領域と枠の間の余白
+    //Size of margin
     private Space margin;
-    //枠とコンテンツの間の空白
+    //Size of padding
     private Space padding;
 
     /**
-     * 描画領域の位置 (0, 0)、
-     * 大きさ（Bounds）なし、
-     * 余白（Margin）なし、
-     * 空白（Padding）なしのオブジェクトを生成します。
+     * Create a new object with position (0, 0), size of area is zero, no margin, no padding.
      */
     public ContentBox() {
         this(0, 0, 0, 0,
@@ -64,14 +56,12 @@ public class ContentBox {
     }
 
     /**
-     * 描画領域の大きさ（Bounds）を指定して、
-     * 余白（Margin）なし、
-     * 空白（Padding）なしのオブジェクトを生成します。
+     * Create a new object that has specified position (x, y), size of area (w, h) with no margin, no padding.
      *
-     * @param x  描画領域の X 位置
-     * @param y  描画領域の Y 位置
-     * @param w  描画領域の幅
-     * @param h  描画領域の高さ
+     * @param x  Position of X
+     * @param y  Position of Y
+     * @param w  Width of bounds
+     * @param h  Height of bounds
      */
     public ContentBox(int x, int y, int w, int h) {
         this(x, y, w, h,
@@ -80,18 +70,16 @@ public class ContentBox {
     }
 
     /**
-     * 描画領域の大きさ（Bounds）、
-     * 余白（Margin）の大きさを指定して、
-     * 空白（Padding）なしのオブジェクトを生成します。
+     * Create a new object that has specified position (x, y), size of area (w, h) and margin (ml, mt, mr, mb) with no padding.
      *
-     * @param x  描画領域の X 位置
-     * @param y  描画領域の Y 位置
-     * @param w  描画領域の幅
-     * @param h  描画領域の高さ
-     * @param ml 左側の余白（Margin）の大きさ
-     * @param mt 上側の余白（Margin）の大きさ
-     * @param mr 右側の余白（Margin）の大きさ
-     * @param mb 下側の余白（Margin）の大きさ
+     * @param x  Position of X
+     * @param y  Position of Y
+     * @param w  Width of bounds
+     * @param h  Height of bounds
+     * @param ml Size of left margin
+     * @param mt Size of top margin
+     * @param mr Size of right margin
+     * @param mb Size of bottom margin
      */
     public ContentBox(int x, int y, int w, int h,
                       int ml, int mt, int mr, int mb) {
@@ -101,21 +89,20 @@ public class ContentBox {
     }
 
     /**
-     * 描画領域の大きさ（Bounds）、余白（Margin）、空白（Padding）、
-     * の大きさを指定してオブジェクトを生成します。
+     * Create a new object with specified position (x, y), size of area (w, h), margin (ml, mt, mr, mb) and padding (pl, pt, pr, pb).
      *
-     * @param x  描画領域の X 位置
-     * @param y  描画領域の Y 位置
-     * @param w  描画領域の幅
-     * @param h  描画領域の高さ
-     * @param ml 左側の余白（Margin）の大きさ
-     * @param mt 上側の余白（Margin）の大きさ
-     * @param mr 右側の余白（Margin）の大きさ
-     * @param mb 下側の余白（Margin）の大きさ
-     * @param pl 左側の空白（Padding）の大きさ
-     * @param pt 上側の空白（Padding）の大きさ
-     * @param pr 右側の空白（Padding）の大きさ
-     * @param pb 下側の空白（Padding）の大きさ
+     * @param x  Position of X
+     * @param y  Position of Y
+     * @param w  Width of bounds
+     * @param h  Height of bounds
+     * @param ml Size of left margin
+     * @param mt Size of top margin
+     * @param mr Size of right margin
+     * @param mb Size of bottom margin
+     * @param pl Size of left padding
+     * @param pt Size of top padding
+     * @param pr Size of right padding
+     * @param pb Size of bottom padding
      */
     public ContentBox(int x, int y, int w, int h,
                       int ml, int mt, int mr, int mb,
@@ -126,141 +113,141 @@ public class ContentBox {
     }
 
     /**
-     * 描画領域の X 座標を取得します。
+     * Get X position of bounds.
      *
-     * @return 描画領域の X 座標
+     * @return X position
      */
     public int getX() {
         return bounds.x;
     }
 
     /**
-     * 描画領域の X 座標を設定します。
+     * Set X position of bounds.
      *
-     * @param x 描画領域の X 座標
+     * @param x X position
      */
     public void setX(int x) {
         bounds.x = x;
     }
 
     /**
-     * 描画領域の Y 座標を取得します。
+     * Get Y position of bounds.
      *
-     * @return 描画領域の Y 座標
+     * @return Y position
      */
     public int getY() {
         return bounds.y;
     }
 
     /**
-     * 描画領域の Y 座標を設定します。
+     * Set X position of bounds.
      *
-     * @param y 描画領域の Y 座標
+     * @param y Y position
      */
     public void setY(int y) {
         bounds.y = y;
     }
 
     /**
-     * 描画領域の幅を取得します。
+     * Get width of bounds.
      *
-     * @return 描画領域の幅
+     * @return Width
      */
     public int getWidth() {
         return bounds.width;
     }
 
     /**
-     * 描画領域の幅を設定します。
+     * Set width of bounds.
      *
-     * @param w 描画領域の幅
+     * @param w Width
      */
     public void setWidth(int w) {
         bounds.width = w;
     }
 
     /**
-     * 描画領域の高さを取得します。
+     * Get height of bounds.
      *
-     * @return 描画領域の高さ
+     * @return Height
      */
     public int getHeight() {
         return bounds.height;
     }
 
     /**
-     * 描画領域の高さを設定します。
+     * Set height of bounds.
      *
-     * @param h 描画領域の高さ
+     * @param h Height
      */
     public void setHeight(int h) {
         bounds.height = h;
     }
 
     /**
-     * 描画領域（Bounds）を取得します。
+     * Get the area of bounds.
      *
-     * @return 描画領域
+     * @return Area of bounds
      */
     public Rectangle getBounds() {
         return new Rectangle(bounds);
     }
 
     /**
-     * 描画領域（Bounds）を設定します。
+     * Set the area of bounds.
      *
-     * @param x  描画領域の X 位置
-     * @param y  描画領域の Y 位置
-     * @param w  描画領域の幅
-     * @param h  描画領域の高さ
+     * @param x  X position
+     * @param y  Y position
+     * @param w  Width
+     * @param h  Height
      */
     public void setBounds(int x, int y, int w, int h) {
         bounds = new Rectangle(x, y, w, h);
     }
 
     /**
-     * 描画領域（Bounds）を設定します。
+     * Set the area of bounds.
      *
-     * @param r 描画領域
+     * @param r Area of bounds
      */
     public void setBounds(Rectangle r) {
         bounds = new Rectangle(r);
     }
 
     /**
-     * 描画領域と枠の間の余白（Margin）を取得します。
+     * Get the size of margin.
      *
-     * @return 余白
+     * @return Size of margin
      */
     public Space getMargin() {
         return new Space(margin);
     }
 
     /**
-     * 描画領域と枠の間の余白（Margin）を設定します。
+     * Set the size of margin.
      *
-     * @param l 左側の余白
-     * @param t 上側の余白
-     * @param r 右側の余白
-     * @param b 下側の余白
+     * @param l Size of left
+     * @param t Size of top
+     * @param r Size of right
+     * @param b Size of bottom
      */
     public void setMargin(int l, int t, int r, int b) {
         margin = new Space(l, t, r, b);
     }
 
     /**
-     * 描画領域と枠の間の余白（Margin）を設定します。
+     * Set the size of margin.
      *
-     * @param s 余白
+     * @param s Size of margin
      */
     public void setMargin(Space s) {
         margin = new Space(s);
     }
 
     /**
-     * 枠（Border）を取得します。
+     * Get the area of borders.
      *
-     * @return 枠
+     * @return Area of borders
      */
     public Rectangle getBorder() {
         return new Rectangle(
@@ -271,39 +258,39 @@ public class ContentBox {
     }
 
     /**
-     * 枠とコンテンツの間の空白（Padding）を取得します。
+     * Get the size of padding.
      *
-     * @return 空白
+     * @return Size of padding
      */
     public Space getPadding() {
         return new Space(padding);
     }
 
     /**
-     * 枠とコンテンツの間の空白（Padding）を設定します。
+     * Set the size of padding.
      *
-     * @param l 左側の空白
-     * @param t 上側の空白
-     * @param r 右側の空白
-     * @param b 下側の空白
+     * @param l Size of left
+     * @param t Size of top
+     * @param r Size of right
+     * @param b Size of bottom
      */
     public void setPadding(int l, int t, int r, int b) {
         padding = new Space(l, t, r, b);
     }
 
     /**
-     * 枠とコンテンツの間の空白（Padding）を設定します。
+     * Set the size of padding.
      *
-     * @param s 空白
+     * @param s Size of padding
      */
     public void setPadding(Space s) {
         padding = new Space(s);
     }
 
     /**
-     * コンテンツ領域（Contents）を取得します。
+     * Get the area of contents.
      *
-     * @return コンテンツ領域
+     * @return Area of contents
      */
     public Rectangle getContents() {
         Rectangle border = getBorder();
