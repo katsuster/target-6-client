@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         ScoreBoardTest.class,
+        TreeNodeTest.class,
 })
 public class TestMain {
     protected TestMain() {
