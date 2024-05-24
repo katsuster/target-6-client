@@ -5,58 +5,74 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class TreeNode<T> {
-    private T value;
-    private List<TreeNode<T>> children = new ArrayList<>();
+public class TreeNode<K, V> {
+    private K key;
+    private V value;
+    private List<TreeNode<K, V>> children = new ArrayList<>();
 
-    public TreeNode(T v) {
+    public TreeNode(K k, V v) {
+        key = k;
         value = v;
     }
 
-    public TreeNode<T>[] getChildren() {
-        return (TreeNode<T>[])children.toArray();
+    public K getKey() {
+        return key;
     }
 
-    public Iterator<TreeNode<T>> getChildIterator() {
+    public V getValue() {
+        return value;
+    }
+
+    public void setValue(V v) {
+        value = v;
+    }
+
+    public TreeNode<K, V>[] getChildren() {
+        return (TreeNode<K, V>[])children.toArray();
+    }
+
+    public Iterator<TreeNode<K, V>> getChildIterator() {
         return children.iterator();
     }
 
-    public TreeNode<T> getChild(int i) {
+    public TreeNode<K, V> getChild(int i) {
         return children.get(i);
     }
 
-    public Optional<TreeNode<T>> findChild(T v) {
+    public Optional<TreeNode<K, V>> findChild(K k) {
         return children.stream()
-                .filter(c -> c.value.equals(v))
+                .filter(c -> c.key.equals(k))
                 .findFirst();
     }
 
-    public void addChild(TreeNode<T> ch) {
+    public void addChild(TreeNode<K, V> ch) {
         children.add(ch);
     }
 
-    public void removeChild(TreeNode<T> ch) {
+    public void removeChild(TreeNode<K, V> ch) {
         children.remove(ch);
     }
 
-    public void addPath(T[] nodes) {
-        TreeNode<T> cnode = this;
+    public void addPath(K[] nodes, V value) {
+        TreeNode<K, V> cnode = this;
 
-        for (T node : nodes) {
-            Optional<TreeNode<T>> c = cnode.findChild(node);
-            TreeNode<T> n = null;
+        for (K node : nodes) {
+            Optional<TreeNode<K, V>> c = cnode.findChild(node);
+            TreeNode<K, V> n = null;
             if (c.isEmpty()) {
-                n = new TreeNode<>(node);
+                n = new TreeNode<>(node, null);
                 cnode.addChild(n);
             }
             cnode = c.orElse(n);
         }
+
+        cnode.setValue(value);
     }
 
-    public Optional<TreeNode<T>> walkPath(T[] nodes) {
-        Optional<TreeNode<T>> c = Optional.of(this);
+    public Optional<TreeNode<K, V>> walkPath(K[] nodes) {
+        Optional<TreeNode<K, V>> c = Optional.of(this);
 
-        for (T node : nodes) {
+        for (K node : nodes) {
             if (c.isEmpty()) {
                 return c;
             }
