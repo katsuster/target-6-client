@@ -15,8 +15,6 @@ public class ScenarioSwitcher implements Runnable {
 
     private ScenarioSetting setting;
     private BufferStrategy strategy;
-    private GraphicsConfiguration mainGC;
-    private VolatileImage mainImg;
     private MainWindow mainWnd;
     private LogWindow logWnd;
     private boolean term = false;
