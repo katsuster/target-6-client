@@ -28,7 +28,7 @@ public class TreeNode<K, V> {
     }
 
     public TreeNode<K, V>[] getChildren() {
-        return (TreeNode<K, V>[])children.toArray();
+        return children.toArray(new TreeNode[children.size()]);
     }
 
     public Iterator<TreeNode<K, V>> getChildIterator() {

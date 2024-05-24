@@ -1,5 +1,6 @@
 package net.katsuster.test;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -170,5 +171,68 @@ public class TreeNodeTest {
                 root.walkPath("aaaa/bbbb/c".split("/")).orElse(null));
         Assert.assertNull("Find ghost path.",
                 root.walkPath("aaaa/b/cccc".split("/")).orElse(null));
+    }
+
+    @Test
+    public void testGetChildren() throws Exception {
+        TreeNode<String, Integer> root = new TreeNode<>("root", null);
+        String[] paths = {
+                "aaaa/b1/ccc",
+                "aaaa/b1/cccc",
+                "aaaa/b2/cccc",
+                "aaaa/b3/ccccc",
+                "aaaa/b4/cccc",
+                "aaa/bbbbb/ccccc",
+                "aaa/bbbb/cccc",
+        };
+        String[] childrenPath = {
+                "b1",
+                "b2",
+                "b3",
+                "b4",
+        };
+
+        int i = 100;
+        for (String path : paths) {
+            root.addPath(path.split("/"), i);
+            i += 100;
+        }
+
+        TreeNode<String, Integer>[] children = root.walkPath("aaaa".split("/")).get().getChildren();
+        Assert.assertEquals("Wrong count of children.", childrenPath.length, children.length);
+        for (i = 0; i < children.length; i++) {
+            Assert.assertEquals("Wrong value of children " + i + ".", children[i].getKey(), childrenPath[i]);
+        }
+    }
+
+    @Test
+    public void testGetChildIterator() throws Exception {
+        TreeNode<String, Integer> root = new TreeNode<>("root", null);
+        String[] paths = {
+                "aaaa/b1/ccc",
+                "aaaa/b1/cccc",
+                "aaaa/b2/cccc",
+                "aaaa/b3/ccccc",
+                "aaaa/b4/cccc",
+                "aaa/bbbbb/ccccc",
+                "aaa/bbbb/cccc",
+        };
+        String[] childrenPath = {
+                "b1",
+                "b2",
+                "b3",
+                "b4",
+        };
+
+        int i = 100;
+        for (String path : paths) {
+            root.addPath(path.split("/"), i);
+            i += 100;
+        }
+
+        Iterator<TreeNode<String, Integer>> cit = root.walkPath("aaaa".split("/")).get().getChildIterator();
+        for (i = 0; cit.hasNext(); i++) {
+            Assert.assertEquals("Wrong value of children " + i + ".", cit.next().getKey(), childrenPath[i]);
+        }
     }
 }
