@@ -7,6 +7,8 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MouseAdapterEx extends MouseAdapter {
+    public static final int LONG_PRESS_TIMEOUT_MS = 1500;
+
     private AtomicInteger press = new AtomicInteger(0);
     private Timer tm;
 
@@ -41,7 +43,7 @@ public class MouseAdapterEx extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         tm = new Timer();
-        tm.schedule(new HoldTask(e), 3000);
+        tm.schedule(new HoldTask(e), LONG_PRESS_TIMEOUT_MS);
         press.getAndAdd(1);
     }
 
