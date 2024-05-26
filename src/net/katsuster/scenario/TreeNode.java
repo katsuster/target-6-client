@@ -27,6 +27,10 @@ public class TreeNode<K, V> {
         value = v;
     }
 
+    public boolean hasChild() {
+        return !children.isEmpty();
+    }
+
     public TreeNode<K, V>[] getChildren() {
         return children.toArray(new TreeNode[children.size()]);
     }
