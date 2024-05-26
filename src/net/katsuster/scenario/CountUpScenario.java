@@ -14,6 +14,7 @@ import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
 public class CountUpScenario extends AbstractScenario {
+    public static final long DEFAULT_TIMEOUT_MS = 30000;
     public static final int RANKING_TOP_NUM = 5;
     public static final int SPACE_TOP = (int)(FONT_SIZE_LARGEST * 1.2);
     public enum ScenarioState {
@@ -35,6 +36,7 @@ public class CountUpScenario extends AbstractScenario {
     private Font fontDetail;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
+    private long tTimeoutMills = DEFAULT_TIMEOUT_MS;
     private long tStart;
     private TextLine tlTime;
     private TextLine tlMsgCancel;
@@ -47,9 +49,14 @@ public class CountUpScenario extends AbstractScenario {
 
     public CountUpScenario(ScenarioSwitcher sw) {
         super(sw);
-        for (int i = 0; i < getNumAllSensors(); i++) {
+        for (int i = 0; i < getNumberOfTargets(); i++) {
             sensors.add(new Sensor());
         }
+    }
+
+    public CountUpScenario(ScenarioSwitcher sw, CountUpScenario cs) {
+        this(sw);
+        tTimeoutMills = cs.tTimeoutMills;
     }
 
     @Override
@@ -202,7 +209,7 @@ public class CountUpScenario extends AbstractScenario {
     protected void drawFrameInit(Graphics2D g2) {
         boolean success;
 
-        success = writeLine(DEV_SINGLE, CMD_CNTUP);
+        success = writeLine(DEV_SINGLE, CMD_CNTUP + " " + Long.valueOf(getTimeoutInMills()).toString());
         if (!success) {
             return;
         }
@@ -216,7 +223,7 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected void drawFrameWait(Graphics2D g2) {
-        long nano = System.nanoTime() - tStart;
+        long nano = System.nanoTime() - tStart - ScenarioSwitcher.DELAY_BLE_NS;
         long sec = 3 - (nano / ScenarioSwitcher.NS_1SEC);
         String curTime = String.format("%3d", sec);
         tlTime.setText(curTime);
@@ -337,11 +344,19 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected void drawFrameFinish(Graphics2D g2) {
-        getSwitcher().setNextScenario(new CountUpScenario(getSwitcher()));
+        getSwitcher().setNextScenario(new CountUpScenario(getSwitcher(), this));
     }
 
     protected void drawFrameClose(Graphics2D g2) {
         getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
+    }
+
+    public synchronized long getTimeoutInMills() {
+        return tTimeoutMills;
+    }
+
+    public synchronized void setTimeoutInMills(long ms) {
+        tTimeoutMills = ms;
     }
 
     public synchronized ScenarioState getState() {
@@ -388,27 +403,8 @@ public class CountUpScenario extends AbstractScenario {
         setState(ScenarioState.CLOSE);
     }
 
-    protected int getLinearID(int devid, int senid) {
-        int sensorID = 0;
-
-        if (devid < 0 || BTInOut.NUM_DEVICES <= devid) {
-            throw new IllegalArgumentException("Illegal device ID:" + devid + ".");
-        }
-        if (senid < 0 || getNumSensors(devid) <= senid) {
-            throw new IllegalArgumentException("Illegal sensor ID:" + senid + ".");
-        }
-
-        for (int i = 0; i < devid; i++) {
-            sensorID += getNumSensors(i);
-        }
-
-        return sensorID + senid;
-    }
-
     public Sensor getSensor(int devid, int senid) {
-        int sensorID = getLinearID(devid, senid);
-
-        return sensors.get(sensorID);
+        return sensors.get(senid);
     }
 
     public synchronized void resetTimeStart() {
@@ -418,13 +414,11 @@ public class CountUpScenario extends AbstractScenario {
     public synchronized boolean isFinished() {
         boolean finish = true;
 
-        for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
-            for (int j = 0; j < getNumSensors(i); j++) {
-                Sensor.SensorState ss = getSensor(i, j).getState();
+        for (int j = 0; j < getNumberOfTargets(); j++) {
+            Sensor.SensorState ss = getSensor(DEV_SINGLE, j).getState();
 
-                if (ss != Sensor.SensorState.HIT) {
-                    finish = false;
-                }
+            if (ss != Sensor.SensorState.HIT) {
+                finish = false;
             }
         }
 
