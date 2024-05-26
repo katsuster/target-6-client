@@ -12,6 +12,7 @@ import net.katsuster.ui.MainWindow;
 public class ScenarioSwitcher implements Runnable {
     public static final long NS_1SEC = 1000000000L;
     public static final long NS_1MSEC = 1000000L;
+    public static final long DELAY_BLE_NS = 100 * NS_1MSEC;
 
     private ScenarioSetting setting;
     private BufferStrategy strategy;

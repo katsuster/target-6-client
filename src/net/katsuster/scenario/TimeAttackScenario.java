@@ -47,9 +47,12 @@ public class TimeAttackScenario extends AbstractScenario {
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
         super(sw);
-        for (int i = 0; i < getNumAllSensors(); i++) {
-            sensors.add(new Sensor());
-        }
+        setNumberOfTargets(SENSORS_DEFAULT);
+    }
+
+    public TimeAttackScenario(ScenarioSwitcher sw, TimeAttackScenario ts) {
+        this(sw);
+        setNumberOfTargets(ts.getNumberOfTargets());
     }
 
     @Override
@@ -202,7 +205,7 @@ public class TimeAttackScenario extends AbstractScenario {
     protected void drawFrameInit(Graphics2D g2) {
         boolean success;
 
-        success = writeLine(DEV_SINGLE, CMD_TATK);
+        success = writeLine(DEV_SINGLE, CMD_TATK + " " + Integer.valueOf(getNumberOfTargets()).toString());
         if (!success) {
             return;
         }
@@ -216,7 +219,7 @@ public class TimeAttackScenario extends AbstractScenario {
     }
 
     protected void drawFrameWait(Graphics2D g2) {
-        long nano = System.nanoTime() - tStart;
+        long nano = System.nanoTime() - tStart - ScenarioSwitcher.DELAY_BLE_NS;
         long sec = 3 - (nano / ScenarioSwitcher.NS_1SEC);
         String curTime = String.format("%3d", sec);
         tlTime.setText(curTime);
@@ -339,11 +342,20 @@ public class TimeAttackScenario extends AbstractScenario {
     }
 
     protected void drawFrameFinish(Graphics2D g2) {
-        getSwitcher().setNextScenario(new TimeAttackScenario(getSwitcher()));
+        getSwitcher().setNextScenario(new TimeAttackScenario(getSwitcher(), this));
     }
 
     protected void drawFrameClose(Graphics2D g2) {
         getSwitcher().setNextScenario(new SelectScenario(getSwitcher()));
+    }
+
+    public synchronized void setNumberOfTargets(int n) {
+        super.setNumberOfTargets(n);
+
+        sensors.clear();
+        for (int i = 0; i < getNumberOfTargets(); i++) {
+            sensors.add(new Sensor());
+        }
     }
 
     public synchronized ScenarioState getState() {
@@ -390,27 +402,8 @@ public class TimeAttackScenario extends AbstractScenario {
         setState(ScenarioState.CLOSE);
     }
 
-    protected int getLinearID(int devid, int senid) {
-        int sensorID = 0;
-
-        if (devid < 0 || BTInOut.NUM_DEVICES <= devid) {
-            throw new IllegalArgumentException("Illegal device ID:" + devid + ".");
-        }
-        if (senid < 0 || getNumSensors(devid) <= senid) {
-            throw new IllegalArgumentException("Illegal sensor ID:" + senid + ".");
-        }
-
-        for (int i = 0; i < devid; i++) {
-            sensorID += getNumSensors(i);
-        }
-
-        return sensorID + senid;
-    }
-
     public Sensor getSensor(int devid, int senid) {
-        int sensorID = getLinearID(devid, senid);
-
-        return sensors.get(sensorID);
+        return sensors.get(senid);
     }
 
     public synchronized void resetTimeStart() {
@@ -420,13 +413,11 @@ public class TimeAttackScenario extends AbstractScenario {
     public synchronized boolean isFinished() {
         boolean finish = true;
 
-        for (int i = 0; i < BTInOut.NUM_DEVICES; i++) {
-            for (int j = 0; j < getNumSensors(i); j++) {
-                Sensor.SensorState ss = getSensor(i, j).getState();
+        for (int j = 0; j < getNumberOfTargets(); j++) {
+            Sensor.SensorState ss = getSensor(DEV_SINGLE, j).getState();
 
-                if (ss != Sensor.SensorState.HIT) {
-                    finish = false;
-                }
+            if (ss != Sensor.SensorState.HIT) {
+                finish = false;
             }
         }
 
