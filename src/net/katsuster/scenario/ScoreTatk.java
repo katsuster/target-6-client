@@ -13,18 +13,23 @@ public class ScoreTatk extends Score {
 
     public ScoreTatk() {
         super();
-        setScoreType(SCORE_TYPE.SCORE_TIME_ATTACK);
+        setScoreType(SCORE_TYPE.SCORE_TIME_ATTACK_6);
     }
 
-    public ScoreTatk(long tm, Date d) {
+    public ScoreTatk(SCORE_TYPE st) {
+        super();
+        setScoreType(st);
+    }
+
+    public ScoreTatk(SCORE_TYPE st, long tm, Date d) {
         super(d);
-        setScoreType(SCORE_TYPE.SCORE_TIME_ATTACK);
+        setScoreType(st);
         setTime(tm);
     }
 
-    public ScoreTatk(long tm, String str) throws ParseException {
+    public ScoreTatk(SCORE_TYPE st, long tm, String str) throws ParseException {
         super(str);
-        setScoreType(SCORE_TYPE.SCORE_TIME_ATTACK);
+        setScoreType(st);
         setTime(tm);
     }
 

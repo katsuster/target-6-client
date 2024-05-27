@@ -57,7 +57,17 @@ public class TimeAttackScenario extends AbstractScenario {
 
     @Override
     public SCORE_TYPE getScoreType() {
-        return SCORE_TYPE.SCORE_TIME_ATTACK;
+        switch (getNumberOfTargets()) {
+        case 6:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_6;
+        case 5:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_5;
+        case 4:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_4;
+        default:
+            printError("Unknown targets " + getNumberOfTargets(), null);
+            return SCORE_TYPE.SCORE_EMPTY;
+        }
     }
 
     @Override
@@ -280,7 +290,7 @@ public class TimeAttackScenario extends AbstractScenario {
 
             //Ranking
             ScoreBoard scboard = new ScoreBoard(getScoreType());
-            Score sc = new ScoreTatk(before, new Date());
+            Score sc = new ScoreTatk(getScoreType(), before, new Date());
             int rank;
             scboard.loadScores();
             rank = scboard.getRank(sc);
@@ -325,7 +335,7 @@ public class TimeAttackScenario extends AbstractScenario {
             }
 
             //Other messages
-            tlResult.setText("Result");
+            tlResult.setText(getScoreType().toString());
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
 
