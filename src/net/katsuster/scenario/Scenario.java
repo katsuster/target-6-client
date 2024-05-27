@@ -52,7 +52,7 @@ public interface Scenario {
         SCORE_COUNT_UP_30 {
             @Override
             public String toDisplay() {
-                return "Count Up / 30 sec";
+                return "Count Up/30 sec";
             }
             public String toString() {
                 return "CountUp30";
@@ -61,7 +61,7 @@ public interface Scenario {
         SCORE_COUNT_UP_20 {
             @Override
             public String toDisplay() {
-                return "Count Up / 20 sec";
+                return "Count Up/20 sec";
             }
             public String toString() {
                 return "CountUp20";
@@ -70,7 +70,7 @@ public interface Scenario {
         SCORE_COUNT_UP_15 {
             @Override
             public String toDisplay() {
-                return "Count Up / 15 sec";
+                return "Count Up/15 sec";
             }
             public String toString() {
                 return "CountUp15";
@@ -79,7 +79,7 @@ public interface Scenario {
         SCORE_TIME_ATTACK_6 {
             @Override
             public String toDisplay() {
-                return "Time Attack / 6 targets";
+                return "Time Attack/6 targets";
             }
             public String toString() {
                 return "TimeAttack6";
@@ -88,7 +88,7 @@ public interface Scenario {
         SCORE_TIME_ATTACK_5 {
             @Override
             public String toDisplay() {
-                return "Time Attack / 5 targets";
+                return "Time Attack/5 targets";
             }
             public String toString() {
                 return "TimeAttack5";
@@ -97,7 +97,7 @@ public interface Scenario {
         SCORE_TIME_ATTACK_4 {
             @Override
             public String toDisplay() {
-                return "Time Attack / 4 targets";
+                return "Time Attack/4 targets";
             }
             public String toString() {
                 return "TimeAttack4";
@@ -106,7 +106,7 @@ public interface Scenario {
         SCORE_TIME_ATTACK_TEST {
             @Override
             public String toDisplay() {
-                return "Time Attack / test";
+                return "Time Attack/test";
             }
             public String toString() {
                 return "TimeAttackTest";
