@@ -74,7 +74,7 @@ public class ScoreBoard {
         for (int i = 0; i < MAX_RECORDS; i++) {
             Score s = ScoreFactory.createScore(getScoreType());
 
-            boolean success = s.load(i + 1, prefs);
+            boolean success = s.load(i, prefs);
             if (!success) {
                 continue;
             }
@@ -90,13 +90,13 @@ public class ScoreBoard {
         for (i = 0; i < num; i++) {
             Score s = scores.get(i);
 
-            s.save(i + 1, prefs);
+            s.save(i, prefs);
         }
 
         for (; i < MAX_RECORDS; i++) {
             Score s = ScoreFactory.createScore(getScoreType());
 
-            s.erase(i + 1, prefs);
+            s.erase(i, prefs);
         }
     }
 }
