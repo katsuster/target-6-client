@@ -15,19 +15,24 @@ public class ScoreCntup extends Score {
 
     public ScoreCntup() {
         super();
-        setScoreType(SCORE_TYPE.SCORE_COUNT_UP);
+        setScoreType(SCORE_TYPE.SCORE_COUNT_UP_30);
     }
 
-    public ScoreCntup(int c, long tm, Date d) {
+    public ScoreCntup(SCORE_TYPE st) {
+        super();
+        setScoreType(st);
+    }
+
+    public ScoreCntup(SCORE_TYPE st, int c, long tm, Date d) {
         super(d);
-        setScoreType(SCORE_TYPE.SCORE_COUNT_UP);
+        setScoreType(st);
         setCount(c);
         setTime(tm);
     }
 
-    public ScoreCntup(int c, long tm, String str) throws ParseException {
+    public ScoreCntup(SCORE_TYPE st, int c, long tm, String str) throws ParseException {
         super(str);
-        setScoreType(SCORE_TYPE.SCORE_COUNT_UP);
+        setScoreType(st);
         setCount(c);
         setTime(tm);
     }

@@ -61,7 +61,17 @@ public class CountUpScenario extends AbstractScenario {
 
     @Override
     public SCORE_TYPE getScoreType() {
-        return SCORE_TYPE.SCORE_COUNT_UP;
+        switch ((int)tTimeoutMills) {
+        case 30000:
+            return SCORE_TYPE.SCORE_COUNT_UP_30;
+        case 20000:
+            return SCORE_TYPE.SCORE_COUNT_UP_20;
+        case 15000:
+            return SCORE_TYPE.SCORE_COUNT_UP_15;
+        default:
+            printError("Unknown timeout " + tTimeoutMills, null);
+            return SCORE_TYPE.SCORE_EMPTY;
+        }
     }
 
     @Override
@@ -282,7 +292,7 @@ public class CountUpScenario extends AbstractScenario {
 
             //Ranking
             ScoreBoard scboard = new ScoreBoard(getScoreType());
-            Score sc = new ScoreCntup(cnt, last, new Date());
+            Score sc = new ScoreCntup(getScoreType(), cnt, last, new Date());
             int rank;
             scboard.loadScores();
             rank = scboard.getRank(sc);
@@ -327,7 +337,7 @@ public class CountUpScenario extends AbstractScenario {
             }
 
             //Other messages
-            tlResult.setText("Result");
+            tlResult.setText(getScoreType().toString());
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
 
