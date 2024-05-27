@@ -199,7 +199,7 @@ public class RankingScenario extends AbstractScenario {
         List<SCORE_TYPE> ll = new ArrayList<>();
 
         for (String scr : l) {
-            SCORE_TYPE st = SelectScenario.getScoreType(scr);
+            SCORE_TYPE st = Scenario.toScoreType(scr);
             ll.add(st);
         }
 

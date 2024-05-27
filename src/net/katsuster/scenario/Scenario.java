@@ -35,20 +35,51 @@ public interface Scenario {
 
     int SENSORS_DEFAULT = 6;
 
+    String SCENARIO_COUNT_UP = "Count Up";
+    String SCENARIO_COUNT_UP_30SEC = SCENARIO_COUNT_UP + "/30 sec";
+    String SCENARIO_COUNT_UP_20SEC = SCENARIO_COUNT_UP + "/20 sec";
+    String SCENARIO_COUNT_UP_15SEC = SCENARIO_COUNT_UP + "/15 sec";
+    String SCENARIO_TIME_ATTACK = "Time Attack";
+    String SCENARIO_TIME_ATTACK_6 = SCENARIO_TIME_ATTACK + "/6 Targets";
+    String SCENARIO_TIME_ATTACK_5 = SCENARIO_TIME_ATTACK + "/5 Targets";
+    String SCENARIO_TIME_ATTACK_4 = SCENARIO_TIME_ATTACK + "/4 Targets";
+    String SCENARIO_RANKING = "Ranking";
+    String SCENARIO_SEPARATOR = "・";
+
     enum SCORE_TYPE {
         SCORE_EMPTY {
             public String toString() {
                 return "Empty";
             }
         },
-        SCORE_COUNT_UP {
+        SCORE_COUNT_UP_30 {
             public String toString() {
-                return "CountUp";
+                return "CountUp 30";
             }
         },
-        SCORE_TIME_ATTACK {
+        SCORE_COUNT_UP_20 {
             public String toString() {
-                return "TimeAttack";
+                return "CountUp 20";
+            }
+        },
+        SCORE_COUNT_UP_15 {
+            public String toString() {
+                return "CountUp 15";
+            }
+        },
+        SCORE_TIME_ATTACK_6 {
+            public String toString() {
+                return "TimeAttack 6";
+            }
+        },
+        SCORE_TIME_ATTACK_5 {
+            public String toString() {
+                return "TimeAttack 5";
+            }
+        },
+        SCORE_TIME_ATTACK_4 {
+            public String toString() {
+                return "TimeAttack 4";
             }
         },
         SCORE_TIME_ATTACK_TEST {
@@ -56,6 +87,27 @@ public interface Scenario {
                 return "TimeAttackTest";
             }
         },
+    }
+
+    static SCORE_TYPE toScoreType(String scr) {
+        switch (scr) {
+        case SCENARIO_COUNT_UP_30SEC:
+            return SCORE_TYPE.SCORE_COUNT_UP_30;
+        case SCENARIO_COUNT_UP_20SEC:
+            return SCORE_TYPE.SCORE_COUNT_UP_20;
+        case SCENARIO_COUNT_UP_15SEC:
+            return SCORE_TYPE.SCORE_COUNT_UP_15;
+        case SCENARIO_TIME_ATTACK_6:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_6;
+        case SCENARIO_TIME_ATTACK_5:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_5;
+        case SCENARIO_TIME_ATTACK_4:
+            return SCORE_TYPE.SCORE_TIME_ATTACK_4;
+        case SCENARIO_RANKING:
+        case SCENARIO_SEPARATOR:
+        default:
+            return SCORE_TYPE.SCORE_EMPTY;
+        }
     }
 
     String getName();

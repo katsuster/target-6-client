@@ -13,10 +13,10 @@ public class ScoreBoardTest {
     public static final SCORE_TYPE TEST_SCORE_TYPE = SCORE_TYPE.SCORE_TIME_ATTACK_TEST;
 
     public void setupTestItems(ScoreBoard sb) throws Exception {
-        Score s1 = new ScoreTatkTest(100, new Date());
-        Score s2 = new ScoreTatkTest(200, new Date());
-        Score s3_1 = new ScoreTatkTest(300, new Date());
-        Score s3_2 = new ScoreTatkTest(300, new Date());
+        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
 
         sb.addScore(s2);
         sb.addScore(s1);
@@ -27,10 +27,10 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testGetRank() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(100, new Date());
-        Score s2 = new ScoreTatkTest(200, new Date());
-        Score s3_1 = new ScoreTatkTest(300, new Date());
-        Score s3_2 = new ScoreTatkTest(300, new Date());
+        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
 
         sb.addScore(s2);
         sb.addScore(s1);
@@ -43,9 +43,9 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testOverflow() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(100, new Date());
-        Score s2 = new ScoreTatkTest(200, new Date());
-        Score s3 = new ScoreTatkTest(300, new Date());
+        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
 
         for (int i = 0; i < ScoreBoard.MAX_RECORDS - 2; i++) {
             sb.addScore(s2);
@@ -126,10 +126,10 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testAdd() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(100, new Date());
-        Score s2 = new ScoreTatkTest(200, new Date());
-        Score s3_1 = new ScoreTatkTest(300, new Date());
-        Score s3_2 = new ScoreTatkTest(300, new Date());
+        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
 
         //Add
         Assert.assertEquals("Empty before add.", 0, sb.getMaxRank());
