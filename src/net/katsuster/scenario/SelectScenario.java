@@ -16,10 +16,6 @@ import net.katsuster.ui.MainWindow;
 import net.katsuster.ui.MouseAdapterEx;
 
 public class SelectScenario extends AbstractScenario {
-    public static final String SCENARIO_COUNT_UP = "Count Up";
-    public static final String SCENARIO_TIME_ATTACK = "Time Attack";
-    public static final String SCENARIO_RANKING = "Ranking";
-    public static final String SCENARIO_SEPARATOR = "・";
     public static final int TITLE_OFFSET_LEFT = (int)(FONT_SIZE_TITLE * 1.5);
     public static final int TITLE_MARGIN_TOP = (int)(FONT_SIZE_TITLE * 0.1);
     public static final int TITLE_HIGHT = (int)(FONT_SIZE_TITLE * 1.0);
@@ -29,21 +25,72 @@ public class SelectScenario extends AbstractScenario {
     private Font fontTitle;
     private Font fontLarge;
     private Font fontSmall;
+    private TreeNode<String, ScenarioData> scenarioRootNode = new TreeNode<>("root", null);
+    private TreeNode<String, ScenarioData> curNode;
+    private int indexSelected = 0;
     private boolean flagStart = false;
     private boolean flagClose = false;
     private TextLine tlClock;
-    List<ShapeBox> shScenarios = new ArrayList<>();
-    List<TextLine> tlScenarios = new ArrayList<>();
-    private List<String> scenarios = new ArrayList<>();
-    private int indexSelected = 0;
+    private List<ShapeBox> shScenarios = new ArrayList<>();
+    private List<TextLine> tlScenarios = new ArrayList<>();
+
+    public class ScenarioData {
+        private String scenarioType;
+
+        public ScenarioData(String str) {
+            scenarioType = str;
+        }
+
+        public Scenario createScenario(ScenarioSwitcher sc) {
+            CountUpScenario cs;
+            TimeAttackScenario ts;
+            Scenario s = null;
+
+            switch (scenarioType) {
+            case SCENARIO_COUNT_UP_30SEC:
+                s = cs = new CountUpScenario(sc);
+                cs.setTimeoutInMills(30000);
+                break;
+            case SCENARIO_COUNT_UP_20SEC:
+                s = cs = new CountUpScenario(sc);
+                cs.setTimeoutInMills(20000);
+                break;
+            case SCENARIO_COUNT_UP_15SEC:
+                s = cs = new CountUpScenario(sc);
+                cs.setTimeoutInMills(15000);
+                break;
+            case SCENARIO_TIME_ATTACK_6:
+                s = ts = new TimeAttackScenario(sc);
+                ts.setNumberOfTargets(6);
+                break;
+            case SCENARIO_TIME_ATTACK_5:
+                s = ts = new TimeAttackScenario(sc);
+                ts.setNumberOfTargets(5);
+                break;
+            case SCENARIO_TIME_ATTACK_4:
+                s = ts = new TimeAttackScenario(sc);
+                ts.setNumberOfTargets(4);
+                break;
+            default:
+                printError("Cannot find suitable scenario for " + scenarioType + ".", null);
+                return null;
+            }
+
+            return s;
+        }
+    }
 
     public SelectScenario(ScenarioSwitcher sw) {
         super(sw);
 
-        scenarios.add(SCENARIO_COUNT_UP);
-        scenarios.add(SCENARIO_TIME_ATTACK);
-        scenarios.add(SCENARIO_SEPARATOR);
-        scenarios.add(SCENARIO_RANKING);
+        scenarioRootNode.addPath(SCENARIO_COUNT_UP_15SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_15SEC));
+        scenarioRootNode.addPath(SCENARIO_COUNT_UP_20SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_20SEC));
+        scenarioRootNode.addPath(SCENARIO_COUNT_UP_30SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_30SEC));
+        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_6.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_6));
+        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_5.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_5));
+        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_4.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_4));
+        scenarioRootNode.addPath(SCENARIO_SEPARATOR.split("/"), null);
+        scenarioRootNode.addPath(SCENARIO_RANKING.split("/"), new ScenarioData(SCENARIO_RANKING));
     }
 
     @Override
@@ -102,32 +149,7 @@ public class SelectScenario extends AbstractScenario {
                 mainWnd.getWidth() - TITLE_OFFSET_LEFT,
                 TITLE_MARGIN_TOP * 2 + tlTitle.length * TITLE_HIGHT);
 
-        for (int i = 0; i < scenarios.size(); i++) {
-            TextLine tl = new TextLine();
-            tl.setText(scenarios.get(i));
-            tl.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
-            tl.setForeground(Color.DARK_GRAY);
-            tl.setFont(fontLarge);
-            tl.getContentBox().setBounds(mainWnd.getWidth() / 4,
-                    (int)(mainWnd.getHeight() / 2.3) + (int)(FONT_SIZE_LARGE * 1.2) * i,
-                    mainWnd.getWidth() / 4 * 2, (int)(FONT_SIZE_LARGE * 1.4));
-            tlScenarios.add(tl);
-
-            ShapeBox sh = new ShapeBox();
-            sh.setShape(new RoundRectangle2D.Double(1, 1,
-                    tl.getContentBox().getWidth(),
-                    tl.getContentBox().getHeight() - FONT_SIZE_LARGE / 3,
-                    FONT_SIZE_LARGE, FONT_SIZE_LARGE));
-            sh.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
-            sh.setBackground(Color.WHITE);
-            sh.setForeground(Color.DARK_GRAY);
-            sh.setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
-            sh.setStroke(new BasicStroke(1));
-            sh.getContentBox().setBounds(tl.getContentBox().getBounds());
-            sh.getContentBox().setMargin(0, FONT_SIZE_LARGE / 3, 0, 0);
-            sh.setVisible(false);
-            shScenarios.add(sh);
-        }
+        expandChildItem(scenarioRootNode, false);
 
         tlClock = new TextLine();
         tlClock.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.BOTTOM);
@@ -173,8 +195,6 @@ public class SelectScenario extends AbstractScenario {
 
     @Override
     public void drawFrame(Graphics2D g2) {
-        MainWindow mainWnd = getSwitcher().getMainWindow();
-
         for (TextLine tl: tlScenarios) {
             if (tl == tlScenarios.get(indexSelected)) {
                 tl.setForeground(COLOR_DARK_ORANGE);
@@ -190,7 +210,8 @@ public class SelectScenario extends AbstractScenario {
         tlClock.setText(df.format(new Date()));
 
         if (flagStart) {
-            Scenario s = getSelectedScenario();
+            ScenarioData sd = getSelectedItem().getValue();
+            Scenario s = sd.createScenario(getSwitcher());
             if (s == null) {
                 printError("Cannot select scenario, go to title.", null);
                 s = new SelectScenario(getSwitcher());
@@ -205,54 +226,97 @@ public class SelectScenario extends AbstractScenario {
         drawAllDrawable(g2);
     }
 
-    public static SCORE_TYPE getScoreType(String scr) {
-        switch (scr) {
-        case SCENARIO_COUNT_UP:
-            return SCORE_TYPE.SCORE_COUNT_UP;
-        case SCENARIO_TIME_ATTACK:
-            return SCORE_TYPE.SCORE_TIME_ATTACK;
-        case SCENARIO_RANKING:
-        case SCENARIO_SEPARATOR:
-        default:
-            return SCORE_TYPE.SCORE_EMPTY;
-        }
-    }
+    public synchronized void nextItem() {
+        TreeNode<String, ScenarioData>[] scenarios = curNode.getChildren();
 
-    private Scenario getSelectedScenario() {
-        switch (scenarios.get(indexSelected)) {
-        case SCENARIO_COUNT_UP:
-            return new CountUpScenario(getSwitcher());
-        case SCENARIO_TIME_ATTACK:
-            return new TimeAttackScenario(getSwitcher());
-        case SCENARIO_RANKING:
-            RankingScenario ns = new RankingScenario(getSwitcher());
-            ns.setScenarios(scenarios.stream()
-                    .filter(w -> !w.equals(SCENARIO_SEPARATOR))
-                    .filter(w -> !w.equals(SCENARIO_RANKING))
-                    .toList());
-            return ns;
-        default:
-            printError("Invalid scenario is selected.", null);
-            break;
-        }
-
-        return null;
-    }
-
-    public synchronized void nextSelection() {
         indexSelected++;
-        if (indexSelected >= scenarios.size()) {
+        if (indexSelected >= scenarios.length) {
             indexSelected = 0;
         }
 
         //Skip separator
-        if (scenarios.get(indexSelected).equalsIgnoreCase(SCENARIO_SEPARATOR)) {
-            nextSelection();
+        TreeNode<String, ScenarioData> selected = scenarios[indexSelected];
+        if (!selected.hasChild() && selected.getValue() == null) {
+            nextItem();
         }
     }
 
-    public synchronized void startScenario() {
-        flagStart = true;
+    private TreeNode<String, ScenarioData> getSelectedItem() {
+        TreeNode<String, ScenarioData>[] scenarios = curNode.getChildren();
+        return scenarios[indexSelected];
+    }
+
+    public synchronized void descentToChildItem() {
+        descentToChildItem(getSelectedItem());
+    }
+
+    public synchronized void descentToChildItem(TreeNode<String, ScenarioData> node) {
+        if (node.hasChild()) {
+            //Non-leaf node
+            expandChildItem(node, true);
+        } else {
+            //Leaf node
+            if (node.getValue() != null) {
+                flagStart = true;
+            }
+        }
+    }
+
+    public synchronized void expandChildItem(TreeNode<String, ScenarioData> node, boolean replace) {
+        MainWindow mainWnd = getSwitcher().getMainWindow();
+        TreeNode<String, ScenarioData>[] scenarios = node.getChildren();
+
+        if (scenarios.length == 0) {
+            return;
+        }
+
+        if (replace) {
+            for (ShapeBox sh: shScenarios) {
+                removeDrawable(sh);
+            }
+            for (TextLine tl: tlScenarios) {
+                removeDrawable(tl);
+            }
+        }
+        tlScenarios.clear();
+        shScenarios.clear();
+
+        for (int i = 0; i < scenarios.length; i++) {
+            TextLine tl = new TextLine();
+            tl.setText(scenarios[i].getKey());
+            tl.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.TOP);
+            tl.setForeground(Color.DARK_GRAY);
+            tl.setFont(fontLarge);
+            tl.getContentBox().setBounds(mainWnd.getWidth() / 4,
+                    (int)(mainWnd.getHeight() / 2.3) + (int)(FONT_SIZE_LARGE * 1.2) * i,
+                    mainWnd.getWidth() / 4 * 2, (int)(FONT_SIZE_LARGE * 1.4));
+            tlScenarios.add(tl);
+
+            ShapeBox sh = new ShapeBox();
+            sh.setShape(new RoundRectangle2D.Double(1, 1,
+                    tl.getContentBox().getWidth(),
+                    tl.getContentBox().getHeight() - FONT_SIZE_LARGE / 3,
+                    FONT_SIZE_LARGE, FONT_SIZE_LARGE));
+            sh.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.CENTER);
+            sh.setBackground(Color.WHITE);
+            sh.setForeground(Color.DARK_GRAY);
+            sh.setScale(Drawable.SCALE.SHRINK_AND_KEEP_ASPECT);
+            sh.setStroke(new BasicStroke(1));
+            sh.getContentBox().setBounds(tl.getContentBox().getBounds());
+            sh.getContentBox().setMargin(0, FONT_SIZE_LARGE / 3, 0, 0);
+            sh.setVisible(false);
+            shScenarios.add(sh);
+        }
+
+        for (ShapeBox sh: shScenarios) {
+            addDrawable(sh);
+        }
+        for (TextLine tl: tlScenarios) {
+            addDrawable(tl);
+        }
+
+        indexSelected = 0;
+        curNode = node;
     }
 
     public synchronized void closeScenario() {
@@ -268,7 +332,7 @@ public class SelectScenario extends AbstractScenario {
 
         @Override
         public void mouseLeftClicked() {
-            scenario.nextSelection();
+            scenario.nextItem();
         }
 
         @Override
@@ -278,7 +342,7 @@ public class SelectScenario extends AbstractScenario {
 
         @Override
         public void mouseLeftLongPressed() {
-            scenario.startScenario();
+            scenario.descentToChildItem();
         }
     }
 }
