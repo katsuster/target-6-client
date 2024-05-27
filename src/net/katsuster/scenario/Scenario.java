@@ -44,6 +44,8 @@ public interface Scenario {
     String SCENARIO_TIME_ATTACK_5 = SCENARIO_TIME_ATTACK + "/5 Targets";
     String SCENARIO_TIME_ATTACK_4 = SCENARIO_TIME_ATTACK + "/4 Targets";
     String SCENARIO_RANKING = "Ranking";
+    String SCENARIO_RANKING_COUNT_UP = SCENARIO_RANKING + "/Count Up";
+    String SCENARIO_RANKING_TIME_ATTACK = SCENARIO_RANKING + "/Time Attack";
     String SCENARIO_SEPARATOR = "・";
 
     enum SCORE_TYPE {

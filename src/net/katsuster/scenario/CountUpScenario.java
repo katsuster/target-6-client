@@ -31,6 +31,7 @@ public class CountUpScenario extends AbstractScenario {
     private BTButtonHandler handlerBTButton;
     private Font fontTimer;
     private Font fontLargest;
+    private Font fontLarge;
     private Font fontMedium;
     private Font fontSmall;
     private Font fontDetail;
@@ -92,6 +93,7 @@ public class CountUpScenario extends AbstractScenario {
         Font fMono = getSwitcher().getSetting().getFontMono();
         fontTimer = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
         fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
         fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
@@ -163,7 +165,7 @@ public class CountUpScenario extends AbstractScenario {
 
         tlResult = new TextLine();
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-        tlResult.setFont(fontLargest);
+        tlResult.setFont(fontLarge);
         tlResult.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
                 mainWnd.getWidth() / 2, mainWnd.getHeight());
         tlResult.getContentBox().setMargin(20, 20, 20, 20);

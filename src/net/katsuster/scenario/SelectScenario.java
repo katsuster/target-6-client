@@ -44,6 +44,8 @@ public class SelectScenario extends AbstractScenario {
         public Scenario createScenario(ScenarioSwitcher sc) {
             CountUpScenario cs;
             TimeAttackScenario ts;
+            RankingScenario rs;
+            ArrayList<String> lst;
             Scenario s = null;
 
             switch (scenarioType) {
@@ -71,6 +73,22 @@ public class SelectScenario extends AbstractScenario {
                 s = ts = new TimeAttackScenario(sc);
                 ts.setNumberOfTargets(4);
                 break;
+            case SCENARIO_RANKING_COUNT_UP:
+                s = rs = new RankingScenario(sc);
+                lst = new ArrayList<>();
+                lst.add(SCENARIO_COUNT_UP_15SEC);
+                lst.add(SCENARIO_COUNT_UP_20SEC);
+                lst.add(SCENARIO_COUNT_UP_30SEC);
+                rs.setScenarios(lst);
+                break;
+            case SCENARIO_RANKING_TIME_ATTACK:
+                s = rs = new RankingScenario(sc);
+                lst = new ArrayList<>();
+                lst.add(SCENARIO_TIME_ATTACK_6);
+                lst.add(SCENARIO_TIME_ATTACK_5);
+                lst.add(SCENARIO_TIME_ATTACK_4);
+                rs.setScenarios(lst);
+                break;
             default:
                 printError("Cannot find suitable scenario for " + scenarioType + ".", null);
                 return null;
@@ -90,7 +108,8 @@ public class SelectScenario extends AbstractScenario {
         scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_5.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_5));
         scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_4.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_4));
         scenarioRootNode.addPath(SCENARIO_SEPARATOR.split("/"), null);
-        scenarioRootNode.addPath(SCENARIO_RANKING.split("/"), new ScenarioData(SCENARIO_RANKING));
+        scenarioRootNode.addPath(SCENARIO_RANKING_COUNT_UP.split("/"), new ScenarioData(SCENARIO_RANKING_COUNT_UP));
+        scenarioRootNode.addPath(SCENARIO_RANKING_TIME_ATTACK.split("/"), new ScenarioData(SCENARIO_RANKING_TIME_ATTACK));
     }
 
     @Override

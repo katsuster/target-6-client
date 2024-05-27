@@ -19,7 +19,7 @@ public class RankingScenario extends AbstractScenario {
 
     private MouseHandler handlerMouse;
     private BTButtonHandler handlerBTButton;
-    private Font fontLargest;
+    private Font fontLarge;
     private Font fontSmall;
     private Font fontDetail;
     private List<String> scenarioList = new ArrayList<>();
@@ -49,7 +49,7 @@ public class RankingScenario extends AbstractScenario {
 
         Font fUI = getSwitcher().getSetting().getFontUI();
         Font fMono = getSwitcher().getSetting().getFontMono();
-        fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
+        fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
         fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
 
@@ -62,7 +62,7 @@ public class RankingScenario extends AbstractScenario {
         tlMsgScenario = new TextLine();
         tlMsgScenario.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
         tlMsgScenario.setForeground(Color.DARK_GRAY);
-        tlMsgScenario.setFont(fontLargest);
+        tlMsgScenario.setFont(fontLarge);
         tlMsgScenario.getContentBox().setBounds(0, 0,
                 mainWnd.getWidth() / 2, mainWnd.getHeight());
         tlMsgScenario.getContentBox().setMargin(20, 20, 20, 20);
