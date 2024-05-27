@@ -45,7 +45,7 @@ public class SelectScenario extends AbstractScenario {
             CountUpScenario cs;
             TimeAttackScenario ts;
             RankingScenario rs;
-            ArrayList<String> lst;
+            ArrayList<SCORE_TYPE> lst;
             Scenario s = null;
 
             switch (scenarioType) {
@@ -76,17 +76,17 @@ public class SelectScenario extends AbstractScenario {
             case SCENARIO_RANKING_COUNT_UP:
                 s = rs = new RankingScenario(sc);
                 lst = new ArrayList<>();
-                lst.add(SCENARIO_COUNT_UP_15SEC);
-                lst.add(SCENARIO_COUNT_UP_20SEC);
-                lst.add(SCENARIO_COUNT_UP_30SEC);
+                lst.add(SCORE_TYPE.SCORE_COUNT_UP_15);
+                lst.add(SCORE_TYPE.SCORE_COUNT_UP_20);
+                lst.add(SCORE_TYPE.SCORE_COUNT_UP_30);
                 rs.setScenarios(lst);
                 break;
             case SCENARIO_RANKING_TIME_ATTACK:
                 s = rs = new RankingScenario(sc);
                 lst = new ArrayList<>();
-                lst.add(SCENARIO_TIME_ATTACK_6);
-                lst.add(SCENARIO_TIME_ATTACK_5);
-                lst.add(SCENARIO_TIME_ATTACK_4);
+                lst.add(SCORE_TYPE.SCORE_TIME_ATTACK_6);
+                lst.add(SCORE_TYPE.SCORE_TIME_ATTACK_5);
+                lst.add(SCORE_TYPE.SCORE_TIME_ATTACK_4);
                 rs.setScenarios(lst);
                 break;
             default:

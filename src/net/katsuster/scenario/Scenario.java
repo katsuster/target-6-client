@@ -49,67 +49,80 @@ public interface Scenario {
     String SCENARIO_SEPARATOR = "・";
 
     enum SCORE_TYPE {
-        SCORE_EMPTY {
-            public String toString() {
-                return "Empty";
-            }
-        },
         SCORE_COUNT_UP_30 {
+            @Override
+            public String toDisplay() {
+                return "Count Up / 30 sec";
+            }
             public String toString() {
-                return "CountUp 30";
+                return "CountUp30";
             }
         },
         SCORE_COUNT_UP_20 {
+            @Override
+            public String toDisplay() {
+                return "Count Up / 20 sec";
+            }
             public String toString() {
-                return "CountUp 20";
+                return "CountUp20";
             }
         },
         SCORE_COUNT_UP_15 {
+            @Override
+            public String toDisplay() {
+                return "Count Up / 15 sec";
+            }
             public String toString() {
-                return "CountUp 15";
+                return "CountUp15";
             }
         },
         SCORE_TIME_ATTACK_6 {
+            @Override
+            public String toDisplay() {
+                return "Time Attack / 6 targets";
+            }
             public String toString() {
-                return "TimeAttack 6";
+                return "TimeAttack6";
             }
         },
         SCORE_TIME_ATTACK_5 {
+            @Override
+            public String toDisplay() {
+                return "Time Attack / 5 targets";
+            }
             public String toString() {
-                return "TimeAttack 5";
+                return "TimeAttack5";
             }
         },
         SCORE_TIME_ATTACK_4 {
+            @Override
+            public String toDisplay() {
+                return "Time Attack / 4 targets";
+            }
             public String toString() {
-                return "TimeAttack 4";
+                return "TimeAttack4";
             }
         },
         SCORE_TIME_ATTACK_TEST {
+            @Override
+            public String toDisplay() {
+                return "Time Attack / test";
+            }
             public String toString() {
                 return "TimeAttackTest";
             }
         },
-    }
+        SCORE_EMPTY {
+            @Override
+            public String toDisplay() {
+                return "Empty";
+            }
+            public String toString() {
+                return "Empty";
+            }
+        };
 
-    static SCORE_TYPE toScoreType(String scr) {
-        switch (scr) {
-        case SCENARIO_COUNT_UP_30SEC:
-            return SCORE_TYPE.SCORE_COUNT_UP_30;
-        case SCENARIO_COUNT_UP_20SEC:
-            return SCORE_TYPE.SCORE_COUNT_UP_20;
-        case SCENARIO_COUNT_UP_15SEC:
-            return SCORE_TYPE.SCORE_COUNT_UP_15;
-        case SCENARIO_TIME_ATTACK_6:
-            return SCORE_TYPE.SCORE_TIME_ATTACK_6;
-        case SCENARIO_TIME_ATTACK_5:
-            return SCORE_TYPE.SCORE_TIME_ATTACK_5;
-        case SCENARIO_TIME_ATTACK_4:
-            return SCORE_TYPE.SCORE_TIME_ATTACK_4;
-        case SCENARIO_RANKING:
-        case SCENARIO_SEPARATOR:
-        default:
-            return SCORE_TYPE.SCORE_EMPTY;
-        }
+        abstract String toDisplay();
     }
 
     String getName();

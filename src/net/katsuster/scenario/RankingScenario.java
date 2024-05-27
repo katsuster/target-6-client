@@ -22,7 +22,6 @@ public class RankingScenario extends AbstractScenario {
     private Font fontLarge;
     private Font fontSmall;
     private Font fontDetail;
-    private List<String> scenarioList = new ArrayList<>();
     private List<SCORE_TYPE> scoreTypeList = new ArrayList<>();
     private boolean flagErase = false;
     private boolean flagClose = false;
@@ -177,7 +176,7 @@ public class RankingScenario extends AbstractScenario {
     }
 
     public synchronized void showRankingText(int ind) {
-        String scr = scenarioList.get(ind);
+        String scr = scoreTypeList.get(ind).toDisplay();
         List<TextLine> listTl = rankingTextList.get(ind);
 
         tlMsgScenario.setText(scr);
@@ -195,16 +194,8 @@ public class RankingScenario extends AbstractScenario {
         }
     }
 
-    public synchronized void setScenarios(List<String> l) {
-        List<SCORE_TYPE> ll = new ArrayList<>();
-
-        for (String scr : l) {
-            SCORE_TYPE st = Scenario.toScoreType(scr);
-            ll.add(st);
-        }
-
-        scenarioList = l;
-        scoreTypeList = ll;
+    public synchronized void setScenarios(List<SCORE_TYPE> l) {
+        scoreTypeList = l;
     }
 
     public synchronized void eraseRanking() {
@@ -228,7 +219,7 @@ public class RankingScenario extends AbstractScenario {
             scenario.hideRankingText(cnt);
 
             cnt++;
-            if (cnt >= scenarioList.size()) {
+            if (cnt >= scoreTypeList.size()) {
                 cnt = 0;
             }
 

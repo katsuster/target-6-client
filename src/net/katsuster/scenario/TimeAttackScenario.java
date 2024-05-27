@@ -337,7 +337,7 @@ public class TimeAttackScenario extends AbstractScenario {
             }
 
             //Other messages
-            tlResult.setText(getScoreType().toString());
+            tlResult.setText(getScoreType().toDisplay());
             tlResult.setForeground(Color.DARK_GRAY);
             tlResult.setVisible(true);
 
