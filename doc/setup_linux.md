@@ -82,3 +82,48 @@ Right click on the taskbar panel on the top of screen.
     * Remove panel 2 (select Panel 2 and push "-" button)
     * Automatically hide the panel: select "Always"
 
+
+## Extend the life of storage
+
+There are some tips that are especially useful for SD-Card for extending the life of SBC storage.
+
+Stop zram swap service to prevent swap out RAM to storage.
+
+```
+# systemctl disable zramswap
+```
+
+Change temporary directory (/tmp) from file system on storage to tmpfs on RAM.
+
+```
+# vim /etc/fstab
+
+tmpfs	/tmp	tmpfs	nodev,nosuid,size=80%,mode=1777	0	0
+```
+
+Forward log of journald to rsyslog to reduce write bytes.
+
+```
+# vim /etc/systemd/journald.conf
+
+[Journal]
+Storage=volatile
+ForwardToSyslog=yes
+```
+
+Stop or change setting of systemd-timesyncd service that writes current time to file per 60 seconds.
+
+```
+(how to stop)
+
+# systemctl disable systemd-timesyncd
+
+
+(how to change)
+
+# vim /etc/systemd/timesyncd.conf
+SaveIntervalSec=2000
+
+# systemctl restart systemd-timesyncd
+```
+
