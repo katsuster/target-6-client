@@ -2,7 +2,6 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.VolatileImage;
 import javax.swing.*;
 
 import net.katsuster.ble.BTInOut;

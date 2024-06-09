@@ -1,8 +1,6 @@
 package net.katsuster.ui;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.VolatileImage;
 
 public class MainWindow extends JFrame {
     private boolean debugMode = false;
