@@ -126,7 +126,7 @@ sensor ->> led: All off
 deactivate led
 sensor ->> target: Enable
 activate target
-sensor ->> target: On
+sensor ->> led: On
 activate led
 
 controller ->> buzzer: Beep start
