@@ -94,7 +94,7 @@ sequenceDiagram
 participant client as Client
 participant controller as ControllerNode
 participant sensor as SensorNode
-participant led as LED
+participant led as LED of target
 participant target as Target
 participant buzzer as Buzzer
 
@@ -106,7 +106,7 @@ controller -->> client: OK
 
 client ->> sensor: init 1 cmd
 sensor ->> led: All off
-sensor ->> target: All off
+sensor ->> target: All disable
 sensor -->> client: OK
 
 client ->> sensor: tatk cmd
@@ -124,8 +124,10 @@ controller ->> controller: Wait 3 sec.
 controller ->> sensor: GPIO0 Out/Low (falling edge)
 sensor ->> led: All off
 deactivate led
-sensor ->> target: LED on
+sensor ->> target: Enable
 activate target
+sensor ->> target: On
+activate led
 
 controller ->> buzzer: Beep start
 activate buzzer
@@ -134,8 +136,13 @@ controller ->> buzzer: Beep stop
 deactivate buzzer
 deactivate controller
 
-target ->> sensor: Detect hits of all targets
+target ->> sensor: Detect a hit
+sensor ->> target: Disable
 deactivate target
+sensor ->> led: Off
+deactivate led
+
+target ->> sensor: Detect hits of all targets
 sensor ->> client: Send results
 deactivate sensor
 
@@ -152,7 +159,7 @@ sequenceDiagram
 participant client as Client
 participant controller as ControllerNode
 participant sensor as SensorNode
-participant led as LED
+participant led as LED of target
 participant target as Target
 participant buzzer as Buzzer
 
@@ -160,8 +167,10 @@ activate client
 activate controller
 activate sensor
 
-sensor ->> target: LED on
+sensor ->> target: Enable
 activate target
+sensor ->> led: On
+activate led
 
 controller ->> buzzer: Beep start
 activate buzzer
@@ -175,9 +184,10 @@ controller -->> client: OK
 deactivate controller
 
 client ->> sensor: init 1 cmd
-sensor ->> led: All off
-sensor ->> target: All off
+sensor ->> target: All disable
 deactivate target
+sensor ->> led: All off
+deactivate led
 sensor -->> client: OK
 deactivate sensor
 
