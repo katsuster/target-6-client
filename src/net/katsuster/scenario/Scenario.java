@@ -18,6 +18,7 @@ public interface Scenario {
 
     int FONT_SIZE_TITLE = 96;
     int FONT_SIZE_TIMER = 272;
+    int FONT_SIZE_TIMER_RESULT = 192;
     int FONT_SIZE_DETAIL = 36;
     int FONT_SIZE_LARGEST = 96;
     int FONT_SIZE_LARGE = 64;

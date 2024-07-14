@@ -30,6 +30,7 @@ public class CountUpScenario extends AbstractScenario {
     private MouseHandler handlerMouse;
     private BTButtonHandler handlerBTButton;
     private Font fontTimer;
+    private Font fontTimerResult;
     private Font fontLargest;
     private Font fontLarge;
     private Font fontMedium;
@@ -92,6 +93,7 @@ public class CountUpScenario extends AbstractScenario {
         Font fUI = getSwitcher().getSetting().getFontUI();
         Font fMono = getSwitcher().getSetting().getFontMono();
         fontTimer = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
+        fontTimerResult = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER_RESULT);
         fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
         fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
         fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
@@ -290,7 +292,9 @@ public class CountUpScenario extends AbstractScenario {
                 return;
             }
 
-            tlTime.setText(String.format("%3d", cnt));
+            tlTime.setFont(fontTimerResult);
+            tlTime.setText(String.format("%3d@%2d.%03d", cnt,
+                        last / 1000, last % 1000));
 
             //Ranking
             ScoreBoard scboard = new ScoreBoard(getScoreType());
