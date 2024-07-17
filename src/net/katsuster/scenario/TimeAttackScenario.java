@@ -21,26 +21,23 @@ public class TimeAttackScenario extends AbstractScenario {
         WAIT,
         RUN,
         RESULT,
+        RESTART,
         FINISH,
         CLOSE,
     }
 
+    private CancelSubScenario cancelSub;
     private BTDeviceHandler handlerBT;
     private MouseHandler handlerMouse;
     private BTButtonHandler handlerBTButton;
     private Font fontTimer;
     private Font fontLargest;
     private Font fontLarge;
-    private Font fontMedium;
-    private Font fontSmall;
     private Font fontDetail;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
     private long tStart;
     private TextLine tlTime;
-    private TextLine tlMsgCancel;
-    private TextLine tlMsgNext;
-    private TextLine tlMsgClose;
     private TextLine tlRank;
     private TextLine tlRankHead;
     private TextLine tlResult;
@@ -49,6 +46,8 @@ public class TimeAttackScenario extends AbstractScenario {
     public TimeAttackScenario(ScenarioSwitcher sw) {
         super(sw);
         setNumberOfTargets(SENSORS_DEFAULT);
+
+        cancelSub = new CancelSubScenario(sw);
     }
 
     public TimeAttackScenario(ScenarioSwitcher sw, TimeAttackScenario ts) {
@@ -90,8 +89,6 @@ public class TimeAttackScenario extends AbstractScenario {
         fontTimer = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
         fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
         fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
-        fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
-        fontSmall = fUI.deriveFont(Font.PLAIN, FONT_SIZE_SMALL);
         fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
 
         GridBG bg = new GridBG();
@@ -106,36 +103,6 @@ public class TimeAttackScenario extends AbstractScenario {
         tlTime.setFont(fontTimer);
         tlTime.getContentBox().setBounds(0, FONT_SIZE_TIMER / 2 + FONT_SIZE_SMALL * 2,
                 mainWnd.getWidth(), mainWnd.getHeight());
-
-        tlMsgCancel = new TextLine();
-        tlMsgCancel.setText("Press(Long): Cancel Game");
-        tlMsgCancel.setForeground(COLOR_DARK_ORANGE);
-        tlMsgCancel.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlMsgCancel.setFont(fontMedium);
-        tlMsgCancel.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth(), mainWnd.getHeight());
-        tlMsgCancel.getContentBox().setMargin(20, 20, 20, 20);
-        tlMsgCancel.setVisible(false);
-
-        tlMsgNext = new TextLine();
-        tlMsgNext.setText("Press(Short): Next Game");
-        tlMsgNext.setForeground(COLOR_DARK_BLUE);
-        tlMsgNext.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlMsgNext.setFont(fontSmall);
-        tlMsgNext.getContentBox().setBounds(0, 0,
-                mainWnd.getWidth() / 2, mainWnd.getHeight());
-        tlMsgNext.getContentBox().setMargin(20, 20, 20, 20);
-        tlMsgNext.setVisible(false);
-
-        tlMsgClose = new TextLine();
-        tlMsgClose.setText("Press(Long): Back to Title");
-        tlMsgClose.setForeground(COLOR_DARK_BLUE);
-        tlMsgClose.setAlign(Drawable.H_ALIGN.CENTER, Drawable.V_ALIGN.BOTTOM);
-        tlMsgClose.setFont(fontSmall);
-        tlMsgClose.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
-                mainWnd.getWidth() / 2, mainWnd.getHeight());
-        tlMsgClose.getContentBox().setMargin(20, 20, 20, 20);
-        tlMsgClose.setVisible(false);
 
         tlRank = new TextLine();
         tlRank.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
@@ -167,12 +134,11 @@ public class TimeAttackScenario extends AbstractScenario {
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
         tlResult.setVisible(false);
 
+        cancelSub.activate();
+
         clearDrawable();
         addDrawable(bg);
         addDrawable(tlTime);
-        addDrawable(tlMsgCancel);
-        addDrawable(tlMsgNext);
-        addDrawable(tlMsgClose);
         addDrawable(tlRankHead);
         addDrawable(tlRank);
         addDrawable(tlResult);
@@ -182,6 +148,8 @@ public class TimeAttackScenario extends AbstractScenario {
     public void deactivate() {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
+
+        cancelSub.deactivate();
 
         btIO.removeBTDeviceListener(handlerBTButton);
         btIO.removeBTDeviceListener(handlerBT);
@@ -203,6 +171,9 @@ public class TimeAttackScenario extends AbstractScenario {
         case RESULT:
             drawFrameResult(g2);
             break;
+        case RESTART:
+            drawFrameRestart(g2);
+            break;
         case FINISH:
             drawFrameFinish(g2);
             break;
@@ -212,6 +183,7 @@ public class TimeAttackScenario extends AbstractScenario {
         }
 
         drawAllDrawable(g2);
+        cancelSub.drawFrame(g2);
     }
 
     protected void drawFrameInit(Graphics2D g2) {
@@ -250,107 +222,14 @@ public class TimeAttackScenario extends AbstractScenario {
         tlTime.setText(curTime);
 
         if (isFinished()) {
-            sensors.sort((x, y) -> {
-                return (int)(x.getTimeHit() - y.getTimeHit());
-            });
-
-            long before = 0;
-            for (int i = 0; i < sensors.size(); i++) {
-                MainWindow mainWnd = getSwitcher().getMainWindow();
-                Sensor sen = sensors.get(i);
-                int diff = (int)(sen.getTimeHit() - before);
-                TextLine tl = new TextLine();
-                tl.setText(String.format("T%d:%3d.%03d (+%2d.%03d)",
-                        i + 1,
-                        sen.getTimeHit() / 1000, sen.getTimeHit() % 1000,
-                        diff / 1000, diff % 1000));
-                tl.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
-                tl.setForeground(Color.DARK_GRAY);
-                tl.setFont(fontDetail);
-                tl.getContentBox().setBounds(
-                        mainWnd.getWidth() / 2,
-                        SPACE_TOP + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
-                        mainWnd.getWidth() / 2,
-                        (int)(FONT_SIZE_DETAIL * 1.3));
-                tl.getContentBox().setMargin(
-                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
-                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
-
-                results.add(tl);
-                addDrawable(tl);
-
-                before = sen.getTimeHit();
-            }
-
-            boolean success = writeLine(DEV_CONTROLLER, CMD_BEEP);
-            if (!success) {
-                return;
-            }
-
-            tlTime.setText(String.format("%3d.%03d",
-                    before / 1000, before % 1000));
-
-            //Ranking
-            ScoreBoard scboard = new ScoreBoard(getScoreType());
-            Score sc = new ScoreTatk(getScoreType(), before, new Date());
-            int rank;
-            scboard.loadScores();
-            rank = scboard.getRank(sc);
-            scboard.addScore(sc);
-            scboard.saveScores();
-
-            if (rank <= ScoreBoard.MAX_RECORDS) {
-                tlRank.setText("Rank " + rank);
-            } else {
-                tlRank.setText("Rank --");
-            }
-            tlRank.setVisible(true);
-
-            tlRankHead.setVisible(true);
-            for (int i = 0; i < RANKING_TOP_NUM; i++) {
-                MainWindow mainWnd = getSwitcher().getMainWindow();
-                Score s;
-                try {
-                    s = scboard.getScoreByRank(i + 1);
-                } catch (IndexOutOfBoundsException ex) {
-                    break;
-                }
-                TextLine tl = new TextLine();
-                tl.setText(String.format("%d:%s",
-                        i + 1, s.toRankingString()));
-                tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
-                if (i + 1 == rank) {
-                    tl.setForeground(Scenario.COLOR_DARK_ORANGE);
-                } else {
-                    tl.setForeground(Color.DARK_GRAY);
-                }
-                tl.setFont(fontDetail);
-                tl.getContentBox().setBounds(
-                        0, SPACE_TOP + (int)((i + 2) * FONT_SIZE_DETAIL * 1.3),
-                        mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
-                tl.getContentBox().setMargin(
-                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
-                        FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
-
-                results.add(tl);
-                addDrawable(tl);
-            }
-
-            //Other messages
-            tlResult.setText(getScoreType().toDisplay());
-            tlResult.setForeground(Color.DARK_GRAY);
-            tlResult.setVisible(true);
-
-            tlMsgCancel.setVisible(false);
-            tlMsgNext.setVisible(true);
-            tlMsgClose.setVisible(true);
-
-            getSwitcher().setTargetFPS(3);
-            setState(ScenarioState.RESULT);
+            finishScenario();
         }
     }
 
     protected void drawFrameResult(Graphics2D g2) {
+    }
+
+    protected void drawFrameRestart(Graphics2D g2) {
     }
 
     protected void drawFrameFinish(Graphics2D g2) {
@@ -378,8 +257,106 @@ public class TimeAttackScenario extends AbstractScenario {
         state = s;
     }
 
+    public synchronized void finishScenario() {
+        sensors.sort((x, y) -> {
+            return (int)(x.getTimeHit() - y.getTimeHit());
+        });
+
+        long before = 0;
+        for (int i = 0; i < sensors.size(); i++) {
+            MainWindow mainWnd = getSwitcher().getMainWindow();
+            Sensor sen = sensors.get(i);
+            int diff = (int)(sen.getTimeHit() - before);
+            TextLine tl = new TextLine();
+            tl.setText(String.format("T%d:%3d.%03d (+%2d.%03d)",
+                    i + 1,
+                    sen.getTimeHit() / 1000, sen.getTimeHit() % 1000,
+                    diff / 1000, diff % 1000));
+            tl.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
+            tl.setForeground(Color.DARK_GRAY);
+            tl.setFont(fontDetail);
+            tl.getContentBox().setBounds(
+                    mainWnd.getWidth() / 2,
+                    SPACE_TOP + (int)((i + 1) * FONT_SIZE_DETAIL * 1.3),
+                    mainWnd.getWidth() / 2,
+                    (int)(FONT_SIZE_DETAIL * 1.3));
+            tl.getContentBox().setMargin(
+                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
+
+            results.add(tl);
+            addDrawable(tl);
+
+            before = sen.getTimeHit();
+        }
+
+        boolean success = writeLine(DEV_CONTROLLER, CMD_BEEP);
+        if (!success) {
+            return;
+        }
+
+        tlTime.setText(String.format("%3d.%03d",
+                before / 1000, before % 1000));
+
+        //Ranking
+        ScoreBoard scboard = new ScoreBoard(getScoreType());
+        Score sc = new ScoreTatk(getScoreType(), before, new Date());
+        int rank;
+        scboard.loadScores();
+        rank = scboard.getRank(sc);
+        scboard.addScore(sc);
+        scboard.saveScores();
+
+        if (rank <= ScoreBoard.MAX_RECORDS) {
+            tlRank.setText("Rank " + rank);
+        } else {
+            tlRank.setText("Rank --");
+        }
+        tlRank.setVisible(true);
+
+        tlRankHead.setVisible(true);
+        for (int i = 0; i < RANKING_TOP_NUM; i++) {
+            MainWindow mainWnd = getSwitcher().getMainWindow();
+            Score s;
+            try {
+                s = scboard.getScoreByRank(i + 1);
+            } catch (IndexOutOfBoundsException ex) {
+                break;
+            }
+            TextLine tl = new TextLine();
+            tl.setText(String.format("%d:%s",
+                    i + 1, s.toRankingString()));
+            tl.setAlign(Drawable.H_ALIGN.LEFT, Drawable.V_ALIGN.TOP);
+            if (i + 1 == rank) {
+                tl.setForeground(Scenario.COLOR_DARK_ORANGE);
+            } else {
+                tl.setForeground(Color.DARK_GRAY);
+            }
+            tl.setFont(fontDetail);
+            tl.getContentBox().setBounds(
+                    0, SPACE_TOP + (int)((i + 2) * FONT_SIZE_DETAIL * 1.3),
+                    mainWnd.getWidth() / 2, (int)(FONT_SIZE_DETAIL * 1.3));
+            tl.getContentBox().setMargin(
+                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4,
+                    FONT_SIZE_SMALL, FONT_SIZE_SMALL / 4);
+
+            results.add(tl);
+            addDrawable(tl);
+        }
+
+        //Other messages
+        tlResult.setText(getScoreType().toDisplay());
+        tlResult.setForeground(Color.DARK_GRAY);
+        tlResult.setVisible(true);
+
+        cancelSub.finishScenario();
+
+        getSwitcher().setTargetFPS(3);
+        setState(ScenarioState.RESULT);
+    }
+
     public synchronized void tryToCancelScenario() {
-        tlMsgCancel.setVisible(true);
+        cancelSub.tryToCancelScenario();
     }
 
     public synchronized void cancelScenario() {
@@ -398,12 +375,23 @@ public class TimeAttackScenario extends AbstractScenario {
         tlResult.setForeground(COLOR_DARK_ORANGE);
         tlResult.setVisible(true);
 
-        tlMsgCancel.setVisible(false);
-        tlMsgNext.setVisible(true);
-        tlMsgClose.setVisible(true);
+        cancelSub.cancelScenario();
 
         getSwitcher().setTargetFPS(3);
         setState(ScenarioState.RESULT);
+    }
+
+    public synchronized void restartScenario() {
+        for (TextLine tl : results) {
+            tl.setVisible(false);
+        }
+        tlRank.setVisible(false);
+        tlRankHead.setVisible(false);
+        tlTime.setVisible(false);
+
+        cancelSub.restartScenario();
+
+        setState(ScenarioState.RESTART);
     }
 
     public synchronized void nextScenario() {
@@ -515,6 +503,9 @@ public class TimeAttackScenario extends AbstractScenario {
                 scenario.tryToCancelScenario();
                 break;
             case RESULT:
+                scenario.restartScenario();
+                break;
+            case RESTART:
                 scenario.nextScenario();
                 break;
             }
@@ -524,6 +515,7 @@ public class TimeAttackScenario extends AbstractScenario {
         public void mouseRightClicked() {
             switch (scenario.getState()) {
             case RESULT:
+            case RESTART:
                 scenario.closeScenario();
                 break;
             }
@@ -536,6 +528,7 @@ public class TimeAttackScenario extends AbstractScenario {
                 scenario.cancelScenario();
                 break;
             case RESULT:
+            case RESTART:
                 scenario.closeScenario();
                 break;
             }
