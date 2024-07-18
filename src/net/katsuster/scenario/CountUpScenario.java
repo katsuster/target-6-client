@@ -133,12 +133,14 @@ public class CountUpScenario extends AbstractScenario {
         tlRankHead.setVisible(false);
 
         tlResult = new TextLine();
+        tlResult.setText(getScoreType().toDisplay());
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
+        tlResult.setForeground(Color.DARK_GRAY);
         tlResult.setFont(fontLarge);
         tlResult.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
                 mainWnd.getWidth() / 2, mainWnd.getHeight());
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
-        tlResult.setVisible(false);
+        tlResult.setVisible(true);
 
         cancelSub.activate();
 
@@ -349,11 +351,6 @@ public class CountUpScenario extends AbstractScenario {
             addDrawable(tl);
         }
 
-        //Other messages
-        tlResult.setText(getScoreType().toDisplay());
-        tlResult.setForeground(Color.DARK_GRAY);
-        tlResult.setVisible(true);
-
         cancelSub.finishScenario();
 
         getSwitcher().setTargetFPS(3);
@@ -376,9 +373,7 @@ public class CountUpScenario extends AbstractScenario {
             return;
         }
 
-        tlResult.setText("Canceled");
-        tlResult.setForeground(COLOR_DARK_ORANGE);
-        tlResult.setVisible(true);
+        tlTime.setText("---.---");
 
         cancelSub.cancelScenario();
 
