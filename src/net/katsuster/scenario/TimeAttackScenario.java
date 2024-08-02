@@ -32,7 +32,7 @@ public class TimeAttackScenario extends AbstractScenario {
     private BTButtonHandler handlerBTButton;
     private Font fontTimer;
     private Font fontLargest;
-    private Font fontLarge;
+    private Font fontMedium;
     private Font fontDetail;
     private ScenarioState state = ScenarioState.INIT;
     private List<Sensor> sensors = new ArrayList<>();
@@ -88,7 +88,7 @@ public class TimeAttackScenario extends AbstractScenario {
         Font fMono = getSwitcher().getSetting().getFontMono();
         fontTimer = fMono.deriveFont(Font.PLAIN, FONT_SIZE_TIMER);
         fontLargest = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGEST);
-        fontLarge = fUI.deriveFont(Font.PLAIN, FONT_SIZE_LARGE);
+        fontMedium = fUI.deriveFont(Font.PLAIN, FONT_SIZE_MEDIUM);
         fontDetail = fMono.deriveFont(Font.PLAIN, FONT_SIZE_DETAIL);
 
         GridBG bg = new GridBG();
@@ -130,7 +130,7 @@ public class TimeAttackScenario extends AbstractScenario {
         tlResult.setText(getScoreType().toDisplay());
         tlResult.setAlign(Drawable.H_ALIGN.RIGHT, Drawable.V_ALIGN.TOP);
         tlResult.setForeground(Color.DARK_GRAY);
-        tlResult.setFont(fontLarge);
+        tlResult.setFont(fontMedium);
         tlResult.getContentBox().setBounds(mainWnd.getWidth() / 2, 0,
                 mainWnd.getWidth() / 2, mainWnd.getHeight());
         tlResult.getContentBox().setMargin(20, 20, 20, 20);
