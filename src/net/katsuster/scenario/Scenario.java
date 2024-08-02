@@ -26,6 +26,9 @@ public interface Scenario {
     int FONT_SIZE_SMALL = 32;
     int FONT_SIZE_SMALLEST = 16;
 
+    int FPS_TIMER = 33;
+    int FPS_RESULT = 3;
+
     String CMD_INIT = "init";
     String CMD_SINGLE = "single";
     String CMD_BEEP = "beep";

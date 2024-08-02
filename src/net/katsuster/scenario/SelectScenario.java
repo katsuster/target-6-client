@@ -117,7 +117,7 @@ public class SelectScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
-        getSwitcher().setTargetFPS(3);
+        getSwitcher().setTargetFPS(FPS_RESULT);
 
         handlerMouse = new MouseHandler(this);
         mainWnd.addMouseListener(handlerMouse);

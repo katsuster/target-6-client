@@ -29,7 +29,7 @@ public class ClosingScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
-        getSwitcher().setTargetFPS(3);
+        getSwitcher().setTargetFPS(FPS_RESULT);
 
         handler = new BTDeviceHandler(this);
         btIO.addBTDeviceListener(handler);

@@ -80,7 +80,7 @@ public class CountUpScenario extends AbstractScenario {
         MainWindow mainWnd = getSwitcher().getMainWindow();
         BTInOut btIO = getSwitcher().getBTInOut();
 
-        getSwitcher().setTargetFPS(60);
+        getSwitcher().setTargetFPS(FPS_TIMER);
 
         handlerMouse = new MouseHandler(this);
         mainWnd.addMouseListener(handlerMouse);
@@ -353,7 +353,7 @@ public class CountUpScenario extends AbstractScenario {
 
         cancelSub.finishScenario();
 
-        getSwitcher().setTargetFPS(3);
+        getSwitcher().setTargetFPS(FPS_RESULT);
         setState(ScenarioState.RESULT);
     }
 
@@ -377,7 +377,7 @@ public class CountUpScenario extends AbstractScenario {
 
         cancelSub.cancelScenario();
 
-        getSwitcher().setTargetFPS(3);
+        getSwitcher().setTargetFPS(FPS_RESULT);
         setState(ScenarioState.RESULT);
     }
 
