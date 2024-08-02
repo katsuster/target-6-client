@@ -40,10 +40,12 @@ public interface Scenario {
     int SENSORS_DEFAULT = 6;
 
     String SCENARIO_COUNT_UP = "Count Up";
+    String SCENARIO_COUNT_UP_PRE = "CountUp";
     String SCENARIO_COUNT_UP_30SEC = SCENARIO_COUNT_UP + "/30 sec";
     String SCENARIO_COUNT_UP_20SEC = SCENARIO_COUNT_UP + "/20 sec";
     String SCENARIO_COUNT_UP_15SEC = SCENARIO_COUNT_UP + "/15 sec";
     String SCENARIO_TIME_ATTACK = "Time Attack";
+    String SCENARIO_TIME_ATTACK_PRE = "Time Attack";
     String SCENARIO_TIME_ATTACK_6 = SCENARIO_TIME_ATTACK + "/6 Targets";
     String SCENARIO_TIME_ATTACK_5 = SCENARIO_TIME_ATTACK + "/5 Targets";
     String SCENARIO_TIME_ATTACK_4 = SCENARIO_TIME_ATTACK + "/4 Targets";
@@ -56,64 +58,64 @@ public interface Scenario {
         SCORE_COUNT_UP_30 {
             @Override
             public String toDisplay() {
-                return "Count Up/30 sec";
+                return SCENARIO_COUNT_UP_30SEC;
             }
             public String toString() {
-                return "CountUp30";
+                return SCENARIO_COUNT_UP_PRE + "30";
             }
         },
         SCORE_COUNT_UP_20 {
             @Override
             public String toDisplay() {
-                return "Count Up/20 sec";
+                return SCENARIO_COUNT_UP_20SEC;
             }
             public String toString() {
-                return "CountUp20";
+                return SCENARIO_COUNT_UP_PRE + "20";
             }
         },
         SCORE_COUNT_UP_15 {
             @Override
             public String toDisplay() {
-                return "Count Up/15 sec";
+                return SCENARIO_COUNT_UP_15SEC;
             }
             public String toString() {
-                return "CountUp15";
+                return SCENARIO_COUNT_UP_PRE + "15";
             }
         },
         SCORE_TIME_ATTACK_6 {
             @Override
             public String toDisplay() {
-                return "Time Attack/6 targets";
+                return SCENARIO_TIME_ATTACK_6;
             }
             public String toString() {
-                return "TimeAttack6";
+                return SCENARIO_TIME_ATTACK_PRE + "6";
             }
         },
         SCORE_TIME_ATTACK_5 {
             @Override
             public String toDisplay() {
-                return "Time Attack/5 targets";
+                return SCENARIO_TIME_ATTACK_5;
             }
             public String toString() {
-                return "TimeAttack5";
+                return SCENARIO_TIME_ATTACK_PRE + "5";
             }
         },
         SCORE_TIME_ATTACK_4 {
             @Override
             public String toDisplay() {
-                return "Time Attack/4 targets";
+                return SCENARIO_TIME_ATTACK_4;
             }
             public String toString() {
-                return "TimeAttack4";
+                return SCENARIO_TIME_ATTACK_PRE + "4";
             }
         },
         SCORE_TIME_ATTACK_TEST {
             @Override
             public String toDisplay() {
-                return "Time Attack/test";
+                return SCENARIO_TIME_ATTACK + "/test";
             }
             public String toString() {
-                return "TimeAttackTest";
+                return SCENARIO_TIME_ATTACK_PRE + "Test";
             }
         },
         SCORE_EMPTY {
