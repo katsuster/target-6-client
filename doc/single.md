@@ -12,9 +12,16 @@ Single player mode has 2 games.
   * Start by `cntup` command
   * Shoot targets as much as possible
   * Game is finished after 30 seconds
+* Speed shoot
+  * Start by `sshot` command
+  * Shoot all targets as fast as possible (sequence is free)
+  * Shoot stop target at last
+    * Add penalty (+3 secs) for each non-shoot target
+    * Max time is 30 secs
+  * Game is finished after 30 seconds
 * Time attack
   * Start by `tatk` command
-  * Shoot all targets as fast as possible
+  * Shoot highlighted target as fast as possible (sequence is random)
   * Pass the target if 30 seconds past
   * Game is finished after shoot/pass all targets
 
@@ -71,13 +78,19 @@ state sensor {
   init_sensor --> [*]: init cmd
 
   init_sensor --> cntup_wait1: cntup cmd
-  cntup_wait1 --> cntup_wait2: LED ON
+  cntup_wait1 --> cntup_wait2: LED OFF
   cntup_wait2 --> cntup_run: wait for falling edge, LED OFF
   cntup_run --> [*]: wait 30 seconds, game finished and send results
   cntup_run --> [*]: init cmd
 
+  init_sensor --> sshot_wait1: sshot cmd
+  sshot_wait1 --> sshot_wait2: LED OFF
+  sshot_wait2 --> sshot_run: wait for falling edge, LED ON
+  sshot_run --> [*]: wait for game finished, send results
+  sshot_run --> [*]: init cmd
+
   init_sensor --> tatk_wait1: tatk cmd
-  tatk_wait1 --> tatk_wait2: LED ON
+  tatk_wait1 --> tatk_wait2: LED OFF
   tatk_wait2 --> tatk_run: wait for falling edge, LED OFF
   tatk_run --> [*]: wait for game finished, send results
   tatk_run --> [*]: init cmd
