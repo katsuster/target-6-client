@@ -43,6 +43,7 @@ public class SelectScenario extends AbstractScenario {
 
         public Scenario createScenario(ScenarioSwitcher sc) {
             CountUpScenario cs;
+            SpeedShootScenario ss;
             TimeAttackScenario ts;
             RankingScenario rs;
             ArrayList<SCORE_TYPE> lst;
@@ -60,6 +61,18 @@ public class SelectScenario extends AbstractScenario {
             case SCENARIO_COUNT_UP_15SEC:
                 s = cs = new CountUpScenario(sc);
                 cs.setTimeoutInMills(15000);
+                break;
+            case SCENARIO_SPEED_SHOOT_6:
+                s = ss = new SpeedShootScenario(sc);
+                ss.setNumberOfTargets(6);
+                break;
+            case SCENARIO_SPEED_SHOOT_5:
+                s = ss = new SpeedShootScenario(sc);
+                ss.setNumberOfTargets(5);
+                break;
+            case SCENARIO_SPEED_SHOOT_4:
+                s = ss = new SpeedShootScenario(sc);
+                ss.setNumberOfTargets(4);
                 break;
             case SCENARIO_TIME_ATTACK_6:
                 s = ts = new TimeAttackScenario(sc);
@@ -79,6 +92,14 @@ public class SelectScenario extends AbstractScenario {
                 lst.add(SCORE_TYPE.SCORE_COUNT_UP_15);
                 lst.add(SCORE_TYPE.SCORE_COUNT_UP_20);
                 lst.add(SCORE_TYPE.SCORE_COUNT_UP_30);
+                rs.setScenarios(lst);
+                break;
+            case SCENARIO_RANKING_SPEED_SHOOT:
+                s = rs = new RankingScenario(sc);
+                lst = new ArrayList<>();
+                lst.add(SCORE_TYPE.SCORE_SPEED_SHOOT_6);
+                lst.add(SCORE_TYPE.SCORE_SPEED_SHOOT_5);
+                lst.add(SCORE_TYPE.SCORE_SPEED_SHOOT_4);
                 rs.setScenarios(lst);
                 break;
             case SCENARIO_RANKING_TIME_ATTACK:
@@ -104,11 +125,15 @@ public class SelectScenario extends AbstractScenario {
         scenarioRootNode.addPath(SCENARIO_COUNT_UP_15SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_15SEC));
         scenarioRootNode.addPath(SCENARIO_COUNT_UP_20SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_20SEC));
         scenarioRootNode.addPath(SCENARIO_COUNT_UP_30SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_30SEC));
+        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_6.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_6));
+        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_5.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_5));
+        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_4.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_4));
         scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_6.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_6));
         scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_5.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_5));
         scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_4.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_4));
         scenarioRootNode.addPath(SCENARIO_SEPARATOR.split("/"), null);
         scenarioRootNode.addPath(SCENARIO_RANKING_COUNT_UP.split("/"), new ScenarioData(SCENARIO_RANKING_COUNT_UP));
+        scenarioRootNode.addPath(SCENARIO_RANKING_SPEED_SHOOT.split("/"), new ScenarioData(SCENARIO_RANKING_SPEED_SHOOT));
         scenarioRootNode.addPath(SCENARIO_RANKING_TIME_ATTACK.split("/"), new ScenarioData(SCENARIO_RANKING_TIME_ATTACK));
     }
 

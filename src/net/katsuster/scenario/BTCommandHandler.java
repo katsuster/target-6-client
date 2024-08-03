@@ -39,6 +39,9 @@ public class BTCommandHandler implements BTDeviceListener {
     public void cmdCntup(StringTokenizer st, int devid) throws ParseException {
     }
 
+    public void cmdSshot(StringTokenizer st, int devid) throws ParseException {
+    }
+
     public void cmdTatk(StringTokenizer st, int devid) throws ParseException {
     }
 
@@ -69,6 +72,8 @@ public class BTCommandHandler implements BTDeviceListener {
             cmdBeep(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_CNTUP)) {
             cmdCntup(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.CMD_SSHOT)) {
+            cmdSshot(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_TATK)) {
             cmdTatk(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.RES_BUTTON)) {

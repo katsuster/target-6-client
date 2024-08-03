@@ -33,6 +33,7 @@ public interface Scenario {
     String CMD_SINGLE = "single";
     String CMD_BEEP = "beep";
     String CMD_CNTUP = "cntup";
+    String CMD_SSHOT = "sshot";
     String CMD_TATK = "tatk";
     String RES_BUTTON = "button";
     String RES_HIT = "hit";
@@ -44,6 +45,11 @@ public interface Scenario {
     String SCENARIO_COUNT_UP_30SEC = SCENARIO_COUNT_UP + "/30 sec";
     String SCENARIO_COUNT_UP_20SEC = SCENARIO_COUNT_UP + "/20 sec";
     String SCENARIO_COUNT_UP_15SEC = SCENARIO_COUNT_UP + "/15 sec";
+    String SCENARIO_SPEED_SHOOT = "Speed Shoot";
+    String SCENARIO_SPEED_SHOOT_PRE = "SpeedShoot";
+    String SCENARIO_SPEED_SHOOT_6 = SCENARIO_SPEED_SHOOT + "/6 Targets";
+    String SCENARIO_SPEED_SHOOT_5 = SCENARIO_SPEED_SHOOT + "/5 Targets";
+    String SCENARIO_SPEED_SHOOT_4 = SCENARIO_SPEED_SHOOT + "/4 Targets";
     String SCENARIO_TIME_ATTACK = "Time Attack";
     String SCENARIO_TIME_ATTACK_PRE = "Time Attack";
     String SCENARIO_TIME_ATTACK_6 = SCENARIO_TIME_ATTACK + "/6 Targets";
@@ -51,6 +57,7 @@ public interface Scenario {
     String SCENARIO_TIME_ATTACK_4 = SCENARIO_TIME_ATTACK + "/4 Targets";
     String SCENARIO_RANKING = "Ranking";
     String SCENARIO_RANKING_COUNT_UP = SCENARIO_RANKING + "/Count Up";
+    String SCENARIO_RANKING_SPEED_SHOOT = SCENARIO_RANKING + "/Speed Shoot";
     String SCENARIO_RANKING_TIME_ATTACK = SCENARIO_RANKING + "/Time Attack";
     String SCENARIO_SEPARATOR = "・";
 
@@ -80,6 +87,33 @@ public interface Scenario {
             }
             public String toString() {
                 return SCENARIO_COUNT_UP_PRE + "15";
+            }
+        },
+        SCORE_SPEED_SHOOT_6 {
+            @Override
+            public String toDisplay() {
+                return SCENARIO_SPEED_SHOOT_6;
+            }
+            public String toString() {
+                return SCENARIO_SPEED_SHOOT_PRE + "6";
+            }
+        },
+        SCORE_SPEED_SHOOT_5 {
+            @Override
+            public String toDisplay() {
+                return SCENARIO_SPEED_SHOOT_5;
+            }
+            public String toString() {
+                return SCENARIO_SPEED_SHOOT_PRE + "5";
+            }
+        },
+        SCORE_SPEED_SHOOT_4 {
+            @Override
+            public String toDisplay() {
+                return SCENARIO_SPEED_SHOOT_4;
+            }
+            public String toString() {
+                return SCENARIO_SPEED_SHOOT_PRE + "4";
             }
         },
         SCORE_TIME_ATTACK_6 {
