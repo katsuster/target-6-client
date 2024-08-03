@@ -124,8 +124,7 @@ sensor -->> client: OK
 
 client ->> sensor: tatk cmd
 activate sensor
-sensor ->> led: All on
-activate led
+sensor ->> led: All off
 sensor -->> client: OK
 
 client ->> controller: single cmd
@@ -136,7 +135,6 @@ controller -->> client: OK
 controller ->> controller: Wait 3 sec.
 controller ->> sensor: GPIO0 Out/Low (falling edge)
 sensor ->> led: All off
-deactivate led
 sensor ->> target: Enable
 activate target
 sensor ->> led: On
