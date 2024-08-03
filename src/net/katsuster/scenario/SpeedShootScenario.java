@@ -314,7 +314,7 @@ public class SpeedShootScenario extends AbstractScenario {
 
         //Ranking
         ScoreBoard scboard = new ScoreBoard(getScoreType());
-        Score sc = new ScoreTatk(getScoreType(), before, new Date());
+        Score sc = new ScoreTime(getScoreType(), before, new Date());
         int rank;
         scboard.loadScores();
         rank = scboard.getRank(sc);

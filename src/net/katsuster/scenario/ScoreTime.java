@@ -6,28 +6,28 @@ import java.util.prefs.Preferences;
 
 import net.katsuster.scenario.Scenario.SCORE_TYPE;
 
-public class ScoreTatk extends Score {
+public class ScoreTime extends Score {
     public static final String DATA_TIME = "Time";
 
     private long time;
 
-    public ScoreTatk() {
+    public ScoreTime() {
         super();
         setScoreType(SCORE_TYPE.SCORE_TIME_ATTACK_6);
     }
 
-    public ScoreTatk(SCORE_TYPE st) {
+    public ScoreTime(SCORE_TYPE st) {
         super();
         setScoreType(st);
     }
 
-    public ScoreTatk(SCORE_TYPE st, long tm, Date d) {
+    public ScoreTime(SCORE_TYPE st, long tm, Date d) {
         super(d);
         setScoreType(st);
         setTime(tm);
     }
 
-    public ScoreTatk(SCORE_TYPE st, long tm, String str) throws ParseException {
+    public ScoreTime(SCORE_TYPE st, long tm, String str) throws ParseException {
         super(str);
         setScoreType(st);
         setTime(tm);
@@ -38,11 +38,11 @@ public class ScoreTatk extends Score {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ScoreTatk)) {
+        if (!(o instanceof ScoreTime)) {
             return false;
         }
 
-        ScoreTatk obj = (ScoreTatk)o;
+        ScoreTime obj = (ScoreTime)o;
         return time == obj.time && getDate().equals(obj.getDate());
     }
 
@@ -51,11 +51,11 @@ public class ScoreTatk extends Score {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ScoreTatk)) {
+        if (!(o instanceof ScoreTime)) {
             return false;
         }
 
-        ScoreTatk obj = (ScoreTatk)o;
+        ScoreTime obj = (ScoreTime)o;
         return getTime() <= obj.getTime();
     }
 

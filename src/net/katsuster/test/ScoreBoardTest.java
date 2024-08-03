@@ -7,16 +7,16 @@ import org.junit.*;
 import net.katsuster.scenario.Scenario.SCORE_TYPE;
 import net.katsuster.scenario.Score;
 import net.katsuster.scenario.ScoreBoard;
-import net.katsuster.scenario.ScoreTatkTest;
+import net.katsuster.scenario.ScoreTest;
 
 public class ScoreBoardTest {
     public static final SCORE_TYPE TEST_SCORE_TYPE = SCORE_TYPE.SCORE_TIME_ATTACK_TEST;
 
     public void setupTestItems(ScoreBoard sb) throws Exception {
-        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
-        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
-        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
-        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s1 = new ScoreTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
 
         sb.addScore(s2);
         sb.addScore(s1);
@@ -27,10 +27,10 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testGetRank() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
-        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
-        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
-        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s1 = new ScoreTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
 
         sb.addScore(s2);
         sb.addScore(s1);
@@ -43,33 +43,33 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testOverflow() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
-        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
-        Score s3 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s1 = new ScoreTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
 
         for (int i = 0; i < ScoreBoard.MAX_RECORDS - 2; i++) {
             sb.addScore(s2);
         }
 
-        ScoreTatkTest sl1_1 = (ScoreTatkTest)sb.getScoreByRank(1);
-        ScoreTatkTest sl1_2 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
+        ScoreTest sl1_1 = (ScoreTest)sb.getScoreByRank(1);
+        ScoreTest sl1_2 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
         Assert.assertEquals("Failed to add.", 200, sl1_1.getTime());
         Assert.assertEquals("Failed to add.", 200, sl1_2.getTime());
         Assert.assertEquals("Failed to add.", ScoreBoard.MAX_RECORDS - 2, sb.getMaxRank());
 
         //Add to bottom
         sb.addScore(s3);
-        ScoreTatkTest sb1_1 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
-        ScoreTatkTest sb1_2 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
+        ScoreTest sb1_1 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
+        ScoreTest sb1_2 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
         Assert.assertEquals("Failed to add on bottom.", 200, sb1_1.getTime());
         Assert.assertEquals("Failed to add on bottom.", 300, sb1_2.getTime());
         Assert.assertEquals("Failed to add on bottom.", ScoreBoard.MAX_RECORDS - 1, sb.getMaxRank());
 
         //Add to bottom (2nd)
         sb.addScore(s3);
-        ScoreTatkTest sb2_1 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
-        ScoreTatkTest sb2_2 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
-        ScoreTatkTest sb2_3 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
+        ScoreTest sb2_1 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
+        ScoreTest sb2_2 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
+        ScoreTest sb2_3 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
         Assert.assertEquals("Failed to add on bottom (2nd).", 200, sb2_1.getTime());
         Assert.assertEquals("Failed to add on bottom (2nd).", 300, sb2_2.getTime());
         Assert.assertEquals("Failed to add on bottom (2nd).", 300, sb2_3.getTime());
@@ -77,9 +77,9 @@ public class ScoreBoardTest {
 
         //Add to bottom (3rd)
         sb.addScore(s3);
-        ScoreTatkTest sb3_1 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
-        ScoreTatkTest sb3_2 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
-        ScoreTatkTest sb3_3 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
+        ScoreTest sb3_1 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 2);
+        ScoreTest sb3_2 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS - 1);
+        ScoreTest sb3_3 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
         Assert.assertEquals("Failed to add on bottom (3rd).", 200, sb3_1.getTime());
         Assert.assertEquals("Failed to add on bottom (3rd).", 300, sb3_2.getTime());
         Assert.assertEquals("Failed to add on bottom (3rd).", 300, sb3_3.getTime());
@@ -87,9 +87,9 @@ public class ScoreBoardTest {
 
         //Add to top
         sb.addScore(s1);
-        ScoreTatkTest st1_1 = (ScoreTatkTest)sb.getScoreByRank(1);
-        ScoreTatkTest st1_2 = (ScoreTatkTest)sb.getScoreByRank(2);
-        ScoreTatkTest st1_3 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
+        ScoreTest st1_1 = (ScoreTest)sb.getScoreByRank(1);
+        ScoreTest st1_2 = (ScoreTest)sb.getScoreByRank(2);
+        ScoreTest st1_3 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
         Assert.assertEquals("Failed to add on top.", 100, st1_1.getTime());
         Assert.assertEquals("Failed to add on top.", 200, st1_2.getTime());
         Assert.assertEquals("Failed to add on top.", 300, st1_3.getTime());
@@ -97,10 +97,10 @@ public class ScoreBoardTest {
 
         //Add to top (2nd)
         sb.addScore(s1);
-        ScoreTatkTest st2_1 = (ScoreTatkTest)sb.getScoreByRank(1);
-        ScoreTatkTest st2_2 = (ScoreTatkTest)sb.getScoreByRank(2);
-        ScoreTatkTest st2_3 = (ScoreTatkTest)sb.getScoreByRank(3);
-        ScoreTatkTest st2_4 = (ScoreTatkTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
+        ScoreTest st2_1 = (ScoreTest)sb.getScoreByRank(1);
+        ScoreTest st2_2 = (ScoreTest)sb.getScoreByRank(2);
+        ScoreTest st2_3 = (ScoreTest)sb.getScoreByRank(3);
+        ScoreTest st2_4 = (ScoreTest)sb.getScoreByRank(ScoreBoard.MAX_RECORDS);
         Assert.assertEquals("Failed to add on top (2nd).", 100, st2_1.getTime());
         Assert.assertEquals("Failed to add on top (2nd).", 100, st2_2.getTime());
         Assert.assertEquals("Failed to add on top (2nd).", 200, st2_3.getTime());
@@ -126,10 +126,10 @@ public class ScoreBoardTest {
     @org.junit.Test
     public void testAdd() throws Exception {
         ScoreBoard sb = new ScoreBoard(TEST_SCORE_TYPE);
-        Score s1 = new ScoreTatkTest(TEST_SCORE_TYPE, 100, new Date());
-        Score s2 = new ScoreTatkTest(TEST_SCORE_TYPE, 200, new Date());
-        Score s3_1 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
-        Score s3_2 = new ScoreTatkTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s1 = new ScoreTest(TEST_SCORE_TYPE, 100, new Date());
+        Score s2 = new ScoreTest(TEST_SCORE_TYPE, 200, new Date());
+        Score s3_1 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
+        Score s3_2 = new ScoreTest(TEST_SCORE_TYPE, 300, new Date());
 
         //Add
         Assert.assertEquals("Empty before add.", 0, sb.getMaxRank());

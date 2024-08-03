@@ -307,7 +307,7 @@ public class CountUpScenario extends AbstractScenario {
 
         //Ranking
         ScoreBoard scboard = new ScoreBoard(getScoreType());
-        Score sc = new ScoreCntup(getScoreType(), cnt, last, new Date());
+        Score sc = new ScoreCount(getScoreType(), cnt, last, new Date());
         int rank;
         scboard.loadScores();
         rank = scboard.getRank(sc);

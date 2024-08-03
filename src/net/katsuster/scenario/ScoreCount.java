@@ -6,31 +6,31 @@ import java.util.prefs.Preferences;
 
 import net.katsuster.scenario.Scenario.SCORE_TYPE;
 
-public class ScoreCntup extends Score {
+public class ScoreCount extends Score {
     public static final String DATA_COUNT = "Count";
     public static final String DATA_TIME = "Time";
 
     private int count;
     private long time;
 
-    public ScoreCntup() {
+    public ScoreCount() {
         super();
         setScoreType(SCORE_TYPE.SCORE_COUNT_UP_30);
     }
 
-    public ScoreCntup(SCORE_TYPE st) {
+    public ScoreCount(SCORE_TYPE st) {
         super();
         setScoreType(st);
     }
 
-    public ScoreCntup(SCORE_TYPE st, int c, long tm, Date d) {
+    public ScoreCount(SCORE_TYPE st, int c, long tm, Date d) {
         super(d);
         setScoreType(st);
         setCount(c);
         setTime(tm);
     }
 
-    public ScoreCntup(SCORE_TYPE st, int c, long tm, String str) throws ParseException {
+    public ScoreCount(SCORE_TYPE st, int c, long tm, String str) throws ParseException {
         super(str);
         setScoreType(st);
         setCount(c);
@@ -42,11 +42,11 @@ public class ScoreCntup extends Score {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ScoreCntup)) {
+        if (!(o instanceof ScoreCount)) {
             return false;
         }
 
-        ScoreCntup obj = (ScoreCntup)o;
+        ScoreCount obj = (ScoreCount)o;
         return count == obj.count && time == obj.time && getDate().equals(obj.getDate());
     }
 
@@ -55,11 +55,11 @@ public class ScoreCntup extends Score {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ScoreCntup)) {
+        if (!(o instanceof ScoreCount)) {
             return false;
         }
 
-        ScoreCntup obj = (ScoreCntup)o;
+        ScoreCount obj = (ScoreCount)o;
         if (getCount() == obj.getCount()) {
             return getTime() <= obj.getTime();
         } else {
