@@ -122,19 +122,27 @@ public class SelectScenario extends AbstractScenario {
     public SelectScenario(ScenarioSwitcher sw) {
         super(sw);
 
-        scenarioRootNode.addPath(SCENARIO_COUNT_UP_15SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_15SEC));
-        scenarioRootNode.addPath(SCENARIO_COUNT_UP_20SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_20SEC));
-        scenarioRootNode.addPath(SCENARIO_COUNT_UP_30SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_30SEC));
-        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_6.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_6));
-        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_5.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_5));
-        scenarioRootNode.addPath(SCENARIO_SPEED_SHOOT_4.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_4));
-        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_6.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_6));
-        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_5.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_5));
-        scenarioRootNode.addPath(SCENARIO_TIME_ATTACK_4.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_4));
-        scenarioRootNode.addPath(SCENARIO_SEPARATOR.split("/"), null);
-        scenarioRootNode.addPath(SCENARIO_RANKING_COUNT_UP.split("/"), new ScenarioData(SCENARIO_RANKING_COUNT_UP));
-        scenarioRootNode.addPath(SCENARIO_RANKING_SPEED_SHOOT.split("/"), new ScenarioData(SCENARIO_RANKING_SPEED_SHOOT));
-        scenarioRootNode.addPath(SCENARIO_RANKING_TIME_ATTACK.split("/"), new ScenarioData(SCENARIO_RANKING_TIME_ATTACK));
+        scenarioRootNode.addItemPath(SCENARIO_COUNT_UP_PARENT.split("/"), null);
+        scenarioRootNode.addItemPath(SCENARIO_COUNT_UP_15SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_15SEC));
+        scenarioRootNode.addItemPath(SCENARIO_COUNT_UP_20SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_20SEC));
+        scenarioRootNode.addItemPath(SCENARIO_COUNT_UP_30SEC.split("/"), new ScenarioData(SCENARIO_COUNT_UP_30SEC));
+
+        scenarioRootNode.addItemPath(SCENARIO_SPEED_SHOOT_PARENT.split("/"), null);
+        scenarioRootNode.addItemPath(SCENARIO_SPEED_SHOOT_6.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_6));
+        scenarioRootNode.addItemPath(SCENARIO_SPEED_SHOOT_5.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_5));
+        scenarioRootNode.addItemPath(SCENARIO_SPEED_SHOOT_4.split("/"), new ScenarioData(SCENARIO_SPEED_SHOOT_4));
+
+        scenarioRootNode.addItemPath(SCENARIO_TIME_ATTACK_PARENT.split("/"), null);
+        scenarioRootNode.addItemPath(SCENARIO_TIME_ATTACK_6.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_6));
+        scenarioRootNode.addItemPath(SCENARIO_TIME_ATTACK_5.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_5));
+        scenarioRootNode.addItemPath(SCENARIO_TIME_ATTACK_4.split("/"), new ScenarioData(SCENARIO_TIME_ATTACK_4));
+
+        scenarioRootNode.addSeparatorPath(SCENARIO_SEPARATOR.split("/"), null);
+
+        scenarioRootNode.addItemPath(SCENARIO_RANKING_PARENT.split("/"), null);
+        scenarioRootNode.addItemPath(SCENARIO_RANKING_COUNT_UP.split("/"), new ScenarioData(SCENARIO_RANKING_COUNT_UP));
+        scenarioRootNode.addItemPath(SCENARIO_RANKING_SPEED_SHOOT.split("/"), new ScenarioData(SCENARIO_RANKING_SPEED_SHOOT));
+        scenarioRootNode.addItemPath(SCENARIO_RANKING_TIME_ATTACK.split("/"), new ScenarioData(SCENARIO_RANKING_TIME_ATTACK));
     }
 
     @Override
@@ -280,7 +288,7 @@ public class SelectScenario extends AbstractScenario {
 
         //Skip separator
         TreeNode<String, ScenarioData> selected = scenarios[indexSelected];
-        if (!selected.hasChild() && selected.getValue() == null) {
+        if (selected.getSeparator()) {
             nextItem();
         }
     }
@@ -302,6 +310,8 @@ public class SelectScenario extends AbstractScenario {
             //Leaf node
             if (node.getValue() != null) {
                 flagStart = true;
+            } else if (node.getParent().getParent() != null) {
+                expandChildItem(node.getParent().getParent(), true);
             }
         }
     }
@@ -332,7 +342,7 @@ public class SelectScenario extends AbstractScenario {
             tl.setForeground(Color.DARK_GRAY);
             tl.setFont(fontLarge);
             tl.getContentBox().setBounds(mainWnd.getWidth() / 4,
-                    (int)(mainWnd.getHeight() / 2.3) + (int)(FONT_SIZE_LARGE * 1.2) * i,
+                    (int)(mainWnd.getHeight() / 2.8) + (int)(FONT_SIZE_LARGE * 1.2) * i,
                     mainWnd.getWidth() / 4 * 2, (int)(FONT_SIZE_LARGE * 1.4));
             tlScenarios.add(tl);
 

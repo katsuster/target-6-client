@@ -8,6 +8,8 @@ import java.util.Optional;
 public class TreeNode<K, V> {
     private K key;
     private V value;
+    private TreeNode<K, V> parent;
+    private boolean separator;
     private List<TreeNode<K, V>> children = new ArrayList<>();
 
     public TreeNode(K k, V v) {
@@ -25,6 +27,22 @@ public class TreeNode<K, V> {
 
     public void setValue(V v) {
         value = v;
+    }
+
+    public TreeNode<K, V> getParent() {
+        return parent;
+    }
+
+    public void setParent(TreeNode<K, V> node) {
+        parent = node;
+    }
+
+    public boolean getSeparator() {
+        return separator;
+    }
+
+    public void setSeparator(boolean sep) {
+        separator = sep;
     }
 
     public boolean hasChild() {
@@ -51,13 +69,23 @@ public class TreeNode<K, V> {
 
     public void addChild(TreeNode<K, V> ch) {
         children.add(ch);
+        ch.setParent(this);
     }
 
     public void removeChild(TreeNode<K, V> ch) {
         children.remove(ch);
+        ch.setParent(null);
     }
 
-    public void addPath(K[] nodes, V value) {
+    public void addItemPath(K[] nodes, V value) {
+        addPath(nodes, value, false);
+    }
+
+    public void addSeparatorPath(K[] nodes, V value) {
+        addPath(nodes, value, true);
+    }
+
+    public void addPath(K[] nodes, V value, boolean sep) {
         TreeNode<K, V> cnode = this;
 
         for (K node : nodes) {
@@ -66,6 +94,7 @@ public class TreeNode<K, V> {
             if (c.isEmpty()) {
                 n = new TreeNode<>(node, null);
                 cnode.addChild(n);
+                n.setSeparator(sep);
             }
             cnode = c.orElse(n);
         }
