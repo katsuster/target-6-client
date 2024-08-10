@@ -14,7 +14,7 @@ public class TreeNodeTest {
         TreeNode<String, Integer> root = new TreeNode<>("root", null);
         String path = "aaa/bbbb/cccc";
 
-        root.addPath(path.split("/"), 100);
+        root.addPath(path.split("/"), 100, false);
 
         Optional<TreeNode<String, Integer>> node = root.findChild("aaa");
         Assert.assertNotNull("Failed to add 1st node.", root.findChild("aaa").orElse(null));
@@ -52,7 +52,7 @@ public class TreeNodeTest {
 
         int i = 100;
         for (String path : paths) {
-            root.addPath(path.split("/"), i);
+            root.addPath(path.split("/"), i, false);
             i += 100;
         }
 
@@ -125,7 +125,7 @@ public class TreeNodeTest {
 
         int i = 100;
         for (String path : paths) {
-            root.addPath(path.split("/"), i);
+            root.addPath(path.split("/"), i, false);
             i += 100;
         }
 
@@ -194,7 +194,7 @@ public class TreeNodeTest {
 
         int i = 100;
         for (String path : paths) {
-            root.addPath(path.split("/"), i);
+            root.addPath(path.split("/"), i, false);
             i += 100;
         }
 
@@ -226,7 +226,7 @@ public class TreeNodeTest {
 
         int i = 100;
         for (String path : paths) {
-            root.addPath(path.split("/"), i);
+            root.addPath(path.split("/"), i, false);
             i += 100;
         }
 
