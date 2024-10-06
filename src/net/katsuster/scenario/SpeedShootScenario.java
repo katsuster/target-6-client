@@ -534,10 +534,6 @@ public class SpeedShootScenario extends AbstractScenario {
             case RUN:
                 scenario.cancelScenario();
                 break;
-            case RESULT:
-            case RESTART:
-                scenario.closeScenario();
-                break;
             }
         }
     }
