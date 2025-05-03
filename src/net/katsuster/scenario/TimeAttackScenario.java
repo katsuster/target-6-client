@@ -42,6 +42,7 @@ public class TimeAttackScenario extends AbstractScenario {
     private TextLine tlRankHead;
     private TextLine tlResult;
     private List<TextLine> results = new ArrayList<>();
+    private int blinkCount = 0;
 
     public TimeAttackScenario(ScenarioSwitcher sw) {
         super(sw);
@@ -230,10 +231,11 @@ public class TimeAttackScenario extends AbstractScenario {
 
     protected void drawFrameResult(Graphics2D g2) {
         //keep connections with BT devices
-        boolean success1 = writeLine(DEV_CONTROLLER, CMD_BLINK);
-        boolean success2 = writeLine(DEV_SINGLE, CMD_BLINK);
-        if (!success1 || !success2) {
-            return;
+        blinkCount++;
+        if (blinkCount > FPS_RESULT) {
+            writeLine(DEV_CONTROLLER, CMD_BLINK);
+            writeLine(DEV_SINGLE, CMD_BLINK);
+            blinkCount = 0;
         }
     }
 
