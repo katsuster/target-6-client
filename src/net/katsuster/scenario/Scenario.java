@@ -32,6 +32,9 @@ public interface Scenario {
     String CMD_INIT = "init";
     String CMD_SINGLE = "single";
     String CMD_BEEP = "beep";
+    String CMD_BLINK = "blink";
+    String CMD_LED_ON = "ledon";
+    String CMD_LED_OFF = "ledoff";
     String CMD_CNTUP = "cntup";
     String CMD_SSHOT = "sshot";
     String CMD_TATK = "tatk";

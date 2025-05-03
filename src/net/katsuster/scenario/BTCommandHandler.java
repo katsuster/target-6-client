@@ -34,6 +34,11 @@ public class BTCommandHandler implements BTDeviceListener {
     }
 
     public void cmdInit(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_INIT + ": Command is failed.", null);
+        }
     }
 
     public void cmdCntup(StringTokenizer st, int devid) throws ParseException {
@@ -46,9 +51,43 @@ public class BTCommandHandler implements BTDeviceListener {
     }
 
     public void cmdSingle(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_SINGLE + ": Command is failed.", null);
+        }
     }
 
     public void cmdBeep(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_BEEP + ": Command is failed.", null);
+        }
+    }
+
+    public void cmdBlink(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_BLINK + ": Command is failed.", null);
+        }
+    }
+
+    public void cmdLedon(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_LED_ON + ": Command is failed.", null);
+        }
+    }
+
+    public void cmdLedoff(StringTokenizer st, int devid) throws ParseException {
+        String next = st.nextToken();
+
+        if (!next.equalsIgnoreCase("OK")) {
+            scenario.printError(Scenario.CMD_LED_OFF + ": Command is failed.", null);
+        }
     }
 
     public void cmdButton(StringTokenizer st, int devid) throws ParseException {
@@ -70,6 +109,12 @@ public class BTCommandHandler implements BTDeviceListener {
             cmdSingle(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_BEEP)) {
             cmdBeep(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.CMD_BLINK)) {
+            cmdBlink(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.CMD_LED_ON)) {
+            cmdLedon(st, devid);
+        } else if (next.equalsIgnoreCase(Scenario.CMD_LED_OFF)) {
+            cmdLedoff(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_CNTUP)) {
             cmdCntup(st, devid);
         } else if (next.equalsIgnoreCase(Scenario.CMD_SSHOT)) {
