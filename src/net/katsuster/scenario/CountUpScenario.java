@@ -235,6 +235,12 @@ public class CountUpScenario extends AbstractScenario {
     }
 
     protected void drawFrameResult(Graphics2D g2) {
+        //keep connections with BT devices
+        boolean success1 = writeLine(DEV_CONTROLLER, CMD_BLINK);
+        boolean success2 = writeLine(DEV_SINGLE, CMD_BLINK);
+        if (!success1 || !success2) {
+            return;
+        }
     }
 
     protected void drawFrameRestart(Graphics2D g2) {
@@ -431,33 +437,6 @@ public class CountUpScenario extends AbstractScenario {
             super(s);
 
             scenario = s;
-        }
-
-        @Override
-        public void cmdInit(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-
-            if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(CMD_INIT + ": Command is failed.", null);
-            }
-        }
-
-        @Override
-        public void cmdSingle(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-
-            if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(CMD_SINGLE + ": Command is failed.", null);
-            }
-        }
-
-        @Override
-        public void cmdBeep(StringTokenizer st, int devid) {
-            String next = st.nextToken();
-
-            if (!next.equalsIgnoreCase("OK")) {
-                scenario.printError(CMD_BEEP + ": Command is failed.", null);
-            }
         }
 
         @Override
