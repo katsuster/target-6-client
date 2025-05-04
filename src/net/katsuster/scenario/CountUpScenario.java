@@ -2,7 +2,6 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
@@ -454,13 +453,9 @@ public class CountUpScenario extends AbstractScenario {
 
         @Override
         public void cmdHit(StringTokenizer st, int devid) throws ParseException {
-            String next = st.nextToken();
-            SimpleDateFormat sd = new SimpleDateFormat("mm:ss.SSS");
-            sd.setTimeZone(TimeZone.getTimeZone("GMT"));
-            int senid = parseID(next, PREFIX_SENSOR_ID);
-            Date datePast = sd.parse(st.nextToken());
+            int senid = parseID(st.nextToken(), PREFIX_SENSOR_ID);
+            long msPast = parseMills(st.nextToken());
             int hit = parseID(st.nextToken(), PREFIX_HIT_COUNT);
-            long msPast = datePast.getTime();
             Sensor sen = scenario.getSensor(devid, senid);
 
             scenario.printInfo(String.format("%s dev:%d sen:%d %3d.%03d hit:%d",

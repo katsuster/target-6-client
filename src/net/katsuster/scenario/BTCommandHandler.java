@@ -1,7 +1,10 @@
 package net.katsuster.scenario;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import net.katsuster.ble.BTDeviceEvent;
 import net.katsuster.ble.BTDeviceListener;
@@ -138,5 +141,14 @@ public class BTCommandHandler implements BTDeviceListener {
         }
 
         return Integer.parseInt(st.nextToken());
+    }
+
+    protected long parseMills(String token) throws ParseException {
+        SimpleDateFormat sd = new SimpleDateFormat("mm:ss.SSS");
+        sd.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date datePast = sd.parse(token);
+        long msPast = datePast.getTime();
+
+        return msPast;
     }
 }

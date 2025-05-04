@@ -2,7 +2,6 @@ package net.katsuster.scenario;
 
 import java.awt.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -449,12 +448,8 @@ public class TimeAttackScenario extends AbstractScenario {
 
         @Override
         public void cmdHit(StringTokenizer st, int devid) throws ParseException {
-            String next = st.nextToken();
-            SimpleDateFormat sd = new SimpleDateFormat("mm:ss.SSS");
-            sd.setTimeZone(TimeZone.getTimeZone("GMT"));
-            int senid = parseID(next, PREFIX_SENSOR_ID);
-            Date datePast = sd.parse(st.nextToken());
-            long msPast = datePast.getTime();
+            int senid = parseID(st.nextToken(), PREFIX_SENSOR_ID);
+            long msPast = parseMills(st.nextToken());
             Sensor sen = scenario.getSensor(devid, senid);
 
             scenario.printInfo(String.format("%s dev:%d sen:%d %3d.%03d",
