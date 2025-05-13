@@ -13,6 +13,7 @@ public class AbstractScenario implements Scenario {
     private boolean activated = false;
     private List<Drawable> listDrawable = new ArrayList<>();
     private int numTargets = SENSORS_DEFAULT;
+    private int blinkCount = 0;
 
     public AbstractScenario(ScenarioSwitcher sw) {
         switcher = sw;
@@ -138,6 +139,15 @@ public class AbstractScenario implements Scenario {
         success = writeLine(id, String.format("%s %d", CMD_INIT, id));
 
         return success;
+    }
+
+    public void writeBlinkCommand() {
+        blinkCount++;
+        if (blinkCount > FPS_RESULT) {
+            writeLine(DEV_CONTROLLER, CMD_BLINK);
+            writeLine(DEV_SINGLE, CMD_BLINK);
+            blinkCount = 0;
+        }
     }
 
     public synchronized int getNumberOfTargets() {
