@@ -147,8 +147,7 @@ public class BTCommandHandler implements BTDeviceListener {
         SimpleDateFormat sd = new SimpleDateFormat("mm:ss.SSS");
         sd.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date datePast = sd.parse(token);
-        long msPast = datePast.getTime();
 
-        return msPast;
+        return datePast.getTime();
     }
 }
