@@ -4,7 +4,7 @@ import java.awt.*;
 
 public interface Scenario {
     String CODE_NAME = "target-6-client";
-    String CODE_VERSION = "v1.0-rc3";
+    String CODE_VERSION = "v1.0-rc4";
     String CODE_TITLE_WORD1 = "Speed Shooting";
     String CODE_TITLE_WORD2 = "Scoreboard";
 
