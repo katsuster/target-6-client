@@ -297,12 +297,12 @@ public class OpeningScenario extends AbstractScenario {
                     continue;
                 }
 
+                scenario.setDevState(i, DevState.INIT_WAIT);
                 boolean success = writeInitCommand(i);
                 if (!success) {
                     printError("Failed to initialize dev " + i, null);
                     return;
                 }
-                scenario.setDevState(i, DevState.INIT_WAIT);
             }
             printInfo("Wait for initialized.", null);
 

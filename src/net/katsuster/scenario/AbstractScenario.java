@@ -111,9 +111,9 @@ public class AbstractScenario implements Scenario {
 
         while (!success) {
             try {
-                    btWr[id].write(s);
-                    btWr[id].flush();
-                    success = true;
+                btWr[id].write(s);
+                btWr[id].flush();
+                success = true;
             } catch (IOException ex) {
                 printError("I/O error in write.", ex);
             } catch (RuntimeException ex) {
