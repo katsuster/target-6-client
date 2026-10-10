@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Setup Xfce settings of ROCK 3 model C for running this application
-# (see doc/setup_linux.md)
+# (see doc/setup_linux_rock3c_xfce.md)
 #
 # - Disable screensaver and screen lock
 # - Disable blank screen and sleep of Power Manager
@@ -12,7 +12,7 @@
 #   - Automatic login is also OK
 # - Run this script as the user (not root)
 #   - Run on terminal of the desktop, or via SSH
-#   - sh setup_rock3c_user.sh
+#   - sh setup_linux_rock3c_xfce.sh
 
 set -e
 
