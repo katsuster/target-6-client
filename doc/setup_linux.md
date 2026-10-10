@@ -71,8 +71,13 @@ Need to change the settings of LightDM.
 This is an example to enable automatically login as username `rock`.
 
 * Open `/etc/lightdm/lightdm.conf`
-* Find `autologin-user`
-* Rewirte such as `autologin-user=rock`
+* Rewrite such as `autologin-user=rock`
+
+```
+[Seat:*]
+autologin-user=rock
+autologin-user-timeout=0
+```
 
 How to hide taskbar panel.
 Right click on the taskbar panel on the top of screen.
@@ -81,6 +86,23 @@ Right click on the taskbar panel on the top of screen.
   * Panel Preferences...
     * Remove panel 2 (select Panel 2 and push "-" button)
     * Automatically hide the panel: select "Always"
+
+How to avoid X11 crash on resolution change.
+After upgrading to Debian 12 (bookworm) (xserver-xorg-core 2:21.1.7, kernel 6.1.84 rk2410,
+libmali-bifrost-g52 1.9-1), the X server crashes when the display resolution is changed
+after login (e.g. by Xfce Display settings). LightDM then falls back to the login screen
+and automatic login looks like it failed.
+
+To avoid it, start X with the same resolution as the Xfce Display settings.
+Add PreferredMode to the Monitor section of /etc/X11/xorg.conf.d/20-modesetting.conf such as:
+
+```
+Section "Monitor"
+    Identifier  "Default Monitor"
+    Option          "Rotate" "normal"
+    Option          "PreferredMode" "1024x768"
+EndSection
+```
 
 
 ## Extend the life of storage
