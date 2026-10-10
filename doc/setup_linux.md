@@ -31,6 +31,7 @@ How to disable blank screen and screen lock.
 * Xfce settings
   * Screensaver
     * Screensaver
+      * Activate screensaver when computer is idle: OFF (turn off before disabling screensaver)
       * Enable Screensaver: OFF
     * Lock Screen
       * Enable Lock Screen : OFF
@@ -45,6 +46,7 @@ How to disable blank screen and screen lock.
 * 設定
   * スクリーンセーバー
     * スクリーンセーバー
+      * コンピューターがアイドル状態のときにスクリーンセーバーをアクティブにする: OFF (スクリーンセーバーを無効にする前にOFFにする)
       * スクリーンセーバーを有効にする: OFF
     * ロック画面
       * ロック画面を有効にする: OFF
@@ -53,6 +55,26 @@ How to disable blank screen and screen lock.
       * ブランク画面にするまでの時間: しない
       * スリープするまでの時間: しない
       * 電源を切断するまでの時間: しない
+
+If you use CUI:
+
+Note: The value 14 of xfce4-power-manager/inactivity-on-ac means "Never".
+
+```
+(if you run via SSH)
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
+
+(Screensaver)
+xfconf-query -c xfce4-screensaver -p /saver/idle-activation/enabled -n -t bool -s false
+xfconf-query -c xfce4-screensaver -p /saver/enabled -n -t bool -s false
+xfconf-query -c xfce4-screensaver -p /lock/enabled  -n -t bool -s false
+
+(Power Manager)
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac      -n -t  int -s 0
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t uint -s 0
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off   -n -t uint -s 0
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/inactivity-on-ac -n -t uint -s 14
+```
 
 How to disable blank screen (DPMS) by using XDG and xset.
 Please create ~/.config/autostart/xset.desktop file for disabling DPMS standby and suspend timer.
@@ -86,6 +108,24 @@ Right click on the taskbar panel on the top of screen.
   * Panel Preferences...
     * Remove panel 2 (select Panel 2 and push "-" button)
     * Automatically hide the panel: select "Always"
+
+If you use CUI:
+
+```
+(if you run via SSH)
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
+
+(Remove panel 2)
+xfconf-query -c xfce4-panel -p /panels -n -t int -s 1 --force-array
+xfconf-query -c xfce4-panel -p /panels/panel-2 -r -R
+
+(Automatically hide the panel: Always)
+xfconf-query -c xfce4-panel -p /panels/panel-1/autohide-behavior -n -t uint -s 2
+xfconf-query -c xfce4-panel -p /panels/panel-1/position-locked   -n -t bool -s true
+
+(Restart panel to apply)
+xfce4-panel -r
+```
 
 How to avoid X11 crash on resolution change.
 After upgrading to Debian 12 (bookworm) (xserver-xorg-core 2:21.1.7, kernel 6.1.84 rk2410,
